@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'Robots/no_robots.dart';
+import 'robots/no_robots.dart';
 
 Color backgroundColor = Color(0xFFEFEFEF);
 
