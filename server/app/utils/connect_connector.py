@@ -1,15 +1,25 @@
-from flask import Flask
+# Copyright 2022 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# [START cloud_sql_postgres_sqlalchemy_connect_connector]
 import os
+
 from google.cloud.sql.connector import Connector, IPTypes
 import pg8000
+
 import sqlalchemy
-from sqlalchemy.sql import text
-from dotenv import load_dotenv
 
-app = Flask(__name__)
-
-# Load environment variables from .env file
-load_dotenv()
 
 def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     """
@@ -69,55 +79,5 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     )
     return pool
 
-def execute_select_query(query):
-    pool = connect_with_connector()
-    try:
-        with pool.connect() as conn:
-            if isinstance(query, str):
-                result = conn.execute(text(query))
-            else:
-                result = conn.execute(query)
-            return result.mappings().all()
-    finally:
-        pool.dispose()
 
-def execute_non_select_query(query):
-    pool = connect_with_connector()
-    try:
-        with pool.connect() as conn:
-            if isinstance(query, str):
-                conn.execute(text(query))
-            else:
-                conn.execute(query)
-            conn.commit()
-    finally:
-        pool.dispose()
-
-@app.route('/insert')
-def insert_user():
-    query = f"INSERT INTO users (name, mail) VALUES ('user1', 'user1@example.com')"
-    execute_non_select_query(query)
-    return 'insert was succesful!'
-
-
-@app.route('/view')
-def view_users():
-    query = "SELECT * FROM users"
-    rows = execute_select_query(query)
-    users = [dict(row.items()) for row in rows]
-    return users
-
-@app.route('/delete')
-def delete_user_by_mail():
-    query = f"DELETE FROM users WHERE mail = 'user1@example.com'"
-    execute_non_select_query(query)
-    return 'delete was succesful!'
-
-@app.route('/')
-def hello():
-    return "hello world!"
-
-if __name__ == "__main__":
-    # This is used when running locally only. When deploying to Google App
-    # Engine, a webserver process such as Gunicorn will serve the app.
-    app.run(host="127.0.0.1", port=8080, debug=True)
+# [END cloud_sql_postgres_sqlalchemy_connect_connector]
