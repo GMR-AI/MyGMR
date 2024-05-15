@@ -1,7 +1,8 @@
 import psycopg2
-from flask import Flask
+from main import app
+from flask import jsonify
 
-app = Flask(__name__)
+
 
 # Replace the values with your connection string
 DB_USER = 'your_db_user'

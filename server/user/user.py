@@ -1,5 +1,6 @@
 from google.auth.transport import requests
 from google.oauth2 import id_token
+from main import app
 
 CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"
 
