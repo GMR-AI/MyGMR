@@ -1,3 +1,5 @@
+*.env
+server/gmr-ai*.json
 # Miscellaneous
 *.class
 *.log
