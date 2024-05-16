@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'robots/no_robots.dart';
 
@@ -12,6 +13,31 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpScreen extends State<SignUp> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  Future<User?> _signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        // The user canceled the sign-in
+        return null;
+      }
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      return userCredential.user;
+    } catch (e) {
+      print(e); // Handle error
+      return null;
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,9 +76,15 @@ class _SignUpScreen extends State<SignUp> {
                   ],
                 ),
                 child: Center(
-                  child: Text(
-                    "Sign Up with Google",
-                    style: TextStyle(fontSize: 20),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      User? user = await _signInWithGoogle();
+                      if (user != null) {
+                        print('Successfully signed in with Google: ${user.displayName}');
+                        // Navigate to another screen or do something else
+                      }
+                    },
+                    child: Text('Sign Up with Google'),
                   ),
                 ),
               ),
