@@ -1,0 +1,12 @@
+name: flask
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+    - flask
+    - sqlalchemy
+    - gpg8000
+    - cloud-sql-python-connector
+    - python-dotenv
