@@ -1,5 +1,6 @@
 *.env
 server/gmr-ai*.json
+server/flask_session
 # Miscellaneous
 *.class
 *.log

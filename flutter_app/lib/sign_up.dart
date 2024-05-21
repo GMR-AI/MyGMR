@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'robots/no_robots.dart';
+import 'robots/list_of_robots.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 Color backgroundColor = Color(0xFFEFEFEF);
 
@@ -30,7 +35,40 @@ class _SignUpScreen extends State<SignUp> {
       );
 
       final UserCredential userCredential = await _auth.signInWithCredential(credential);
-      return userCredential.user;
+      final User? user = userCredential.user;
+      if (user != null) {
+        // Send the ID token to your Flask backend
+        final String? idToken = await user.getIdToken();
+        final response = await http.post(
+          Uri.parse('${dotenv.env['BACKEND_URL']}/g_auth'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            'idToken': idToken!,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          final List<dynamic> robots = data['robots'];
+
+          if (robots.isNotEmpty) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ListOfRobots()),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NoRobots()),
+            );
+          }
+        } else {
+          print('Failed to authenticate with Flask backend');
+        }
+      }
+
     } catch (e) {
       print(e); // Handle error
       return null;

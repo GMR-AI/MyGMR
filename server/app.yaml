@@ -1,6 +1,6 @@
 runtime: python
 env: flex
-entrypoint: gunicorn -b :$PORT main:app
+entrypoint: gunicorn -b :$PORT run:app
 
 runtime_config:
   operating_system: ubuntu22
@@ -16,4 +16,4 @@ resources:
   memory_gb: 0.5
   disk_size_gb: 10
 beta_settings:
-  cloud_sql_instances: gmr-ai-test=tcp:8080
+  cloud_sql_instances: gmr-ai:europe-southwest1:gmr-ai-test=tcp:8081

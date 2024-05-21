@@ -7,6 +7,8 @@ dependencies:
   - pip:
     - flask
     - sqlalchemy
-    - gpg8000
+    - pg8000
     - cloud-sql-python-connector
     - python-dotenv
+    - firebase-admin
+    - flask-session
