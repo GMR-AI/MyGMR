@@ -12,7 +12,8 @@ def create_app():
   initialize_app()
   Session(app)
 
-  from .routes import users
+  from .routes import users, robots
   app.register_blueprint(users.bp)
+  app.register_blueprint(robots.bp)
 
   return app

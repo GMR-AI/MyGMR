@@ -22,21 +22,41 @@ class _WelcomeScreen extends State<Welcome> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: GestureDetector(
-        onVerticalDragUpdate: (details) {
+        onVerticalDragUpdate: (details) async {
           setState(() {
             _scrollPosition += details.primaryDelta!;
           });
           if (_scrollPosition < -20) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SignUp()),
-            );
+            // Check if user has an active session
+            final response = await checkSession();
+            if (response['status'] == 'active') {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) => ListOfRobotsPage(robots: response['robots']),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                ),
+              );
+            } else {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) => SignUp(),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                ),
+              );
+            }
           }
-        },
-        onVerticalDragEnd: (_) {
-          setState(() {
-            _scrollPosition = 0.0;
-          });
         },
         child: Stack(
           children: [
@@ -125,7 +145,31 @@ class _WelcomeScreen extends State<Welcome> {
         ),
       ),
     );
+
   }
+  Future<Map<String, dynamic>> checkSession() async {
+    // Replace with actual logic to get idToken if exists
+    String? idToken = 'YOUR_ID_TOKEN';
+
+    if (idToken != null) {
+      final response = await http.post(
+        Uri.parse('${dotenv.env['BACKEND_URL']}/check_session'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'idToken': idToken,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data;
+      }
+    }
+    return {'status': 'inactive'};
+  }
+
 }
 
 
