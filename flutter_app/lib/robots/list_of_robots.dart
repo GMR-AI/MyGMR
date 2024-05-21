@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../home.dart';
+import 'package:my_gmr/main_robot.dart';
+import '../main_robot.dart';
 import 'robot_class.dart';
-import '../robots/add_robot.dart';
+import 'add_robot.dart';
 
 Color backgroundColor = Color(0xFFEFEFEF);
 
@@ -14,9 +15,8 @@ class ListOfRobots extends StatefulWidget {
 
 class _ListOfRobotsScreen extends State<ListOfRobots> {
   List<Robot> _robots = [
-    Robot('Robot 1', 'assets/robot_design.png'),
-    Robot('Robot 2', 'assets/robot_design.png'),
-    // Agrega más robots aquí si es necesario
+    Robot(id: 0, name: 'Robot 1', img: 'assets/robot_design.png'),
+    Robot(id: 1, name: 'Robot 2', img: 'assets/robot_design.png'),
   ];
 
   bool _showConfirmationDialog = false;
@@ -31,7 +31,7 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Home(robot: _robots[index]),
+                builder: (context) => MainRobot(robot: _robots[index]),
               ),
             );
           },
@@ -39,15 +39,16 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
+
                 Image.asset(
-                  _robots[index].imagePath,
+                  _robots[index].img ?? 'assets/robot_design.png',
                   height: 50.0,
                   width: 50.0,
                 ),
                 SizedBox(width: 20.0),
                 Expanded(
                   child: Text(
-                    _robots[index].name,
+                    _robots[index].name ?? 'No name',
                     style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.normal,
