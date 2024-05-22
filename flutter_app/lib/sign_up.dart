@@ -122,7 +122,30 @@ class _SignUpScreen extends State<SignUp> {
                         // Navigate to another screen or do something else
                       }
                     },
-                    child: Text('Sign Up with Google'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white, // Background color
+                      foregroundColor: Colors.black, // Text color
+                      minimumSize: Size(double.infinity, 50), // Button size
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/google_logo.png',
+                          height: 24,
+                          width: 24,
+                        ),
+                        SizedBox(width: 12),
+                        Text(
+                          'Sign In with Google',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -17,17 +17,70 @@ class VerticalSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: height,
-      child: RotatedBox(
-        quarterTurns: 3,
-        child: Slider(
-          value: value.toDouble(),
-          min: 0,
-          max: 3,
-          divisions: 3,
-          onChanged: (double newValue) {
-            onChanged(newValue.toInt());
-          },
-        ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          RotatedBox(
+            quarterTurns: 3,
+            child: Slider(
+              value: value.toDouble(),
+              min: 0,
+              max: 3,
+              divisions: 3,
+              onChanged: (double newValue) {
+                onChanged(newValue.toInt());
+              },
+            ),
+          ),
+          Positioned(
+            top: 15.0,
+            left: 55.0,
+            child: Text(
+              '10',
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: value == 3 ? Colors.green : Colors.grey,
+              ),
+            ),
+          ),
+          Positioned(
+            top: height * 0.35 - 8.0,
+            left: 60.0,
+            child: Text(
+              '8',
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: value == 2 ? Colors.green : Colors.grey,
+              ),
+            ),
+          ),
+          Positioned(
+            top: height * 0.60 - 8.0,
+            left: 60.0,
+            child: Text(
+              '4',
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: value == 1 ? Colors.green : Colors.grey,
+              ),
+            ),
+          ),
+          Positioned(
+            top: height * 0.85 - 8.0,
+            left: 60.0,
+            child: Text(
+              '2',
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: value == 0 ? Colors.green : Colors.grey,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -81,22 +134,24 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Configure Grass Height',
+                    'Configure Grass Height (cm)',
                     style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 20.0),
                   Row(
                     children: [
                       Expanded(
-                        flex: 5, // La imagen ocupará 5 partes de 6
-                        child: Image.asset(
-                          _imagePaths[_grassHeightIndex],
-                          height: 200.0,
+                        flex: 6, // La imagen ocupará 5 partes de 6
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 0.0), // Añade padding a la derecha para mover la barra
+                          child: Image.asset(
+                            _imagePaths[_grassHeightIndex],
+                            height: 200.0,
+                          ),
                         ),
                       ),
-                      SizedBox(width: 20.0),
                       Expanded(
-                        flex: 1, // La barra deslizante ocupará 1 parte de 6
+                        flex: 2, // La barra deslizante ocupará 1 parte de 6
                         child: VerticalSlider(
                           height: 200,
                           value: _grassHeightIndex,

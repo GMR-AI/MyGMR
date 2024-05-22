@@ -26,7 +26,7 @@ ThemeData myTheme = ThemeData(
 );
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,22 @@ class MyApp extends StatelessWidget {
       title: 'MyGMR',
       theme: myTheme,
       debugShowCheckedModeBanner: false,
-      home: const Welcome(title: 'MyGMR'),
+      home: Scaffold(
+        body: SingleChildScrollView(
+          child: NestedScrollView(
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  title: Text('MyGMR'),
+                  floating: true,
+                  snap: true,
+                ),
+              ];
+            },
+            body: const Welcome(title: 'MyGMR'), // Contenido de tu aplicación
+          ),
+        ),
+      ),
     );
   }
 }

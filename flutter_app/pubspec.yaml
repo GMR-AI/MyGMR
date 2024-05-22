@@ -17,6 +17,8 @@ dependencies:
   google_sign_in: ^5.0.2
   http: ^1.2.1
   flutter_dotenv: ^5.0.2
+  geolocator: ^7.6.2
+  weather_icons: ^3.0.0
 
 
 flutter_icons:
@@ -44,6 +46,7 @@ flutter:
     - assets/grass/g_8.png
     - assets/grass/g_10.png
     - assets/perrito.jpg
+    - assets/google_logo.png
     - .env
   fonts:
     - family: Normal
