@@ -1,6 +1,10 @@
 from app.routes import bp
 from app.services import cloud_sql as db
-from flask import Flask, request, jsonify, session
+from app.utils import rb
+
+from flask import request, jsonify, session
+from flask_socketio import emit, join_room, leave_room
+
 from firebase_admin import auth
 
 @bp.route('/g_auth', methods=['POST'])
@@ -64,11 +68,18 @@ def check_session():
 def add_user_robot():
     data = request.json
     code = data.get('code')
-    if code in queue:
-        queue.remove(code)
-        return jsonify({"message": "Code matched and removed from queue"}), 200
-    else:
-        return jsonify({"message": "Code not found in queue"}), 404
+    queue = rb.get_queue()
+    if code not in queue:
+        return jsonify({"message": "Robot was not requested"}), 404
+    
+    queue.remove(code)
+    if db.get_robot_by_code(code):
+        return jsonify({"message": "Robot already registered"}), 412
+    
+    db.add_user_robot()
+    return jsonify({"message": "Code matched and removed from queue"}), 200
+
+        
 
 
 
@@ -79,3 +90,4 @@ def view_users():
     rows = db.execute_query(query)
     users = [dict(row.items()) for row in rows]
     return users
+

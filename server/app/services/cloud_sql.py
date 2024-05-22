@@ -46,5 +46,11 @@ def get_user_robots(user_id):
     rows = execute_query(query, response=True, param_values={'user_id': user_id})
     return [dict(row) for row in rows]
 
+def get_robot_by_code(code):
+    query = "SELECT * FROM robots WHERE id_user = :user_id"
+    rows = execute_query(query, response=True, param_values={'user_id': user_id})
+    robs = [dict(row) for row in rows]
+    return robs[0]['id'] if robs else None
+
 
 ## JOBS

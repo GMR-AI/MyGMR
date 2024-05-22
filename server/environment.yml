@@ -12,3 +12,5 @@ dependencies:
     - python-dotenv
     - firebase-admin
     - flask-session
+    - flask-socketio
+    - websocket-client
