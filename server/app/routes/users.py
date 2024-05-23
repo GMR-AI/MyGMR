@@ -89,5 +89,5 @@ def view_users():
     query = "SELECT * FROM users"
     rows = db.execute_query(query)
     users = [dict(row.items()) for row in rows]
-    return users
+    return jsonify(users)
 

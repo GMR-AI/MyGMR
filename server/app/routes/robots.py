@@ -4,8 +4,10 @@ from app.services import socketio
 from app.utils import rb
 
 from flask import request, jsonify
-from flask_socketio import send
+from flask_socketio import join_room, leave_room, emit
 
+
+@bp.route('/robot_request')
 def robot_request():
     data = request.json
     code = data.get('code')
@@ -16,11 +18,18 @@ def robot_request():
         return jsonify({"message": "Code is required"}), 400
 
 
-#@bp.route('/')
-def index():
-    return render_template('index.html')
+@socketio.on('join')
+def on_join(data):
+    code = data['code']
+    join_room(code)
+    emit('status', {'message': f'Robot {code} has joined the room'}, room=code)
 
+@socketio.on('leave')
+def on_leave(data):
+    code = data['code']
+    leave_room(code)
+    emit('status', {'message': f'Robot {code} has left the room'}, room=code)
 
-@socketio.on('message')
-def handle_message(msg):
-    send(msg, broadcast=True)
+@socketio.event
+def ping():
+    emit('status', {'message': "pong"})

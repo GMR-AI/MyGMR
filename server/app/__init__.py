@@ -1,8 +1,9 @@
 from flask import Flask
+from flask_cors import CORS
 from .config import Config
 from flask_session import Session
 from firebase_admin import initialize_app
-from app.utils import extensions as e
+from app.services import socketio
 
 def create_app():
   app = Flask(__name__)
@@ -12,10 +13,12 @@ def create_app():
   initialize_app()
   Session(app)
 
-  e.socketio.init_app(app)
+  app = Flask(__name__)
+  CORS(app, resources={r"/*":{"origins":"*"}})
 
-  from app.routes import users, robots
-  app.register_blueprint(users.bp)
-  #app.register_blueprint(robots.bp)
+  socketio.init_app(app)
+
+  from app.routes import bp
+  app.register_blueprint(bp)
 
   return app
