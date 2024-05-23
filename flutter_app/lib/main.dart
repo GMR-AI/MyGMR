@@ -35,11 +35,10 @@ class MyApp extends StatelessWidget {
       theme: myTheme,
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: SingleChildScrollView(
-          child: NestedScrollView(
+        body: NestedScrollView(
             headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
-                SliverAppBar(
+                const SliverAppBar(
                   title: Text('MyGMR'),
                   floating: true,
                   snap: true,
@@ -47,7 +46,6 @@ class MyApp extends StatelessWidget {
               ];
             },
             body: const Welcome(title: 'MyGMR'), // Contenido de tu aplicación
-          ),
         ),
       ),
     );
