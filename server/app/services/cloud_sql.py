@@ -47,10 +47,13 @@ def get_user_robots(user_id):
     return [dict(row) for row in rows]
 
 def get_robot_by_code(code):
-    query = "SELECT * FROM robots WHERE id_user = :user_id"
-    rows = execute_query(query, response=True, param_values={'user_id': user_id})
+    query = "SELECT * FROM robots WHERE id_connect = :c"
+    rows = execute_query(query, response=True, param_values={'c': code})
     robs = [dict(row) for row in rows]
-    return robs[0]['id'] if robs else None
+    return robs[0] if robs else None
 
+def add_new_robot(code, usid):
+    query = "INSERT INTO robots (id_connect, id_user) VALUES (:idc, :idu)"
+    execute_query(query, response=False, param_values={'idc': code, 'idu': usid})
 
 ## JOBS
