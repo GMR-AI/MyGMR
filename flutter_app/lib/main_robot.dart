@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'robots/robot_class.dart';
 import 'users/user_class.dart';
 import 'robots/home_robot.dart';
 import 'users/user_profile.dart';
@@ -7,8 +6,7 @@ import 'users/user_profile.dart';
 Color backgroundColor = Color(0xFFEFEFEF);
 
 class MainRobot extends StatefulWidget {
-  final Robot robot;
-  MainRobot({required this.robot});
+  MainRobot({Key? key}) : super(key: key);
 
   @override
   _MainRobotState createState() => _MainRobotState();
@@ -16,15 +14,15 @@ class MainRobot extends StatefulWidget {
 
 class _MainRobotState extends State<MainRobot> {
   int _selectedIndex = 0;
-  User _user = getUser();
-
+  late User _user;  // late keyword to delay initialization
   late List<Widget> _widgetOptions;
 
   @override
   void initState() {
     super.initState();
+    _user = getUser();
     _widgetOptions = <Widget>[
-      Home(robot: widget.robot),
+      Home(),
       UserProfile(user: _user),
     ];
   }

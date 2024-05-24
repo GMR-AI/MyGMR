@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'define_area.dart';
 import 'job_class.dart';
+import '../globals.dart';
 
 class VerticalSlider extends StatelessWidget {
   final double height;
@@ -87,10 +88,7 @@ class VerticalSlider extends StatelessWidget {
 }
 
 class ConfigureGrassHeightPage extends StatefulWidget {
-  final Job job; // Define a field to hold the Job instance
-
-  // Constructor to receive the Job instance
-  const ConfigureGrassHeightPage({Key? key, required this.job}) : super(key: key);
+  ConfigureGrassHeightPage();
 
   @override
   _ConfigureGrassHeightPageState createState() => _ConfigureGrassHeightPageState();
@@ -114,6 +112,19 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
 
   @override
   Widget build(BuildContext context) {
+    Job? job = globalJob;
+
+    if (job == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Step 1'),
+        ),
+        body: Center(
+          child: Text('No job available'),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Step 1'),
@@ -186,10 +197,10 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                widget.job.cuttingHeight = _heightValues[_grassHeightIndex];
+                job.cuttingHeight = _heightValues[_grassHeightIndex];
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => DefineAreaPage(job: widget.job)),
+                  MaterialPageRoute(builder: (context) => DefineAreaPage()),
                 );
               },
               child: Text('Next'),
