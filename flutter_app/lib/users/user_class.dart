@@ -3,12 +3,14 @@ class User {
   String? name;
   String? imagePath;
   String? mail;
+  final String? idToken;
 
   User({
     required this.id,
     this.name,
     this.imagePath,
     this.mail,
+    this.idToken,
   });
 }
 

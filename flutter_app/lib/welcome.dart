@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'sign_up.dart';
+import 'requests.dart';
 
 Color backgroundColor = Color(0xFFEFEFEF);
+
+
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key, required this.title});
@@ -13,6 +16,12 @@ class Welcome extends StatefulWidget {
 
 class _WelcomeScreen extends State<Welcome> {
   double _scrollPosition = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    checkAuthentication(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,22 +36,6 @@ class _WelcomeScreen extends State<Welcome> {
             _scrollPosition += details.primaryDelta!;
           });
           if (_scrollPosition < -20) {
-            // Check if user has an active session
-            final response = await checkSession();
-            if (response['status'] == 'active') {
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) => ListOfRobotsPage(robots: response['robots']),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    );
-                  },
-                ),
-              );
-            } else {
               Navigator.push(
                 context,
                 PageRouteBuilder(
@@ -56,7 +49,6 @@ class _WelcomeScreen extends State<Welcome> {
                 ),
               );
             }
-          }
         },
         child: Stack(
           children: [
@@ -146,28 +138,6 @@ class _WelcomeScreen extends State<Welcome> {
       ),
     );
 
-  }
-  Future<Map<String, dynamic>> checkSession() async {
-    // Replace with actual logic to get idToken if exists
-    String? idToken = 'YOUR_ID_TOKEN';
-
-    if (idToken != null) {
-      final response = await http.post(
-        Uri.parse('${dotenv.env['BACKEND_URL']}/check_session'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'idToken': idToken,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data;
-      }
-    }
-    return {'status': 'inactive'};
   }
 
 }
