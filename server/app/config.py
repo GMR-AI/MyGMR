@@ -8,3 +8,4 @@ class Config:
   SQLALCHEMY_TRACK_MODIFICATIONS = False
   # Configure session to use filesystem (server-side sessions)
   SESSION_TYPE = 'filesystem'
+  SESSION_PERMANENT=False

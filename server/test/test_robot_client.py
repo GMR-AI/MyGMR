@@ -36,7 +36,7 @@ def requesting():
 
 @sio.event
 def request_successful():
-    if robot_state == State.REQUESTING:
+    if robot_state is State.REQUESTING:
         print("Request was succesful!")
         robot_state = State.IDLE
 
@@ -64,16 +64,16 @@ if __name__ == '__main__':
 
     #Input
     # Listen for key presses in a separate thread
-    def check_key_presses():
-        while True:
-            if keyboard.is_pressed('enter'):  # You can specify a specific key if needed
-                go_online()
-                while keyboard.is_pressed('enter'):  # Wait until the key is released to avoid multiple calls
-                    pass
+    # def check_key_presses():
+    #     while True:
+    #         if keyboard.is_pressed('enter'):  # You can specify a specific key if needed
+    #             go_online()
+    #             while keyboard.is_pressed('enter'):  # Wait until the key is released to avoid multiple calls
+    #                 pass
 
-    import threading
-    key_listener_thread = threading.Thread(target=check_key_presses, daemon=True)
-    key_listener_thread.start()
+    # import threading
+    # key_listener_thread = threading.Thread(target=check_key_presses, daemon=True)
+    # key_listener_thread.start()
 
 
     sio.wait()

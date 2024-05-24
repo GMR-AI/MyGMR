@@ -21,8 +21,8 @@ def robot_request():
     if not req:
         return jsonify({"message": "Request not found"}), 404
     
-    #if not session['db_id']:
-    #    return jsonify({"message": "Session error restart the app"}), 500
+    if not session.get['db_id']:
+        return jsonify({"message": "Session error restart the app"}), 500
     
     db.add_new_robot(code, 21)#session['db_id'])
     socketio.emit('request_successful', to=req['sid'])
