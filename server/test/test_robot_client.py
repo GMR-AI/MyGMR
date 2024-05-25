@@ -43,7 +43,8 @@ def request_successful():
 # Logging
 @sio.event
 def error(data):
-    print("ERROR: {data[message]}")
+    mes=data['message']
+    print(f'ERROR: {mes}')
 
 @sio.event
 def message(data):
@@ -58,9 +59,9 @@ if __name__ == '__main__':
     with open("robot_data.json", 'r') as file:
         data = json.load(file)
     # gcloud test
-    # sio.connect(os.environ.get("SERVER_URL"))
+    sio.connect(os.environ.get("SERVER_URL"))
     #Local test
-    sio.connect('http://localhost:8080')
+    #sio.connect('http://localhost:8080')
 
     #Input
     # Listen for key presses in a separate thread
