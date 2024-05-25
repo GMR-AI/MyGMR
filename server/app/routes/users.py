@@ -1,9 +1,9 @@
 from app.routes import bp
 from app.services import cloud_sql as db
 from app.utils import rb
-
+from app.services.cloud_bucket import image_folder
 from flask import request, jsonify, session
-from flask_socketio import emit, join_room, leave_room
+import requests
 
 from firebase_admin import auth
 
@@ -23,8 +23,17 @@ def continue_with_google():
             # Get user data
             email = decoded_token.get('email')
             name = decoded_token.get('name')
-            # Create user
-            id = db.insert_user(name, email, uid)
+
+            image_path = f"gs://{image_folder.bucket_name}/default.png"
+            picture_url = decoded_token.get('picture')
+            if picture_url:
+                response = requests.get(picture_url)
+                if response.status_code == 200:
+                    filename = f"{uid}_pfp.png"
+                    image_folder.upload_file(response.content, filename)
+                    image_path = f"gs://{image_folder.bucket_name}/{filename}"
+
+            id = db.insert_user(name, email, uid, image_path)
 
         # Start session (store uid which will used to access user data)
         session['db_id'] = id
