@@ -37,6 +37,15 @@ def delete_user(uid):
     param_values = {'uid': uid}
     execute_query(query, response=False, param_values=param_values)
 
+def edit_user(name, mail, img_path, uid):
+    query = "UPDATE users SET name = :name, mail = :mail, img_path = :img_path WHERE id = :uid"
+    param_values = {
+        'name': name,
+        'mail': mail,
+        'img_path': img_path,
+        'uid': uid
+    }
+    execute_query(query, param_values=param_values)
 
 
 ## ROBOTS
@@ -56,4 +65,30 @@ def add_new_robot(code, usid):
     query = "INSERT INTO robots (id_connect, id_user) VALUES (:idc, :idu)"
     execute_query(query, response=False, param_values={'idc': code, 'idu': usid})
 
+def delete_robot(rid, uid):
+    query = "DELETE FROM robots WHERE id = :rid AND id_user = :uid"
+    execute_query(query, response=False, param_values={'rid': rid, 'uid': uid})
+
 ## JOBS
+
+def add_new_job(cutting_height, area, model, state, start_time, end_time, id_robot):
+    query = "INSERT INTO jobs (cutting_height, area, model, state, start_time, end_time, date, id_robot) VALUES (:cutting_height, :area, :model, :state, :start_time, :end_time, :date, :id_robot)"
+    rows = execute_query(query, response=False, param_values = {
+                                                            'cutting_height': cutting_height,
+                                                            'area': area,
+                                                            'model': model,
+                                                            'state': state,
+                                                            'start_time': start_time,
+                                                            'end_time': end_time,
+                                                            'id_robot': id_robot
+                                                        })
+    
+def delete_jobs(rid):
+    query = "DELETE FROM jobs WHERE id_robot = :rid"
+    execute_query(query, response=False, param_values={'rid': rid})
+
+def get_all_jobs(rid):
+    query = "SELECT * FROM jobs WHERE id_robot = :rid"
+    rows = execute_query(query, response=True, param_values={'rid': rid})
+    return [dict(row) for row in rows]
+
