@@ -11,12 +11,12 @@ class robot_queue:
             cls._instance = super(robot_queue, cls).__new__(cls, *args, **kwargs)
         return cls._instance
 
-    def add_to_queue(self, code, sid, expiration_minutes=5):
+    def add_to_queue(self, code, expiration_minutes=5):
         if code in self._queue.keys():
             return False
         
         expiration_time = datetime.now() + timedelta(minutes=expiration_minutes)
-        self._queue[code] = {'sid': sid, 'expires_at': expiration_time}
+        self._queue[code] = {'expires_at': expiration_time}
         return True
 
     def remove_from_queue(self, code):
@@ -28,10 +28,18 @@ class robot_queue:
     def get_queue(self):
         self._cleanup_expired()
         return self._queue
+    
+    def exists_in_queue(self, code):
+        self._cleanup_expired()
+        return code in self._queue.keys()
+
 
     def _cleanup_expired(self):
         current_time = datetime.now()
+        delete_keys=[]
         for c, item in self._queue.items():
             if item['expires_at'] < current_time:
-                del self._queue[c]
+                delete_keys.append(c)
+        for c in delete_keys:
+            del self._queue[c]
 

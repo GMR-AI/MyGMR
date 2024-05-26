@@ -1,28 +1,58 @@
 # Singelton class which handles active room robots
+from datetime import datetime, timedelta
 
 class robot_manager:
     _instance = None
     _queue = {}
+    _update_time=5
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
             cls._instance = super(robot_manager, cls).__new__(cls, *args, **kwargs)
         return cls._instance
 
-    def exists_in_queue(self, room, sid):
-        return room in self._queue or sid in self._queue.values()
-    
-    def add_to_queue(self,room, sid):
-        self._queue[room]=sid
-
+    def add_to_queue(self,code, expiration_minutes=_update_time):
+        self._cleanup_expired()
+        if code in self._queue.keys():
+            return False
+        
+        expiration_time = datetime.now() + timedelta(minutes=expiration_minutes)
+        self._queue[code]={'message': None, 'expires_at': expiration_time}
+        
+        return True
 
     def remove_from_queue(self, code):
         if code in self._queue:
-                del self._queue[code]
-                return True
+            print("Robot ", self._queue[code], " disconnected")
+            # TODO: Update state in the db if necessary
+            del self._queue[code]
+            return True
         return False
 
     def get_queue(self):
+        self._cleanup_expired()
         return self._queue
+    
+    def exists_in_queue(self, code):
+        self._cleanup_expired()
+        return code in self._queue.keys()
+
+    def ping(self, code): # Update, return message, reset message
+        if self.exists_in_queue(code):
+            self._queue[code]['expires_at'] = datetime.now() + timedelta(minutes=self._update_time)
+            ret = self._queue[code]['message'] 
+            self._queue[code]['message'] = None
+            return ret
+        
+        return None
+        
+    def _cleanup_expired(self):
+        current_time = datetime.now()
+        keys_to_delete=[]
+        for c, item in self._queue.items():
+            if item['expires_at'] < current_time:
+                keys_to_delete.append(c)
+        for c in keys_to_delete:
+            del self._queue[c]
 
 active_rm = robot_manager()

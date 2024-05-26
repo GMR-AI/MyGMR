@@ -1,13 +1,11 @@
 from app.routes import bp
 from app.services import cloud_sql as db
-from app.services import socketio
+from app.services.cloud_bucket import image_folder
 from app.utils import rb
 from app.utils.active_robots_manager import active_rm
-
 from flask import request, jsonify, session
-from flask_socketio import join_room, leave_room, emit
 
-
+## USER REQUESTS
 
 @bp.route('/robot_request', methods=['POST'])
 def robot_request():
@@ -26,85 +24,100 @@ def robot_request():
         return jsonify({"message": "Session error restart the app"}), 401
     
     db.add_new_robot(code, session['db_id'])
-    socketio.emit('request_successful', to=req['sid'])
 
     return jsonify({"message": "Robot added succesfully"}), 200
 
-@socketio.event
-def go_online(data):
-    code = data['code']
+
+
+
+## ROBOT REQUESTS
+
+@bp.route('/ping', methods=['POST'])
+def go_online():
+    data = request.json
+    code = data.get('code')
+
+    # Check if its an online robot check (most frequent case)
+    if active_rm.exists_in_queue(code):
+        # Health check (check inbox)
+        message = active_rm.ping(code)
+        message = message if message else "Pong"
+        
+        return jsonify({'message': f'{message}'}), 200   
+
+
     # Check robot on the database
     robot_data = db.get_robot_by_code(code)
+
     if not robot_data: # If it doesn't exists
         # Add the robot to the request queue
-        if rb.add_to_queue(code, request.sid):
-            socketio.emit('requesting')
+        if rb.add_to_queue(code):
+            return jsonify({"message": "Robot added to the queue"}), 201
         else:
-            socketio.emit('error', {'message': 'Robot already at queue'})
-        return
+            return jsonify({"message": "Robot was already queued"}), 201
+        
     
     # Check if theres missing data
     print(robot_data)
-    # If it was update the status    
-    if active_rm.exists_in_queue(code, request.sid):
-        socketio.emit('status', {'message': f'Code {code} or socket already in use'}, to=request.sid)
-        return
-    active_rm.add_to_queue(code,  request.sid)
-    join_room(code, sid=request.sid)
-    print(f'Robot {request.sid} joined the room {code}')
-    socketio.emit('status', {'message': f'Robot {code} has joined the room'}, room=code)
+  
+    # Robot goes online
+    # TODO: Add to de db so the user can know when
+    active_rm.add_to_queue(code)
+    return jsonify({'message': f'Robot {code} has joined the room'}), 200
 
-    #join_room(code)
-    #emit('status', {'message': f'Robot {code} has joined the room'}, room=code)
 
-@socketio.on('leave')
-def on_leave(data):
-    code = data['code']
-    leave_room(code)
-    emit('status', {'message': f'Robot {code} has left the room'}, room=code)
 
-@socketio.event
-def ping():
-    emit('status', {'message': "pong"})
 
-@socketio.event
-def connect():
-    print("Robot ", request.sid, " connected")
+@bp.route('/check_request', methods=['POST'])
+def check_request():
+    data = request.json
+    code = data.get('code')
+    if rb.exists_in_queue(code):
+        return 304
+    else:
+        return 200
 
-@socketio.event
-def disconnect():
-    rooms_to_remove=[]
-    for r, s in active_rm.get_queue().items():
-        if s == request.sid:
-            print("Client: ", request.sid, "leaving room ", r)
-            rooms_to_remove.append(r)
-            leave_room(r)
-    # This is to avoid active_rms queue to change size during iteration
-    for r in rooms_to_remove:
-        active_rm.remove_from_queue(r)
-    print("Robot ", request.sid, " disconnected")
+@bp.route('/active_job', methods=['POST'])
+def active_job():
+    return jsonify({'active_job': "Upload teapot.obj"}), 200
 
+@bp.route('/upload_file', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    
+    if file:
+        try:
+            # Upload file to GCS
+            image_folder.upload_file(file, file.filename, file.content_type)
+            return jsonify({"message": "File uploaded successfully"}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
 ############## Debugging functions (comment this functions before deploying) ##############
 
-# @bp.route('/view_requests')
-# def view_requests():
-#     return jsonify({'success': True, 'requests': f'{rb.get_queue()}'})
+@bp.route('/view_requests')
+def view_requests():
+    return jsonify({'success': True, 'requests': f'{rb.get_queue()}'})
 
-# @bp.route('/view_online')
-# def view_oneline():
-#     return jsonify({'success': True, 'online_robots': f'{active_rm.get_queue()}'})
+@bp.route('/view_online')
+def view_oneline():
+    return jsonify({'success': True, 'online_robots': f'{active_rm.get_queue()}'})
 
-# @bp.route('/emit_message')
-# def emit_message():
-#     code = request.args.get('code')
-#     message = request.args.get('message')
+@bp.route('/emit_message')
+def emit_message():
+    code = request.args.get('code')
+    message = request.args.get('message')
 
-#     if code is None or message is None:
-#         return jsonify({'error': 'Both code and message parameters are required.'}), 400
-#     code = int(code)
-#     if code in active_rm.get_queue():
-#         socketio.emit('message', message, room=code)
-#         return jsonify({'success': True, 'message': f'Message sent to room {code}.'})
+    if code is None or message is None:
+        return jsonify({'error': 'Both code and message parameters are required.'}), 400
+    code = int(code)
+    if code in active_rm.get_queue():
+        active_rm.exists_in_queue(code)
+        return jsonify({'success': True, 'message': f'Message sent to room {code}.'})
 
-#     return jsonify({'error': f'Room with code {code} does not exist.'}), 404
+    return jsonify({'error': f'Room with code {code} does not exist.'}), 404

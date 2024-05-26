@@ -6,9 +6,6 @@ firebase-admin==6.5.0
 flask-session==0.8.0 
 cloud-sql-python-connector==1.9.2
 gunicorn==22.0.0
-flask-socketio==5.3.6
-websocket-client==1.8.0 
-Flask-Cors==4.0.1 
 
 google-api-core==2.19.0 
 google-api-python-client==2.129.0 

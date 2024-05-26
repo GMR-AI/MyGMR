@@ -7,9 +7,9 @@ class CloudBucket:
         self.storage_client = storage.Client.from_service_account_json(credentials_path)
         self.bucket = self.storage_client.bucket(bucket_name)
 
-    def upload_file(self, local_file_path, remote_file_name):
+    def upload_file(self, local_file_path, remote_file_name, content_type):
         blob = self.bucket.blob(remote_file_name)
-        blob.upload_from_filename(local_file_path)
+        blob.upload_from_file(local_file_path, content_type=content_type)
 
     def download_file(self, remote_file_name, local_file_path):
         blob = self.bucket.blob(remote_file_name)
