@@ -3,6 +3,7 @@ import 'package:my_gmr/main_robot.dart';
 import '../main_robot.dart';
 import 'robot_class.dart';
 import 'add_robot.dart';
+import 'no_robots.dart';
 
 Color backgroundColor = Color(0xFFEFEFEF);
 
@@ -14,15 +15,26 @@ class ListOfRobots extends StatefulWidget {
 }
 
 class _ListOfRobotsScreen extends State<ListOfRobots> {
-  List<Robot> _robots = [
-    Robot(id: 0, name: 'Robot 1', img: 'assets/robot_design.png'),
-    Robot(id: 1, name: 'Robot 2', img: 'assets/robot_design.png'),
-  ];
+  //List<Robot> _robots = [
+  //  Robot(id: 0, name: 'Robot 1', img: 'assets/robot_design.png'),
+  //  Robot(id: 1, name: 'Robot 2', img: 'assets/robot_design.png'),
+  //];
 
   bool _showConfirmationDialog = false;
 
   @override
   Widget build(BuildContext context) {
+    List<Robot> _robots = robot_list;
+
+    // Check if the list is empty and navigate to no_robots.dart if true
+    if (_robots.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => NoRobots()), // Assuming NoRobotsPage is defined in no_robots.dart
+        );
+      });
+    }
     List<Widget> robotWidgets = List.generate(_robots.length, (index) {
       return Container(
         margin: EdgeInsets.symmetric(vertical: 8.0),

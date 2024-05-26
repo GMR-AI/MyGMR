@@ -1,4 +1,5 @@
 from app.routes import bp
+import app.routes.robots as robot
 from app.services import cloud_sql as db
 from app.utils import rb
 from app.services.cloud_bucket import image_folder
@@ -41,7 +42,7 @@ def continue_with_google():
         # Get robots
         robots = db.get_user_robots(id)
         # Return Robots
-        return jsonify({'message': 'User authenticated', 'uid': uid, 'robots': robots}), 200
+        return robot.get_robots(), 200
 
     except ValueError as e:
         # Token is invalid

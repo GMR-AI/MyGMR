@@ -1,6 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:my_gmr/robots/robot_class.dart';
 import 'robots/no_robots.dart';
 import 'robots/list_of_robots.dart';
 import 'dart:convert';
@@ -34,19 +35,13 @@ Future<void> authenticate(context, idToken) async {
 
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
-    final List<dynamic> robots = data['robots'];
+    // TODO: Preprocess data
+    robot_list = data;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ListOfRobots()),
+    );
 
-    if (robots.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ListOfRobots()),
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => NoRobots()),
-      );
-    }
   } else {
     print('Failed to authenticate with Flask backend');
     await storage.delete(key: 'userToken');

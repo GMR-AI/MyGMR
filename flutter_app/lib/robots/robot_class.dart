@@ -5,6 +5,8 @@ class Robot {
   final String? img;
   int? id_active_job;
   int? id_user;
+  int? id_model;
+  int? status;
 
   Robot({
     required this.id,
@@ -13,5 +15,9 @@ class Robot {
     this.img,
     this.id_active_job,
     this.id_user,
+    this.id_model,
+    this.status
   });
 }
+
+List<Robot> robot_list = [];

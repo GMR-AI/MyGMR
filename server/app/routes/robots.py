@@ -10,7 +10,7 @@ from flask import request, jsonify, session
 @bp.route('/robot_request', methods=['POST'])
 def robot_request():
     data = request.json
-    code = data.get('code')
+    code = int(data.get('code'))
 
     #code = request.args.get('code')
 
@@ -53,7 +53,7 @@ def get_robots():
 @bp.route('/ping', methods=['POST'])
 def go_online():
     data = request.json
-    code = data.get('code')
+    code = int(data.get('code'))
 
     # Check if its an online robot check (most frequent case)
     if active_rm.exists_in_queue(code):
@@ -82,8 +82,8 @@ def go_online():
 @bp.route('/new_request', methods=['POST'])
 def new_request():
         data = request.json
-        code = data.get('code')
-        model = data.get('model')
+        code = int(data.get('code'))
+        model = int(data.get('model'))
         # Add the robot to the request queue
         if rb.add_to_queue(code, model):
             return jsonify({"message": "Robot added to the queue"}), 201
@@ -93,7 +93,7 @@ def new_request():
 @bp.route('/check_request', methods=['POST'])
 def check_request():
     data = request.json
-    code = data.get('code')
+    code = int(data.get('code'))
     if rb.exists_in_queue(code):
         return 304
     else:
@@ -132,7 +132,7 @@ def view_oneline():
 
 @bp.route('/emit_message')
 def emit_message():
-    code = request.args.get('code')
+    code = int(request.args.get('code'))
     message = request.args.get('message')
 
     if code is None or message is None:
