@@ -22,29 +22,33 @@ class RobotClient:
     def __init__(self, server_url, data, debug=False):
         self.server_url = server_url
         self.code = data['matricula']
+        self.model = data['model']
         self.active_job = None
         self.robot_state = State.IDLE
         self.connection = CON_STATUS.OFFLINE
         self.debug = debug
-
-    def ping(self):
-        try:
-            response = requests.post(f"{self.server_url}/ping", json={'code': self.code})
+    
+    def log_message(self, response):
             # Check for any logs
             data = response.json()
             log = data.get("message")
 
             if log: 
                 print("Server says: ", log)
-            if response.status_code == 200:
 
+    def ping(self):
+        try:
+            response = requests.post(f"{self.server_url}/ping", json={'code': self.code})
+            self.log_message(response)
+            if response.status_code == 200:
                 if self.connection == CON_STATUS.OFFLINE:
                     print("Robot is online.")
                     self.connection = CON_STATUS.ONLINE
                                 
             elif response.status_code == 201:
-                print("Requesting...")
-                self.robot_state = State.REQUESTING
+                if self.robot_state != State.REQUESTING:
+                    print("Requesting...")
+                    self.send_request()
             else:
                 print("Failed to go online:", response.status_code)
                 self.connection = CON_STATUS.OFFLINE
@@ -68,6 +72,16 @@ class RobotClient:
             print("Error:", e)
         return None
     
+    def send_request(self):
+        try:
+            response = requests.post(f"{self.server_url}/check_request", json={'code': self.code, 'model': self.model})
+            if response.status_code == 200:
+                # If everything is correct return to default state
+                self.robot_state = State.REQUESTING
+                self.log_message(response)
+        except requests.RequestException as e:
+            print("Error:", e)
+
     def check_request(self):
         try:
             response = requests.post(f"{self.server_url}/check_request", json={'code': self.code})

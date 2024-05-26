@@ -37,7 +37,13 @@ def delete_user(uid):
     param_values = {'uid': uid}
     execute_query(query, response=False, param_values=param_values)
 
+## MODELS
 
+def get_model_by_id(id):
+    query = "SELECT * FROM models WHERE id = :c"
+    rows = execute_query(query, response=True, param_values={'c': id})
+    robs = [dict(row) for row in rows]
+    return robs[0] if robs else None
 
 ## ROBOTS
 
@@ -52,8 +58,8 @@ def get_robot_by_code(code):
     robs = [dict(row) for row in rows]
     return robs[0] if robs else None
 
-def add_new_robot(code, usid):
-    query = "INSERT INTO robots (id_connect, id_user) VALUES (:idc, :idu)"
-    execute_query(query, response=False, param_values={'idc': code, 'idu': usid})
+def add_new_robot(code, name, img, usid, mid):
+    query = "INSERT INTO robots (id_connect, name, img, id_user, id_model) VALUES (:idc, :n, :im, :idu, :idm)"
+    execute_query(query, response=False, param_values={'idc': code, 'n':name, 'im': img, 'idu': usid, 'idm': mid})
 
 ## JOBS

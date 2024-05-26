@@ -23,11 +23,29 @@ def robot_request():
     if not session.get('db_id'):
         return jsonify({"message": "Session error restart the app"}), 401
     
-    db.add_new_robot(code, session['db_id'])
+    # Check model and get default name and image
+    mod = db.get_model_by_id(req['model'])
+    if not mod:
+        return jsonify({"message": "Robot model not found, contact our team"}), 404
+    
+    db.add_new_robot(code, mod['name'], mod['image_path'], session['db_id'], req['model'])
 
-    return jsonify({"message": "Robot added succesfully"}), 200
+    # Once added, get robots
+    return get_robots()
 
+@bp.route('/get_robots', methods=['POST'])
+def get_robots():
+    if not session.get('db_id'):
+        return jsonify({"message": "Session error restart the app"}), 401
+    
+    robots = db.get_user_robots(session.get('db_id'))
+    if not robots:
+        return jsonify({"message": "No robots found"}), 404
+    
+    for robot in robots:
+        robot['status'] = active_rm.exists_in_queue(robot['id_connect'])
 
+    return jsonify(robots), 200
 
 
 ## ROBOT REQUESTS
@@ -50,11 +68,7 @@ def go_online():
     robot_data = db.get_robot_by_code(code)
 
     if not robot_data: # If it doesn't exists
-        # Add the robot to the request queue
-        if rb.add_to_queue(code):
-            return jsonify({"message": "Robot added to the queue"}), 201
-        else:
-            return jsonify({"message": "Robot was already queued"}), 201
+        return jsonify({"message": "Robot does not exists, make a request"}), 201
         
     
     # Check if theres missing data
@@ -65,8 +79,16 @@ def go_online():
     active_rm.add_to_queue(code)
     return jsonify({'message': f'Robot {code} has joined the room'}), 200
 
-
-
+@bp.route('/new_request', methods=['POST'])
+def new_request():
+        data = request.json
+        code = data.get('code')
+        model = data.get('model')
+        # Add the robot to the request queue
+        if rb.add_to_queue(code, model):
+            return jsonify({"message": "Robot added to the queue"}), 201
+        else:
+            return jsonify({"message": "Robot was already queued"}), 201
 
 @bp.route('/check_request', methods=['POST'])
 def check_request():
