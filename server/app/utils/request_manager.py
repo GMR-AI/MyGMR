@@ -11,12 +11,12 @@ class robot_queue:
             cls._instance = super(robot_queue, cls).__new__(cls, *args, **kwargs)
         return cls._instance
 
-    def add_to_queue(self, code, expiration_minutes=5):
+    def add_to_queue(self, code, model, expiration_minutes=5):
         if code in self._queue.keys():
             return False
         
         expiration_time = datetime.now() + timedelta(minutes=expiration_minutes)
-        self._queue[code] = {'expires_at': expiration_time}
+        self._queue[code] = {'expires_at': expiration_time, 'model': model}
         return True
 
     def remove_from_queue(self, code):
