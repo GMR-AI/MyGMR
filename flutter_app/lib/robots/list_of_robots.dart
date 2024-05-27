@@ -72,10 +72,11 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
                 margin: EdgeInsets.symmetric(vertical: 8.0),
                 child: ElevatedButton(
                   onPressed: () {
+                    globalRobot=_robots[index];
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MainRobot(robot: _robots[index]),
+                        builder: (context) => MainRobot(),
                       ),
                     );
                   },
