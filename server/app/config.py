@@ -9,3 +9,4 @@ class Config:
   # Configure session to use filesystem (server-side sessions)
   SESSION_TYPE = 'filesystem'
   SESSION_PERMANENT=False
+  SECRET_KEY = os.environ.get("FLASK_SECRET_KEY")

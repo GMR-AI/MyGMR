@@ -1,13 +1,18 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:my_gmr/robots/robot_class.dart';
-import 'robots/no_robots.dart';
+import 'globals.dart';
 import 'robots/list_of_robots.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import 'globals.dart' as globals;
+
+void setSessionID(String? sessionID) {
+  globals.sessionID = sessionID;
+}
 
 // Create storage
 final storage = new FlutterSecureStorage();
@@ -34,9 +39,8 @@ Future<void> authenticate(context, idToken) async {
   );
 
   if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    // TODO: Preprocess data
-    robot_list = data;
+    // Assume `response` is the response object received from the server
+    setSessionID(response.headers['set-cookie']);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ListOfRobots()),

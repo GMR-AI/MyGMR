@@ -3,7 +3,7 @@ from app.services import cloud_sql as db
 from app.services.cloud_bucket import image_folder
 from app.utils import rb
 from app.utils.active_robots_manager import active_rm
-from flask import request, jsonify, session
+from flask import request, jsonify, session, make_response
 
 ## USER REQUESTS
 
@@ -28,10 +28,13 @@ def robot_request():
     if not mod:
         return jsonify({"message": "Robot model not found, contact our team"}), 404
     
-    db.add_new_robot(code, mod['name'], mod['image_path'], session['db_id'], req['model'])
+    robot = db.add_new_robot(code, mod['name'], mod['image_path'], session['db_id'], req['model'])
+
+    if not robot:
+        return jsonify({"message":"An error occurred adding robot, try again later"}), 500
 
     # Once added, get robots
-    return get_robots()
+    return jsonify({}), 200
 
 @bp.route('/get_robots', methods=['POST'])
 def get_robots():
@@ -42,6 +45,7 @@ def get_robots():
     if not robots:
         return jsonify({"message": "No robots found"}), 404
     
+    # Update their
     for robot in robots:
         robot['status'] = active_rm.exists_in_queue(robot['id_connect'])
 
@@ -75,7 +79,6 @@ def go_online():
     print(robot_data)
   
     # Robot goes online
-    # TODO: Add to de db so the user can know when
     active_rm.add_to_queue(code)
     return jsonify({'message': f'Robot {code} has joined the room'}), 200
 

@@ -21,7 +21,7 @@ class robot_queue:
 
     def remove_from_queue(self, code):
         for c in self._queue.keys():
-            if f'{c}' == code:
+            if c == code:
                 return self._queue.pop(c)
         return None
 

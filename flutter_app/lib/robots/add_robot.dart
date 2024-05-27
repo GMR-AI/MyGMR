@@ -16,7 +16,7 @@ class _AddRobotScreen extends State<AddRobot> {
   final TextEditingController _controller = TextEditingController();
   String? _errorText;
   bool _showSaveButton = true;
-  dynamic _data;
+  bool _success=false;
 
   @override
   Widget build(BuildContext context) {
@@ -88,25 +88,19 @@ class _AddRobotScreen extends State<AddRobot> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      _data is String ? _data : 'Robot saved successfully!',
-                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                      _success ? 'Robot saved successfully!' : 'There was an error adding you robot!',
+                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: _success ? Colors.green : Colors.red),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 20.0),
                     ElevatedButton(
                       onPressed: () {
-                        // Lógica para conectar con el robot
-                        if (_data is! String){
-                          // TODO: Preprocess data
-                          robot_list.add(Robot(_data))
-                        }
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => ListOfRobots()),
                         );
                       },
-                      child: Text(_data is String ? 'Connect with my robot' : 'Go Back'),
+                      child: Text(_success ? 'Connect with my robot' : 'Go Back'),
                     ),
                   ],
                 ),
@@ -114,12 +108,13 @@ class _AddRobotScreen extends State<AddRobot> {
             ),
             if (_showSaveButton)
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   final String? value = _controller.text.trim();
                   if (value != null && value.isNotEmpty) {
                     if (value.length == 8 && int.tryParse(value) != null) {
+                      bool success = await push_robot(value);
                       setState(() {
-                        _data = push_and_get_robots(context, value);
+                        _success = success;
                         _errorText = null;
                         _showSaveButton = false; // Ocultar el botón "Save"
                       });

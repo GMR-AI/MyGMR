@@ -22,7 +22,7 @@ class RobotClient:
     def __init__(self, server_url, data, debug=False):
         self.server_url = server_url
         self.code = data['matricula']
-        self.model = data['model']
+        self.model = data['model_id']
         self.active_job = None
         self.robot_state = State.IDLE
         self.connection = CON_STATUS.OFFLINE
@@ -39,8 +39,8 @@ class RobotClient:
     def ping(self):
         try:
             response = requests.post(f"{self.server_url}/ping", json={'code': self.code})
-            self.log_message(response)
             if response.status_code == 200:
+                self.log_message(response)
                 if self.connection == CON_STATUS.OFFLINE:
                     print("Robot is online.")
                     self.connection = CON_STATUS.ONLINE
@@ -74,8 +74,8 @@ class RobotClient:
     
     def send_request(self):
         try:
-            response = requests.post(f"{self.server_url}/check_request", json={'code': self.code, 'model': self.model})
-            if response.status_code == 200:
+            response = requests.post(f"{self.server_url}/new_request", json={'code': self.code, 'model': self.model})
+            if response.status_code == 201:
                 # If everything is correct return to default state
                 self.robot_state = State.REQUESTING
                 self.log_message(response)
@@ -139,8 +139,8 @@ if __name__ == "__main__":
     with open("robot_data.json", 'r') as file:
         data = json.load(file)
     # gcloud test
-    #server_url = os.environ.get("SERVER_URL")
+    server_url = os.environ.get("SERVER_URL")
     # local test
-    server_url = "http://localhost:8080"
+    #server_url = "http://localhost:8080"
     client = RobotClient(server_url, data, args.debug)
     client.run()

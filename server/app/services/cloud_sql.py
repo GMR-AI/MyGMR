@@ -25,9 +25,9 @@ def get_user_id(uid):
     ids = [dict(row.items()) for row in rows]
     return ids[0]['id'] if ids else None
 
-def insert_user(name, email, uid):
-    query = "INSERT INTO users (name, mail, uid) VALUES (:name, :email, :uid) RETURNING id"
-    param_values = {'name': name, 'email': email, 'uid': uid}
+def insert_user(name, email, uid, path_image):
+    query = "INSERT INTO users (name, mail, uid, path_image) VALUES (:name, :email, :uid, :pi) RETURNING id"
+    param_values = {'name': name, 'email': email, 'uid': uid, 'pi': path_image}
     rows = execute_query(query, response=True, param_values=param_values)
     ids = [dict(row) for row in rows]
     return ids[0]['id'] if ids else None

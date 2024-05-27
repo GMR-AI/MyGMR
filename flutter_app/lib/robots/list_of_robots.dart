@@ -4,6 +4,7 @@ import '../main_robot.dart';
 import 'robot_class.dart';
 import 'add_robot.dart';
 import 'no_robots.dart';
+import '../robots_requests.dart';
 
 Color backgroundColor = Color(0xFFEFEFEF);
 
@@ -19,68 +20,106 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
   //  Robot(id: 0, name: 'Robot 1', img: 'assets/robot_design.png'),
   //  Robot(id: 1, name: 'Robot 2', img: 'assets/robot_design.png'),
   //];
-
+  List<Robot> _robots=[];
+  bool _isLoading = true;
   bool _showConfirmationDialog = false;
 
   @override
-  Widget build(BuildContext context) {
-    List<Robot> _robots = robot_list;
+  void initState() {
+  super.initState();
+  _fetchRobots();
+  }
 
-    // Check if the list is empty and navigate to no_robots.dart if true
+  Future<void> _fetchRobots() async {
+    List<Robot>? robots = await get_robots();
+
+    setState(() {
+    _robots = robots!=null ? robots : [];
+    _isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('My Robots'),
+        ),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     if (_robots.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => NoRobots()), // Assuming NoRobotsPage is defined in no_robots.dart
+          MaterialPageRoute(builder: (context) => NoRobots()),
         );
       });
     }
     List<Widget> robotWidgets = List.generate(_robots.length, (index) {
-      return Container(
-        margin: EdgeInsets.symmetric(vertical: 8.0),
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MainRobot(robot: _robots[index]),
-              ),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-
-                Image.asset(
-                  _robots[index].img ?? 'assets/robot_design.png',
-                  height: 50.0,
-                  width: 50.0,
-                ),
-                SizedBox(width: 20.0),
-                Expanded(
-                  child: Text(
-                    _robots[index].name ?? 'No name',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.normal,
+      return FutureBuilder<String>(
+          future: fetchRobotImage(_robots[index].img ?? ''),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return Container(
+                margin: EdgeInsets.symmetric(vertical: 8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MainRobot(robot: _robots[index]),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Image.network(
+                          snapshot.data!,
+                          height: 50.0,
+                          width: 50.0,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Image.asset(
+                                'assets/robot_design.png',
+                                height: 50.0,
+                                width: 50.0,
+                              ),
+                        ),
+                        SizedBox(width: 20.0),
+                        Expanded(
+                          child: Text(
+                            _robots[index].name ?? 'No name',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 20.0),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            setState(() {
+                              _showConfirmationDialog = true;
+                            });
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(width: 20.0),
-                IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
-                    setState(() {
-                      _showConfirmationDialog = true;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+              );
+            }
+          });
     });
 
     robotWidgets.add(
