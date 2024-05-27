@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_gmr/main_robot.dart';
+import '../globals.dart';
 import '../main_robot.dart';
 import 'robot_class.dart';
 import 'add_robot.dart';

@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:my_gmr/job/actual.dart';
 import 'robot_class.dart';
 import '../job/configure_grass_height.dart';
 import '../job/job_class.dart';
 import 'weather.dart';
+import '../globals.dart'; // Import globals.dart to access globalRobot
 
 class Home extends StatelessWidget {
-  final Robot robot;
-
-  Home({required this.robot});
+  Home();
 
   @override
   Widget build(BuildContext context) {
+    Robot? robot = globalRobot; // Get the robot from the global variable
+
+    if (robot == null) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
+          title: Text('Home'),
+        ),
+        body: Center(
+          child: Text('No robot available'),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -40,15 +54,15 @@ class Home extends StatelessWidget {
             ],
           ),
           DefaultTabController(
-            length: 3, // número de pestañas actualizado a 3
+            length: 3,
             child: Expanded(
               child: Column(
                 children: [
                   TabBar(
                     tabs: [
-                      Tab(text: 'Weather'), // Nueva pestaña "Weather"
-                      Tab(text: 'Jobs'), // Pestaña "Jobs"
-                      Tab(text: 'Settings'), // Pestaña "Settings"
+                      Tab(text: 'Weather'),
+                      Tab(text: 'Jobs'),
+                      Tab(text: 'Settings'),
                     ],
                     labelColor: Theme.of(context).primaryColor,
                     unselectedLabelColor: Colors.grey,
@@ -67,13 +81,13 @@ class Home extends StatelessWidget {
                                 height: 50.0,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    Job newJob = Job(
-                                      date: DateTime.now(),
+                                    globalJob = Job(
+                                      startDate: DateTime.now(),
                                     );
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ConfigureGrassHeightPage(job: newJob),
+                                        builder: (context) => ConfigureGrassHeightPage(),
                                       ),
                                     );
                                   },
@@ -96,7 +110,12 @@ class Home extends StatelessWidget {
                                 height: 50.0,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    // Acción para ver el trabajo actual
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ActualJobPage(),
+                                      ),
+                                    );
                                   },
                                   child: Text(
                                     'Actual',

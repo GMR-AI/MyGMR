@@ -1,5 +1,6 @@
 class Job {
-  DateTime date;
+  DateTime startDate;
+  DateTime? endDate;
   double? cuttingHeight;
   double? area;
   double? temperature;
@@ -8,7 +9,8 @@ class Job {
   String? model3D;
 
   Job({
-    required this.date,
+    required this.startDate,
+    this.endDate,
     this.cuttingHeight,
     this.area,
     this.temperature,

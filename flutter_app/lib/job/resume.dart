@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
 import 'job_class.dart';
+import 'actual.dart';
+import '../globals.dart';
 
 class ResumePage extends StatelessWidget {
-  final Job job; // Declara una propiedad para almacenar la instancia de Job
-
-  // Constructor que acepta una instancia de Job
-  const ResumePage({Key? key, required this.job}) : super(key: key);
+  ResumePage();
 
   @override
   Widget build(BuildContext context) {
+    Job? job = globalJob; // Obtener la instancia de Job global
+
+    if (job == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Resume'),
+        ),
+        body: Center(
+          child: Text('No job available'),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Resume'),
@@ -33,7 +45,7 @@ class ResumePage extends StatelessWidget {
                     style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10.0),
-                  Text('Date: ${job.date}'),
+                  Text('Date: ${job.startDate}'),
                   Text('Cutting Height: ${job.cuttingHeight}'),
                   Text('Area: ${job.area}'),
                 ],
@@ -58,10 +70,15 @@ class ResumePage extends StatelessWidget {
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                // Aquí podrías iniciar el trabajo o realizar alguna acción relacionada
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ActualJobPage(),
+                  ),
+                );
               },
               child: Text('Start job'),
-            ),
+            )
           ],
         ),
       ),

@@ -18,8 +18,8 @@ void main() async {
 ThemeData myTheme = ThemeData(
   primaryColor: Colors.green,
   textTheme: TextTheme(
-    bodyText1: TextStyle(fontSize: 16.0, color: Colors.black),
-    headline1: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+    //bodyText1: TextStyle(fontSize: 16.0, color: Colors.black),
+    //headline1: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
   ),
   colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
   useMaterial3: true,
@@ -36,18 +36,7 @@ class MyApp extends StatelessWidget {
       theme: myTheme,
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                const SliverAppBar(
-                  title: Text('MyGMR'),
-                  floating: true,
-                  snap: true,
-                ),
-              ];
-            },
-            body: const Welcome(title: 'MyGMR'), // Contenido de tu aplicación
-        ),
+            body: const Welcome(title: 'MyGMR'),
       ),
     );
   }
