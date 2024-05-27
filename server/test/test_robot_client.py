@@ -112,7 +112,7 @@ class RobotClient:
         while True:
             time.sleep(3)
             self.ping()
-
+            print("State: ", self.robot_state)
             # No online, no new activities
             if self.connection == CON_STATUS.OFFLINE:
                 continue

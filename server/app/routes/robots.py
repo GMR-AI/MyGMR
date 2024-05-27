@@ -28,10 +28,7 @@ def robot_request():
     if not mod:
         return jsonify({"message": "Robot model not found, contact our team"}), 404
     
-    robot = db.add_new_robot(code, mod['name'], mod['image_path'], session['db_id'], req['model'])
-
-    if not robot:
-        return jsonify({"message":"An error occurred adding robot, try again later"}), 500
+    db.add_new_robot(code, mod['name'], mod['image_path'], session['db_id'], req['model'])
 
     # Once added, get robots
     return jsonify({}), 200
@@ -98,9 +95,9 @@ def check_request():
     data = request.json
     code = int(data.get('code'))
     if rb.exists_in_queue(code):
-        return 304
+        return jsonify({}), 304
     else:
-        return 200
+        return jsonify({}), 200
 
 @bp.route('/active_job', methods=['POST'])
 def active_job():
