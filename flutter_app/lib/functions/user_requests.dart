@@ -1,14 +1,13 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'globals.dart';
-import 'robots/list_of_robots.dart';
+import '../robots/list_of_robots.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import 'globals.dart' as globals;
+import '../globals.dart' as globals;
 
 void setSessionID(String? sessionID) {
   globals.sessionID = sessionID;

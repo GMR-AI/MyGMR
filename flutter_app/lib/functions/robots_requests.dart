@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:my_gmr/robots/robot_class.dart';
-import 'globals.dart' as globals;
+import '../globals.dart' as globals;
 
 Future<bool> push_robot(code) async {
   final response = await http.post(
@@ -36,7 +36,12 @@ Future<List<Robot>?> get_robots() async {
     final data = jsonDecode(response.body) as List;
     print(response.body);
     // Generate list of robots here
-    return data.map((robotData) => Robot.fromJson(robotData)).toList();
+    List<Robot> robots = [];
+    for (var robotData in data) {
+      String imageUrl = await fetchRobotImage(robotData['img']);
+      robots.add(Robot.fromJson(robotData, imageUrl));
+    }
+    return robots;
   } else {
     print('Failed to get robots');
     return [];
@@ -54,11 +59,18 @@ Future<String> fetchRobotImage(String imageName) async {
       'image_name': imageName,
     }),
   );
-
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    return data['image_url'];
-  } else {
+  final url = jsonDecode(response.body)['image_url'];
+  print(url);
+  final real_response = await http.get(Uri.parse('${url}'));
+  print(real_response.body);
+  if (real_response.statusCode != 200) {
     throw Exception('Failed to load robot image URL');
   }
+  String real_url = real_response.headers['location'] ?? '';
+
+  if (real_url.isEmpty) {
+    throw Exception('Real URL not found in response headers');
+  }
+
+  return real_url;
 }

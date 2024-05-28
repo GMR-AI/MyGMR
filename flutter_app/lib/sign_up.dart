@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:my_gmr/requests.dart';
+import 'package:my_gmr/functions/user_requests.dart';
 import 'robots/no_robots.dart';
 
 

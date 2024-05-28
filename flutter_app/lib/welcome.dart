@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'sign_up.dart';
-import 'requests.dart';
+import 'functions/user_requests.dart';
 
 Color backgroundColor = Color(0xFFEFEFEF);
 

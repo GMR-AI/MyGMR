@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_gmr/robots/robot_class.dart';
 import '../robots/list_of_robots.dart';
-import '../robots_requests.dart';
+import '../functions/robots_requests.dart';
 
 Color backgroundColor = Color(0xFFEFEFEF);
 
