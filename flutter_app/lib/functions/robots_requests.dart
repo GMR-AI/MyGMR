@@ -40,6 +40,7 @@ Future<List<Robot>?> get_robots() async {
     for (var robotData in data) {
       String imageUrl = await fetchRobotImage(robotData['img']);
       robots.add(Robot.fromJson(robotData, imageUrl));
+      print(imageUrl);
     }
     return robots;
   } else {
@@ -59,18 +60,11 @@ Future<String> fetchRobotImage(String imageName) async {
       'image_name': imageName,
     }),
   );
-  final url = jsonDecode(response.body)['image_url'];
-  print(url);
-  final real_response = await http.get(Uri.parse('${url}'));
-  print(real_response.body);
-  if (real_response.statusCode != 200) {
-    throw Exception('Failed to load robot image URL');
-  }
-  String real_url = real_response.headers['location'] ?? '';
 
-  if (real_url.isEmpty) {
+  final url = jsonDecode(response.body)['image_url'];
+  if (url.isEmpty) {
     throw Exception('Real URL not found in response headers');
   }
-
-  return real_url;
+  return url;
 }
+

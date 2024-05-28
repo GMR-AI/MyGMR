@@ -10,6 +10,7 @@ class CloudBucket:
     def upload_file(self, local_file_path, remote_file_name, content_type):
         blob = self.bucket.blob(remote_file_name)
         blob.upload_from_file(local_file_path, content_type=content_type)
+        blob.make_public()
 
     def download_file(self, remote_file_name, local_file_path):
         blob = self.bucket.blob(remote_file_name)

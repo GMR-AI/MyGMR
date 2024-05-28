@@ -78,7 +78,7 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
             child: Row(
               children: [
                 CachedNetworkImage(
-                  imageUrl: 'https://fffe6984a14061ec4e177cafe7d290a3e2fdf769767edad2b3fe52b-apidata.googleusercontent.com/download/storage/v1/b/gmr-ai-user-images/o/test.jpg?jk=ASOpP9jzKPzM6XbB5vWuCLraPSQhD-vayRuEW4ZnLWKebC5YNEwDtm6HCapMQ8E3fH8vYxkKTOElvZNf_D2PQHzcKemThxbKlZ5NjiN-_53CAgxZgmcMQ3KhI2W5GOOY2RNJoHV1XHgr3mji3GEeETEpEg-Z-aPagEl-ua3XJKmpnDkyF44H0uiRATd08KrcuYUpJfsbp2WvhXaaend56PEliUMLhuPc6jub8doz2o08NyE2UXw2CfJ19tjOyKQuZpLp-DcrcSvy1uo8PVsUebVQMW6lfHBKy1dWk16reKIdNU6JtO_BZQ8hDu2UD6SHMxwE3PyQRrQIn23a030uCMWWLTewAjBrxypKx-U1k_pwAa8bWk-Jgnz94m-ZGMoC6bM0RWwwc_s6AaWQges6Vx9kt3bi5j0Gbp1l_057KEJPpr6bH0msbV9POiCI2opTs8MWIdmpDQGjSD1iV4D4eTSZmnX3t0qXSLVg0m_RQOI3pc5b6YdlcaI6m6snvpwd0yTTFKVMy53VyRiJI4C1ckvIqrOgglEKXhJ-aIqD5zJwckArvC1SLrjbXWwFfvc8Nw2BBG-EqZ-f-RmZLxZzm_U9cBPame0XHyXb1TikWt92j9Q_YEwLyd6R65PAA1RX2U7_Q_r-lni6p8lFP1tXvB1utj6fPaZWVhnbGNxncU1Hw546lZOQk0Zbaq4kyEo1wtpF-c5tXmZ2CS15CzwTjD6znxxtVc0cxen3OC4ItJ5l9zrpreh9sC2wvnjZSQAZIaOeT8MiMG0OFn-qhUpaMzGWw5q8kUplJTVchKi_uHpqpLJVHkRSCHCqQKhPQdGKVT8iT_5yvUmG-HmXxE02fHcnVZKR_THyCFYlLiOgZLjg1kPdBBVlqIUkWvQEVncWy06yJpxyf6jN0E7PNdDb57nGqF7XatabNO3nfoNLwhg6M42_lxO2FHQTf8mF_mvIB7JftVmoi9WwCMCRrL76NF8otyFK3ngLlPVhU96e5SDSz2GF8UCd6xIgGgxMdoQOyqmRYGUMBbILBALnyI_l_1YwBi0KtDe6Y2i6RbI50pNOPTt3dWOtU35-TEi0_ZXHLJ8wZJnH3Du_QahnCJscNGeMdsb-Fd9FCEmUXYcFeREVFnbm8eZUJ-4QVQA-6lUgaYZ-iDQtO5XNtRdoCkMGQYtbfOY&isca=1' ?? '',
+                  imageUrl: _robots[index].img ?? '',
                   height: 50.0,
                   width: 50.0,
                   fit: BoxFit.cover,

@@ -5,6 +5,8 @@ import '../job/configure_grass_height.dart';
 import '../job/job_class.dart';
 import 'weather.dart';
 import '../globals.dart'; // Import globals.dart to access globalRobot
+import 'package:cached_network_image/cached_network_image.dart';
+
 
 class Home extends StatelessWidget {
   Home();
@@ -34,10 +36,16 @@ class Home extends StatelessWidget {
         children: [
           Stack(
             children: [
-              Image.asset(
-                robot.img ?? 'assets/robot_design.png',
+              CachedNetworkImage(
+                imageUrl: robot.img ?? '',
                 fit: BoxFit.cover,
                 height: 300.0,
+                errorWidget: (context, error, stackTrace) =>
+                    Image.asset(
+                      'assets/robot_design.png',
+                      fit: BoxFit.cover,
+                      height: 300.0,
+                    ),
               ),
               Positioned(
                 bottom: 8.0,
@@ -164,7 +172,11 @@ class Home extends StatelessWidget {
                                 height: 50.0,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    // Acción para ir a la información del usuario
+                                    // Navigate to the new page
+                                    //Navigator.push(
+                                     // context,
+                                      //MaterialPageRoute(builder: (context) => UserInfoPage()),
+                                    //);
                                   },
                                   child: Text(
                                     'Info',
