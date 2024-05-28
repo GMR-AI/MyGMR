@@ -67,4 +67,18 @@ Future<String> fetchRobotImage(String imageName) async {
   }
   return url;
 }
+Future<void> getModel() async {
+  final response = await http.post(
+    Uri.parse('${dotenv.env['BACKEND_URL']}/get_robot_info'),
+    headers: <String, String>{
+      'Cookie': globals.sessionID ?? '',
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, int>{
+      'code': globals.globalRobot!.id_model!,
+    }),
+  );
+
+  print(jsonDecode(response.body));
+}
 

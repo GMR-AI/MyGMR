@@ -1,21 +1,28 @@
-class User {
+class MyUser {
   int id;
   String? name;
   String? imagePath;
   String? mail;
-  final String? idToken;
 
-  User({
+  MyUser({
     required this.id,
     this.name,
     this.imagePath,
     this.mail,
-    this.idToken,
   });
+
+  factory MyUser.fromJson(Map<String, dynamic> data) {
+    return MyUser(
+      id: data['id'],
+      name: data['name'],
+      imagePath: data['path_image'],
+      mail: data['mail'],
+    );
+  }
 }
 
-User getUser() {
-  return User(
+MyUser getUser() {
+  return MyUser(
     id: 1,
     name: 'John Doe',
     imagePath: 'assets/perrito.jpg',

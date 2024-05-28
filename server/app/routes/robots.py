@@ -49,7 +49,7 @@ def get_robots():
     return jsonify(robots), 200
 
 @bp.route('/get_robot_info', methods=['POST'])
-def get_robots():
+def get_robot_info():
     data = request.json
     code = int(data.get('code'))
 

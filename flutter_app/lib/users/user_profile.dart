@@ -2,9 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'user_class.dart';
+import '../functions/user_requests.dart';
 
 class UserProfile extends StatefulWidget {
-  final User user;
+  final MyUser user;
 
   UserProfile({required this.user});
 
@@ -16,7 +17,6 @@ class _UserProfileState extends State<UserProfile> {
   late TextEditingController _nameController;
   late TextEditingController _mailController;
   bool _isEditing = false;
-  File? _image;
 
   @override
   void initState() {
@@ -32,45 +32,12 @@ class _UserProfileState extends State<UserProfile> {
     super.dispose();
   }
 
-  Future<void> _getImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
-
-  void _saveProfile() {
-    setState(() {
-      widget.user.name = _nameController.text;
-      widget.user.mail = _mailController.text;
-      if (_image != null) {
-        widget.user.imagePath = _image!.path;
-      }
-      _isEditing = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
         backgroundColor: Theme.of(context).primaryColor,
-        actions: [
-          if (!_isEditing)
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                setState(() {
-                  _isEditing = true;
-                });
-              },
-            ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -78,14 +45,9 @@ class _UserProfileState extends State<UserProfile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: GestureDetector(
-                onTap: _isEditing ? _getImage : null,
-                child: CircleAvatar(
-                  radius: 50.0,
-                  backgroundImage: _image != null
-                      ? FileImage(_image!)
-                      : AssetImage(widget.user.imagePath ?? 'assets/default_image.png') as ImageProvider,
-                ),
+              child: CircleAvatar(
+                radius: 50.0,
+                child: Image.network(widget.user.imagePath ?? ''),
               ),
             ),
             SizedBox(height: 20.0),
@@ -120,13 +82,6 @@ class _UserProfileState extends State<UserProfile> {
               ),
             ),
             Spacer(),
-            if (_isEditing)
-              Center(
-                child: ElevatedButton(
-                  onPressed: _saveProfile,
-                  child: Text('Save'),
-                ),
-              ),
           ],
         ),
       ),

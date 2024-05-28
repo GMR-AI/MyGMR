@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'users/user_class.dart';
 import 'robots/home_robot.dart';
 import 'users/user_profile.dart';
+import 'globals.dart';
 
 Color backgroundColor = Color(0xFFEFEFEF);
 
@@ -14,13 +15,13 @@ class MainRobot extends StatefulWidget {
 
 class _MainRobotState extends State<MainRobot> {
   int _selectedIndex = 0;
-  late User _user;  // late keyword to delay initialization
+  late MyUser _user;  // late keyword to delay initialization
   late List<Widget> _widgetOptions;
 
   @override
   void initState() {
     super.initState();
-    _user = getUser();
+    _user = globalUser ?? getUser();
     _widgetOptions = <Widget>[
       Home(),
       UserProfile(user: _user),

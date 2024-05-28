@@ -20,32 +20,22 @@ def execute_query(query, response=True, param_values={}):
 ## USERS
 
 def get_user_id(uid):
-    query = "SELECT id FROM users WHERE uid = :uid"
+    query = "SELECT * FROM users WHERE uid = :uid"
     rows = execute_query(query, response=True, param_values={'uid': uid})
     ids = [dict(row.items()) for row in rows]
-    return ids[0]['id'] if ids else None
+    return ids[0] if ids else None
 
 def insert_user(name, email, uid, path_image):
-    query = "INSERT INTO users (name, mail, uid, path_image) VALUES (:name, :email, :uid, :pi) RETURNING id"
+    query = "INSERT INTO users (name, mail, uid, path_image) VALUES (:name, :email, :uid, :pi) RETURNING *"
     param_values = {'name': name, 'email': email, 'uid': uid, 'pi': path_image}
     rows = execute_query(query, response=True, param_values=param_values)
     ids = [dict(row) for row in rows]
-    return ids[0]['id'] if ids else None
+    return ids[0] if ids else None
 
 def delete_user(uid):
     query = "DELETE FROM users WHERE uid = :uid"
     param_values = {'uid': uid}
     execute_query(query, response=False, param_values=param_values)
-
-def edit_user(name, mail, img_path, uid):
-    query = "UPDATE users SET name = :name, mail = :mail, img_path = :img_path WHERE id = :uid"
-    param_values = {
-        'name': name,
-        'mail': mail,
-        'img_path': img_path,
-        'uid': uid
-    }
-    execute_query(query, param_values=param_values)
 
 ## MODELOS
 

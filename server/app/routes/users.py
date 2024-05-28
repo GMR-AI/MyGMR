@@ -21,13 +21,13 @@ def continue_with_google():
         uid = decoded_token['uid']
 
         # Check if user exists
-        id = db.get_user_id(uid)
-        if not id: # User does not exist (create user)
+        user = db.get_user_id(uid)
+        if not user: # User does not exist (create user)
             # Get user data
             email = decoded_token.get('email')
             name = decoded_token.get('name')
-
-            image_path = f"gs://{image_folder.bucket_name}/default.png"
+            CLOUD_BUCKET_BASE_URL = os.getenv('CLOUD_BUCKET_BASE_URL')
+            image_path = f"{CLOUD_BUCKET_BASE_URL}/{image_folder.bucket_name}/default.png"
             picture_url = decoded_token.get('picture')
             if picture_url:
                 response = requests.get(picture_url)
@@ -35,12 +35,12 @@ def continue_with_google():
                     filename = f"{uid}_pfp.png"
                     file_stream = io.BytesIO(response.content)
                     image_folder.upload_file(file_stream, filename, 'image/png')
-                    image_path = f"gs://{image_folder.bucket_name}/{filename}"
+                    image_path = f"{CLOUD_BUCKET_BASE_URL}/{image_folder.bucket_name}/{filename}"
 
-            id = db.insert_user(name, email, uid, image_path)
-        session['db_id'] = id
+            user = db.insert_user(name, email, uid, image_path)
+        session['db_id'] = user['id']
         # Return Robots
-        return make_response('',200)
+        return jsonify(user), 200
 
     except ValueError as e:
         # Token is invalid
@@ -87,8 +87,6 @@ def get_robot_image():
     image_url = f"{CLOUD_BUCKET_BASE_URL}/{image_folder.bucket_name}/{image_name}"
 
     return jsonify({"image_url": image_url}), 200
-
-
 
 # View funciton for testing purposes
 @bp.route('/view')

@@ -4,8 +4,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_gmr/functions/user_requests.dart';
 import 'robots/no_robots.dart';
 
-
-
 Color backgroundColor = Color(0xFFEFEFEF);
 
 class SignUp extends StatefulWidget {
@@ -61,7 +59,6 @@ class _SignUpScreen extends State<SignUp> {
                       User? user = await signInWithGoogle(context);
                       if (user != null) {
                         print('Successfully signed in with Google: ${user.displayName}');
-                        // TODO: Añadir el resto de data del user y escribir el token aqui
                       }
                     },
                     style: ElevatedButton.styleFrom(

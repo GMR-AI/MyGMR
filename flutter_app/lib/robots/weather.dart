@@ -4,6 +4,17 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+void requestLocationPermission() async {
+  var status = await Permission.location.status;
+  if (!status.isGranted) {
+    status = await Permission.location.request();
+    if (!status.isGranted) {
+      return Future.error('Location permission not granted');
+    }
+  }
+}
 
 
 class WeatherCard extends StatelessWidget {
@@ -97,6 +108,7 @@ class _WeatherPageState extends State<WeatherPage> {
   }
 
   void getWeather() async {
+    requestLocationPermission();
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     final response = await http.get(Uri.parse('http://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=${dotenv.env['WEATHER_API_KEY']}&units=metric'));
     var weatherData = jsonDecode(response.body);
@@ -220,8 +232,9 @@ class _WeatherWidgetState extends State<WeatherWidget> {
   }
 
   void getWeather() async {
+    requestLocationPermission();
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    final response = await http.get(Uri.parse('http://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=e43cfbae7e54192e13f320ce6b914363&units=metric'));
+    final response = await http.get(Uri.parse('http://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=${dotenv.env['WEATHER_API_KEY']}&units=metric'));
     var weatherData = jsonDecode(response.body);
     setState(() {
       city = weatherData['name'];

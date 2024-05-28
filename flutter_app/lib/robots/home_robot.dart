@@ -6,7 +6,7 @@ import '../job/job_class.dart';
 import 'weather.dart';
 import '../globals.dart'; // Import globals.dart to access globalRobot
 import 'package:cached_network_image/cached_network_image.dart';
-
+import '../functions/robots_requests.dart';
 
 class Home extends StatelessWidget {
   Home();
@@ -173,6 +173,7 @@ class Home extends StatelessWidget {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     // Navigate to the new page
+                                    getModel();
                                     //Navigator.push(
                                      // context,
                                       //MaterialPageRoute(builder: (context) => UserInfoPage()),

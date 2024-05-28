@@ -1,3 +1,6 @@
+import 'package:path/path.dart' as path;
+import 'dart:io';
+import 'package:mime/mime.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -6,6 +9,7 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:my_gmr/users/user_class.dart';
 
 import '../globals.dart' as globals;
 
@@ -40,6 +44,7 @@ Future<void> authenticate(context, idToken) async {
   if (response.statusCode == 200) {
     // Assume `response` is the response object received from the server
     setSessionID(response.headers['set-cookie']);
+    globals.globalUser = MyUser.fromJson(jsonDecode(response.body));
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ListOfRobots()),
@@ -82,3 +87,4 @@ Future<User?> signInWithGoogle(context) async {
     return null;
   }
 }
+
