@@ -42,12 +42,25 @@ def get_robots():
     if not robots:
         return jsonify({"message": "No robots found"}), 404
     
-    # Update their
+    # Update their status
     for robot in robots:
         robot['status'] = active_rm.exists_in_queue(robot['id_connect'])
 
     return jsonify(robots), 200
 
+@bp.route('/get_robot_info', methods=['POST'])
+def get_robots():
+    data = request.json
+    code = int(data.get('code'))
+
+    if not session.get('db_id'):
+        return jsonify({"message": "Session error restart the app"}), 401
+    
+    model = db.get_model_by_id(code);
+    if not model:
+        return jsonify({"message": "No robots found"}), 404
+
+    return jsonify(model), 200
 
 ## ROBOT REQUESTS
 

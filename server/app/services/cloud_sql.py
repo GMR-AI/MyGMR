@@ -47,6 +47,8 @@ def edit_user(name, mail, img_path, uid):
     }
     execute_query(query, param_values=param_values)
 
+## MODELOS
+
 def get_model_by_id(id):
     query = "SELECT * FROM models WHERE id = :c"
     rows = execute_query(query, response=True, param_values={'c': id})
