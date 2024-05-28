@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'job_class.dart';
+import '../robots/robot_class.dart';
 import 'actual.dart';
 import '../globals.dart';
+import '../functions/job_requests.dart';
 
 class ResumePage extends StatelessWidget {
   ResumePage();
@@ -45,8 +47,8 @@ class ResumePage extends StatelessWidget {
                     style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10.0),
-                  Text('Date: ${job.startDate}'),
-                  Text('Cutting Height: ${job.cuttingHeight}'),
+                  Text('Date: ${job.start_time}'),
+                  Text('Cutting Height: ${job.cutting_height}'),
                   Text('Area: ${job.area}'),
                 ],
               ),
@@ -69,13 +71,21 @@ class ResumePage extends StatelessWidget {
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ActualJobPage(),
-                  ),
-                );
+              onPressed: () async {
+                int? id_job = await add_job(job);
+
+                if (id_job != null) {
+                  job.id = id_job;
+                  globalJob = job;
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ActualJobPage(),
+                    ),
+                  );
+                }
+                else print("Error: job not added at BD");
               },
               child: Text('Start job'),
             )

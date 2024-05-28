@@ -197,7 +197,7 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                job.cuttingHeight = _heightValues[_grassHeightIndex];
+                job.cutting_height = _heightValues[_grassHeightIndex];
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => DefineAreaPage()),

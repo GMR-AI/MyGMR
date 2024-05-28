@@ -23,7 +23,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
     super.initState();
     Job? job = globalJob;
     if (job != null) {
-      _startTime = job.startDate;
+      _startTime = job.start_time;
       _tickerStream = _ticker();
       _tickerSubscription = _tickerStream.listen((_) {
         setState(() {
@@ -114,7 +114,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
     _tickerSubscription.cancel();
     Job? job = globalJob;
     if (job != null) {
-      job.endDate = DateTime.now();
+      job.end_time = DateTime.now();
       globalJob = job;
     }
     showDialog(
