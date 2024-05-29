@@ -1,5 +1,14 @@
 # Singelton class which handles active room robots
 from datetime import datetime, timedelta
+from enum import Enum
+
+# Ordenes que el usuario puede enviar directamente al robot (estas se resetean a NONE una vez el robot reciba la orden)
+class j_status(Enum):
+    NONE = 0 # No updates
+    NEW_JOB = 1 # User requested 3D model and top image
+    START_JOB = 2 # User has uploaded the new job
+    UPDATE_JOB = 3 # User recalls any update in the actual job?
+    CANCEL_JOB = 4 # User has canceled the job
 
 class robot_manager:
     _instance = None
@@ -17,7 +26,7 @@ class robot_manager:
             return False
         
         expiration_time = datetime.now() + timedelta(minutes=expiration_minutes)
-        self._queue[code]={'message': None, 'expires_at': expiration_time}
+        self._queue[code]={'message': None, 'expires_at': expiration_time, 'job_status': j_status.NONE}
         
         return True
 
@@ -33,6 +42,12 @@ class robot_manager:
         self._cleanup_expired()
         return self._queue
     
+    def update_job(self, code, status):
+        self._cleanup_expired()
+        if code in self._queue.keys() and status is j_status:
+            self._queue[code] = status
+
+
     def exists_in_queue(self, code):
         self._cleanup_expired()
         return code in self._queue.keys()

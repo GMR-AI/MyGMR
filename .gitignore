@@ -1,3 +1,6 @@
+*.ply
+*.glb
+*.obj
 *.env
 server/gmr-ai*.json
 server/flask_session

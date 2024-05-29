@@ -2,7 +2,7 @@ from app.routes import bp
 from app.services import cloud_sql as db
 from app.services.cloud_bucket import image_folder
 from app.utils import rb
-from app.utils.active_robots_manager import active_rm
+from app.utils.active_robots_manager import active_rm, j_status
 from flask import request, jsonify, session, make_response
 
 ## USER REQUESTS
@@ -114,7 +114,29 @@ def check_request():
 
 @bp.route('/active_job', methods=['POST'])
 def active_job():
-    return jsonify({'active_job': "Upload teapot.obj"}), 200
+    data = request.json
+    code = int(data.get('code'))
+    # Check if robot is online
+    if not active_rm.exists_in_queue(code):
+        return jsonify({'job_status': j_status.NONE}), 404
+    
+    status = active_rm.get_queue()[code]['job_status']
+    active_rm.update_job(code, j_status.NONE)
+
+    job_data=[]
+    if status == j_status.START_JOB:
+        # Check if the job has been setted up
+        job_id=db.get_active_job(code)
+        if not job_id:
+            return jsonify({'job_status': j_status.NONE, 'job_data': job_data}), 404
+        
+        job_data=db.get_job_by_id(job_id)
+        if not job_data:
+            return jsonify({'job_status': j_status.NONE, 'job_data': job_data}), 404
+        
+    return jsonify({'job_status': status, 'job_data': job_data}), 200
+
+
 
 @bp.route('/upload_file', methods=['POST'])
 def upload_file():
@@ -127,8 +149,13 @@ def upload_file():
     
     if file:
         try:
+            filename = file.filename
             # Upload file to GCS
-            image_folder.upload_file(file, file.filename, file.content_type)
+            if 'code' in request.form:
+                code = request.form['code']
+                filename = f"{code}_{filename}"
+            
+            image_folder.upload_file(file, filename, file.content_type)
             return jsonify({"message": "File uploaded successfully"}), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500
