@@ -4,9 +4,12 @@ import 'robot_class.dart';
 import '../job/configure_grass_height.dart';
 import '../job/job_class.dart';
 import 'weather.dart';
-import '../globals.dart'; // Import globals.dart to access globalRobot
+import '../globals.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../functions/robots_requests.dart';
+import '../functions/job_requests.dart';
+import '../job/list_of_jobs.dart';
+
 
 class Home extends StatelessWidget {
   Home();
@@ -90,7 +93,8 @@ class Home extends StatelessWidget {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     globalJob = Job(
-                                      startDate: DateTime.now(),
+                                      start_time: DateTime.now(),
+                                      id_robot: robot.id,
                                     );
                                     Navigator.push(
                                       context,
@@ -143,8 +147,15 @@ class Home extends StatelessWidget {
                                 width: double.infinity,
                                 height: 50.0,
                                 child: ElevatedButton(
-                                  onPressed: () {
-                                    // Acción para ver trabajos anteriores
+                                  onPressed: () async {
+                                    int rid = robot.id;
+                                    List<Job>? jobs = await get_list_of_jobs(rid);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ListOfJobs(jobs: jobs ?? []),
+                                      ),
+                                    );
                                   },
                                   child: Text(
                                     'Previous',

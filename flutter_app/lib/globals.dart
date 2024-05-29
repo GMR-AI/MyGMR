@@ -8,4 +8,3 @@ Robot? globalRobot;
 Job? globalJob;
 MyUser? globalUser;
 String? sessionID;
-

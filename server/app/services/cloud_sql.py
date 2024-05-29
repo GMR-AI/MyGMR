@@ -70,8 +70,8 @@ def delete_robot(rid, uid):
 ## JOBS
 
 def add_new_job(cutting_height, area, model, state, start_time, end_time, id_robot):
-    query = "INSERT INTO jobs (cutting_height, area, model, state, start_time, end_time, date, id_robot) VALUES (:cutting_height, :area, :model, :state, :start_time, :end_time, :date, :id_robot)"
-    rows = execute_query(query, response=False, param_values = {
+    query = "INSERT INTO jobs (cutting_height, area, model, state, start_time, end_time, id_robot) VALUES (:cutting_height, :area, :model, :state, :start_time, :end_time, :id_robot) RETURNING id"
+    row = execute_query(query, response=True, param_values = {
                                                             'cutting_height': cutting_height,
                                                             'area': area,
                                                             'model': model,
@@ -80,6 +80,10 @@ def add_new_job(cutting_height, area, model, state, start_time, end_time, id_rob
                                                             'end_time': end_time,
                                                             'id_robot': id_robot
                                                         })
+    if row:
+        return row[0]['id']
+    else:
+        return None
     
 def delete_jobs(rid):
     query = "DELETE FROM jobs WHERE id_robot = :rid"
@@ -89,4 +93,8 @@ def get_all_jobs(rid):
     query = "SELECT * FROM jobs WHERE id_robot = :rid"
     rows = execute_query(query, response=True, param_values={'rid': rid})
     return [dict(row) for row in rows]
+
+def add_active_job(job_id, id_robot):
+    query = "UPDATE robots SET id_actual_job = :job_id WHERE id = :id_robot"
+    execute_query(query, response=False, param_values={'job_id': job_id, 'id_robot': id_robot})
 

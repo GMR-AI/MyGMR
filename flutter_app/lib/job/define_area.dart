@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import 'resume.dart';
+import 'job_class.dart';
+import '../globals.dart';
 
 class DefineAreaPage extends StatefulWidget {
   const DefineAreaPage({Key? key}) : super(key: key);
@@ -11,6 +12,7 @@ class DefineAreaPage extends StatefulWidget {
 
 class _DefineAreaPageState extends State<DefineAreaPage> {
   List<Offset> _points = [];
+  Job? job = globalJob;
 
   void _addPoint(Offset point) {
     setState(() {
@@ -75,7 +77,7 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
   }
 
   void _navigateToResume() {
-    // Aquí podrías guardar las coordenadas en un vector y luego navegar a la siguiente pantalla
+    job!.area = _points;
 
     Navigator.push(
       context,
