@@ -121,13 +121,29 @@ class Home extends StatelessWidget {
                                 width: double.infinity,
                                 height: 50.0,
                                 child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ActualJobPage(),
-                                      ),
-                                    );
+                                  onPressed: () async {
+                                    Job? actualJob = await get_active_job(robot.id);
+                                    if (actualJob != null) {
+                                      robot.id_active_job = actualJob.id;
+                                      globalRobot = robot;
+                                      globalJob = actualJob;
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ActualJobPage(),
+                                        ),
+                                      );
+                                    } else {
+                                      globalJob = null;
+                                      robot.id_active_job = null;
+                                      globalRobot = robot;
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ActualJobPage(),
+                                        ),
+                                      );
+                                    }
                                   },
                                   child: Text(
                                     'Actual',

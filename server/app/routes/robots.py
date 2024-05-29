@@ -62,6 +62,19 @@ def get_robot_info():
 
     return jsonify(model), 200
 
+@bp.route('/delete_robot', methods=['POST'])
+def delete_robot():
+    data = request.json()
+    robot_id = data.get('robot_id')
+
+    if robot_id is None:
+        return jsonify({"message": "robot_id is required"}), 400
+
+    # Eliminar el robot de la base de datos
+    db.delete_robot(robot_id)
+
+    return jsonify({"message": "Robot deleted successfully"}), 200
+
 ## ROBOT REQUESTS
 
 @bp.route('/ping', methods=['POST'])

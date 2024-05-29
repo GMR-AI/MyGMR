@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'job_class.dart';
 import '../main_robot.dart';
 import '../globals.dart';
+import '../functions/job_requests.dart';
+import '../robots/robot_class.dart';
 
 class ActualJobPage extends StatefulWidget {
   const ActualJobPage({Key? key}) : super(key: key);
@@ -125,9 +127,15 @@ class _ActualJobPageState extends State<ActualJobPage> {
           content: Text("The job has been finished."),
           actions: <Widget>[
             ElevatedButton(
-              onPressed: () {
-                // TODO: guardar job en la base de datos
-                globalJob = null;
+              onPressed: () async {
+                Robot? robot = globalRobot;
+                if (robot != null) {
+                  int id_robot = robot.id;
+                  await finish_active_job(id_robot);
+                  globalJob = null;
+                  robot.id_active_job = null;
+                  globalRobot = robot;
+                }
                 Navigator.pop(context); // Cierra el diálogo
                 Navigator.push(
                   context,

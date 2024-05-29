@@ -78,10 +78,14 @@ def get_all_jobs():
         return jsonify({"message": "No jobs available for the specified robot"}), 404
     
 
-@bp.route('/get_active_job/<int:robot_id>', methods=['GET'])
-def get_active_job(robot_id):
-    query = "SELECT * FROM jobs WHERE id = (SELECT id_actual_job FROM robots WHERE id = :robot_id)"
-    row = execute_query(query, response=True, param_values={'robot_id': robot_id})
+@bp.route('/get_active_job', methods=['POST'])
+def get_active_job():
+    data = request.json()
+    robot_id = data.get('robot_id')
+    if robot_id is None:
+        return jsonify({"message": "robot_id is required"}), 400
+    
+    row = db.get_active_job(robot_id)
     
     if row:
         job = dict(row[0])
@@ -90,11 +94,15 @@ def get_active_job(robot_id):
         return jsonify({"message": "No active job found"}), 404
     
 
-@bp.route('/finish_active_job/<int:robot_id>', methods=['PUT'])
-def finish_active_job(robot_id):
+@bp.route('/finish_active_job', methods=['POST'])
+def finish_active_job():
+    data = request.json()
+    robot_id = data.get('robot_id')
+    if robot_id is None:
+        return jsonify({"message": "robot_id is required"}), 400
+    
     # Obtener el ID del trabajo activo del robot
-    query = "SELECT id_actual_job FROM robots WHERE id = :robot_id"
-    row = execute_query(query, response=True, param_values={'robot_id': robot_id})
+    row = db.get_id_active_job_from_robot(robot_id)
     
     if not row:
         return jsonify({"message": "No active job found for the specified robot"}), 404
@@ -102,11 +110,9 @@ def finish_active_job(robot_id):
     active_job_id = row[0]['id_actual_job']
     
     # Actualizar el estado del trabajo a "finished"
-    query_update_job = "UPDATE jobs SET state = 'finished' WHERE id = :job_id"
-    execute_query(query_update_job, response=False, param_values={'job_id': active_job_id})
+    db.finish_active_job(active_job_id)
     
     # Limpiar el campo id_actual_job del robot
-    query_clear_robot = "UPDATE robots SET id_actual_job = NULL WHERE id = :robot_id"
-    execute_query(query_clear_robot, response=False, param_values={'robot_id': robot_id})
+    db.delete_active_job_from_robot(robot_id)
     
     return jsonify({"message": "Active job finished successfully"}), 200

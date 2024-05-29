@@ -24,6 +24,7 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
   List<Robot> _robots=[];
   bool _isLoading = true;
   bool _showConfirmationDialog = false;
+  int? _selectedRobotId;
 
   @override
   void initState() {
@@ -104,6 +105,7 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
                   icon: Icon(Icons.delete),
                   onPressed: () {
                     setState(() {
+                      _selectedRobotId = _robots[index].id;
                       _showConfirmationDialog = true;
                     });
                   },
@@ -163,11 +165,15 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
       title: Text('Delete this robot?'),
       actions: [
         TextButton(
-          onPressed: () {
-            setState(() {
-              _showConfirmationDialog = false;
-            });
-            // Perform delete action here
+          onPressed: () async {
+            if (_selectedRobotId != null) {
+              await delete_this_robot(_selectedRobotId!);
+              setState(() {
+                _robots.removeWhere((robot) => robot.id == _selectedRobotId);
+                _showConfirmationDialog = false;
+                _selectedRobotId = null;
+              });
+            }
           },
           child: Text('Yes'),
         ),

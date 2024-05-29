@@ -67,7 +67,8 @@ Future<String> fetchRobotImage(String imageName) async {
   }
   return url;
 }
-Future<void> getModel() async {
+
+Future<Map<String, dynamic>?> getModel() async {
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/get_robot_info'),
     headers: <String, String>{
@@ -79,6 +80,30 @@ Future<void> getModel() async {
     }),
   );
 
-  print(jsonDecode(response.body));
+  return jsonDecode(response.body);
 }
+
+Future<void> delete_this_robot(int robotId) async {
+  final response = await http.post(
+    Uri.parse('${dotenv.env['BACKEND_URL']}/delete_robot'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Cookie': globals.sessionID ?? '',
+    },
+    body: jsonEncode(<String, int>{'robot_id': robotId}),
+  );
+
+  if (response.statusCode == 200) {
+    print('Robot deleted successfully');
+  } else {
+    print('Failed to delete robot');
+    print('Status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+  }
+}
+
+
+
+
+
 

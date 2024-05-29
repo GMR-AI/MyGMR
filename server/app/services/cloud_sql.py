@@ -63,9 +63,9 @@ def add_new_robot(code, name, img, usid, mid):
     execute_query(query, response=False, param_values={'idc': code, 'n':name, 'im': img, 'idu': usid, 'idm': mid})
 
 
-def delete_robot(rid, uid):
-    query = "DELETE FROM robots WHERE id = :rid AND id_user = :uid"
-    execute_query(query, response=False, param_values={'rid': rid, 'uid': uid})
+def delete_robot(robot_id):
+    query_delete_robot = "DELETE FROM robots WHERE id = :robot_id"
+    execute_query(query_delete_robot, response=False, param_values={'robot_id': robot_id})
 
 ## JOBS
 
@@ -98,3 +98,20 @@ def add_active_job(job_id, id_robot):
     query = "UPDATE robots SET id_actual_job = :job_id WHERE id = :id_robot"
     execute_query(query, response=False, param_values={'job_id': job_id, 'id_robot': id_robot})
 
+def get_active_job(robot_id):
+    query = "SELECT * FROM jobs WHERE id = (SELECT id_actual_job FROM robots WHERE id = :robot_id)"
+    row = execute_query(query, response=True, param_values={'robot_id': robot_id})
+    return row
+
+def get_id_active_job_from_robot(robot_id):
+    query = "SELECT id_actual_job FROM robots WHERE id = :robot_id"
+    row = execute_query(query, response=True, param_values={'robot_id': robot_id})
+    return row
+
+def finish_active_job(active_job_id):
+    query_update_job = "UPDATE jobs SET state = 'finished' WHERE id = :job_id"
+    execute_query(query_update_job, response=False, param_values={'job_id': active_job_id})
+
+def delete_active_job_from_robot(robot_id):
+    query_clear_robot = "UPDATE robots SET id_actual_job = NULL WHERE id = :robot_id"
+    execute_query(query_clear_robot, response=False, param_values={'robot_id': robot_id})

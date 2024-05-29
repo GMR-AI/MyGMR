@@ -76,11 +76,13 @@ Future<void> delete_jobs(int rid) async {
 }
 
 Future<Job?> get_active_job(int robotId) async {
-  final response = await http.get(
-    Uri.parse('${dotenv.env['BACKEND_URL']}/get_active_job/$robotId'),
+  final response = await http.post(
+    Uri.parse('${dotenv.env['BACKEND_URL']}/get_active_job'),
     headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
       'Cookie': globals.sessionID ?? '',
     },
+    body: jsonEncode(<String, int>{'robot_id': robotId}),
   );
 
   if (response.statusCode == 200) {
@@ -103,11 +105,13 @@ Future<Job?> get_active_job(int robotId) async {
 }
 
 Future<void> finish_active_job(int robotId) async {
-  final response = await http.put(
-    Uri.parse('${dotenv.env['BACKEND_URL']}/finish_active_job/$robotId'),
+  final response = await http.post(
+    Uri.parse('${dotenv.env['BACKEND_URL']}/finish_active_job'),
     headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
       'Cookie': globals.sessionID ?? '',
     },
+    body: jsonEncode(<String, int>{'robot_id': robotId}),
   );
 
   if (response.statusCode == 200) {
