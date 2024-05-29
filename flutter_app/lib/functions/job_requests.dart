@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../globals.dart' as globals;
 import '../job/job_class.dart';
+import 'package:flutter/material.dart';
+import '../job/configure_grass_height.dart';
 
 Future<List<Job>?> get_list_of_jobs(int rid) async {
   final response = await http.post(
@@ -37,9 +39,11 @@ Future<int?> add_job(Job job) async {
       'Cookie': globals.sessionID ?? '',
       'Content-Type': 'application/json; charset=UTF-8',
     },
-    body: jsonEncode(job.toJson()),
+    body: jsonEncode(jsonEncode({
+      ...job.toJson(),
+      'code': globals.globalRobot!.id_connect!,
+    }),),
   );
-
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     final jobID = data['job_id'] as int?;
@@ -123,3 +127,24 @@ Future<void> finish_active_job(int robotId) async {
   }
 }
 
+Future<void> checkServerResponse(context) async {
+  final response = await http.get(
+    Uri.parse('${dotenv.env['BACKEND_URL']}/check_status'),
+    headers: <String, String>{
+      'Cookie': globals.sessionID ?? '',
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    if (data['status'] == 'desired_code') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ConfigureGrassHeightPage(),
+        ),
+      );
+    }
+  }
+}

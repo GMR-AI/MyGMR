@@ -4,6 +4,7 @@ import 'robot_class.dart';
 import '../job/configure_grass_height.dart';
 import '../job/job_class.dart';
 import 'weather.dart';
+import 'dart:async';
 import '../globals.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../functions/robots_requests.dart';
@@ -11,8 +12,21 @@ import '../functions/job_requests.dart';
 import '../job/list_of_jobs.dart';
 
 
-class Home extends StatelessWidget {
-  Home();
+class Home extends StatefulWidget {
+  @override
+  _Home createState() => _Home();
+}
+
+class _Home extends State<Home>  {
+  //Home();
+  bool _isLoading = false;
+
+
+  void startCheckingServerResponse() {
+    Timer.periodic(Duration(seconds: 5), (timer) async {
+      await checkServerResponse(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +98,9 @@ class Home extends StatelessWidget {
                       children: [
                         SingleChildScrollView(child: WeatherWidget()),
                         SingleChildScrollView(
-                          child: Column(
+                        child: _isLoading
+                            ? CircularProgressIndicator()
+                            : Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Container(
@@ -96,12 +112,10 @@ class Home extends StatelessWidget {
                                       start_time: DateTime.now(),
                                       id_robot: robot.id,
                                     );
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ConfigureGrassHeightPage(),
-                                      ),
-                                    );
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
+                                    startCheckingServerResponse();
                                   },
                                   child: Text(
                                     'New',

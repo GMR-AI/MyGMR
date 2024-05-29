@@ -101,16 +101,17 @@ def add_active_job(job_id, id_robot):
 def get_active_job(robot_id):
     query = "SELECT * FROM jobs WHERE id = (SELECT id_actual_job FROM robots WHERE id = :robot_id)"
     row = execute_query(query, response=True, param_values={'robot_id': robot_id})
-    return row
+    return dict(row[0])
+
+def get_active_job_code(code):
+    query = "SELECT * FROM jobs WHERE id = (SELECT id_actual_job FROM robots WHERE id_connect = :code)"
+    row = execute_query(query, response=True, param_values={'code': code})
+    return dict(row[0])
 
 def get_id_active_job_from_robot(robot_id):
     query = "SELECT id_actual_job FROM robots WHERE id = :robot_id"
     row = execute_query(query, response=True, param_values={'robot_id': robot_id})
     return row
-
-def finish_active_job(active_job_id):
-    query_update_job = "UPDATE jobs SET state = 'finished' WHERE id = :job_id"
-    execute_query(query_update_job, response=False, param_values={'job_id': active_job_id})
 
 def delete_active_job_from_robot(robot_id):
     query_clear_robot = "UPDATE robots SET id_actual_job = NULL WHERE id = :robot_id"

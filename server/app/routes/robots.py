@@ -139,11 +139,7 @@ def active_job():
     job_data=[]
     if status == j_status.START_JOB:
         # Check if the job has been setted up
-        job_id=db.get_active_job(code)
-        if not job_id:
-            return jsonify({'job_status': j_status.NONE, 'job_data': job_data}), 404
-        
-        job_data=db.get_job_by_id(job_id)
+        job_data=db.get_active_job_code(code)        
         if not job_data:
             return jsonify({'job_status': j_status.NONE, 'job_data': job_data}), 404
         
