@@ -10,6 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../functions/robots_requests.dart';
 import '../functions/job_requests.dart';
 import '../job/list_of_jobs.dart';
+import 'info_model.dart';
 
 
 class Home extends StatefulWidget {
@@ -20,13 +21,6 @@ class Home extends StatefulWidget {
 class _Home extends State<Home>  {
   //Home();
   bool _isLoading = false;
-
-
-  void startCheckingServerResponse() {
-    Timer.periodic(Duration(seconds: 5), (timer) async {
-      await checkServerResponse(context);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +93,21 @@ class _Home extends State<Home>  {
                         SingleChildScrollView(child: WeatherWidget()),
                         SingleChildScrollView(
                         child: _isLoading
-                            ? CircularProgressIndicator()
+                            ? const Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(height: 40), // Add some spacing between the CircularProgressIndicator and the text
+                                    Text(
+                                      'Wait a minute, the reconstruction is being processed',
+                                      style: TextStyle(fontSize: 16),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                )
+                              )
                             : Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -115,7 +123,8 @@ class _Home extends State<Home>  {
                                     setState(() {
                                       _isLoading = true;
                                     });
-                                    startCheckingServerResponse();
+                                    // Update the robot status
+                                    request_new_job(context);
                                   },
                                   child: Text(
                                     'New',
@@ -215,34 +224,13 @@ class _Home extends State<Home>  {
                                   onPressed: () {
                                     // Navigate to the new page
                                     getModel();
-                                    //Navigator.push(
-                                     // context,
-                                      //MaterialPageRoute(builder: (context) => UserInfoPage()),
-                                    //);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ModelInfoScreen()),
+                                    );
                                   },
                                   child: Text(
                                     'Info',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.all(8.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                height: 50.0,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    // Acción para editar el usuario
-                                  },
-                                  child: Text(
-                                    'Edit',
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),

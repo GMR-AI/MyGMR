@@ -32,7 +32,7 @@ class _ModelInfoScreenState extends State<ModelInfoScreen> {
           ? ListView(
         padding: EdgeInsets.all(16.0),
         children: [
-          _buildInfoItem('Model Name', _modelInfo!['model_name']),
+          _buildInfoItem('Model Name', _modelInfo!['name']),
           _buildInfoItem('Manufacturer', _modelInfo!['manufacturer']),
           _buildInfoItem('Release Date', _modelInfo!['release_date']),
           _buildInfoItem('Dimensions', _modelInfo!['dimensions']),

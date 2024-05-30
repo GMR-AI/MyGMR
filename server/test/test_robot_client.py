@@ -138,22 +138,24 @@ class RobotClient:
         return None
     
     def parse_job_status(self, data):
-        job_status =  data.get('job_status')
+        job_status_str =  data.get('job_status')
+        job_status = j_status[job_status_str]
+
         if job_status == j_status.NONE:
             return
-        elif job_status == j_status.NEW_J0B:
+        elif job_status == j_status.NEW_JOB:
             print('Making a reconstruction...')
             # Funcion de reconstruccion
 
-            convert_obj_to_glb('obj_dataset/gmr.obj')
+            #convert_obj_to_glb('obj_dataset/gmr.obj')
 
             print('Making the top image...')
-            run_convertion('ply_dataset', 'image_dataset')
+            #run_convertion('ply_dataset', 'image_dataset')
 
             print('Sending data')
             self.upload_file('obj_dataset/gmr.glb')
             self.upload_file('image_dataset/gmr.jpg')
-            
+            self.send_finished()
         elif job_status == j_status.START_JOB:
             job_data = data.get('job_data')
             if not job_data:
@@ -190,8 +192,9 @@ class RobotClient:
     def upload_file(self, file_path):
         try:
             with open(file_path, 'rb') as file:
-                files = {'file': (file_path, file)}
-                response = requests.post(f"{self.server_url}/upload_file", files=files)
+                files = {'file': file}
+                data = {'code': self.code}
+                response = requests.post(f"{self.server_url}/upload_file", files=files, data=data)
                 if response.status_code == 200:
                     print("File uploaded successfully.")
                 else:
@@ -199,6 +202,16 @@ class RobotClient:
         except Exception as e:
             print("Error:", e)
 
+    def send_finished(self):
+        try:
+            data = {'code': self.code}
+            response = requests.post(f"{self.server_url}/job_finished", json={'code': self.code})
+            if response.status_code == 200:
+                print("Task finished successfully.")
+            else:
+                print("Failed to notify the finished task:", response.status_code, response.json())
+        except Exception as e:
+            print("Error:", e)
 
 ################# MAIN LOOP #################
 
@@ -225,8 +238,8 @@ if __name__ == "__main__":
     with open("robot_data.json", 'r') as file:
         data = json.load(file)
     # gcloud test
-    server_url = os.environ.get("SERVER_URL")
+    #server_url = os.environ.get("SERVER_URL")
     # local test
-    #server_url = "http://localhost:8080"
+    server_url = "http://localhost:8080"
     client = RobotClient(server_url, data, args.debug)
     client.run()

@@ -9,6 +9,8 @@ class Job {
   String? state;
   final DateTime start_time;
   DateTime? end_time;
+  String? glb_url;
+  String? top_image;
 
   Job({
     this.id,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'user_class.dart';
 import '../functions/user_requests.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class UserProfile extends StatefulWidget {
   final MyUser user;
@@ -47,7 +48,17 @@ class _UserProfileState extends State<UserProfile> {
             Center(
               child: CircleAvatar(
                 radius: 50.0,
-                child: Image.network(widget.user.imagePath ?? ''),
+                backgroundColor: Colors.transparent,
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: widget.user.imagePath ?? '',
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                    fit: BoxFit.cover,
+                    width: 100.0,
+                    height: 100.0,
+                  ),
+                ),
               ),
             ),
             SizedBox(height: 20.0),

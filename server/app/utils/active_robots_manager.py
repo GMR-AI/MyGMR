@@ -44,8 +44,11 @@ class robot_manager:
     
     def update_job(self, code, status):
         self._cleanup_expired()
-        if code in self._queue.keys() and status is j_status:
-            self._queue[code] = status
+        if code in self._queue.keys() and status in j_status:
+            self._queue[code]['job_status'] = status
+        else:
+            print("Either didn't get the code: ", code, " in ", self._queue.keys())
+            print("Or status: ", status, "is not a j_status")
 
 
     def exists_in_queue(self, code):

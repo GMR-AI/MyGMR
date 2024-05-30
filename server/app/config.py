@@ -10,3 +10,4 @@ class Config:
   SESSION_TYPE = 'filesystem'
   SESSION_PERMANENT=False
   SECRET_KEY = os.environ.get("FLASK_SECRET_KEY")
+  MAX_CONTENT_LENGTH = 128 * 1024 * 1024  

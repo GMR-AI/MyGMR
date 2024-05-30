@@ -115,7 +115,7 @@ Future<void> finish_active_job(int robotId) async {
       'Content-Type': 'application/json; charset=UTF-8',
       'Cookie': globals.sessionID ?? '',
     },
-    body: jsonEncode(<String, int>{'robot_id': robotId}),
+    body: jsonEncode(<String, int>{'robot_id': robotId, 'code': int.parse(globals.globalRobot!.id_connect!)}),
   );
 
   if (response.statusCode == 200) {
@@ -128,23 +128,52 @@ Future<void> finish_active_job(int robotId) async {
 }
 
 Future<void> checkServerResponse(context) async {
-  final response = await http.get(
-    Uri.parse('${dotenv.env['BACKEND_URL']}/check_status'),
-    headers: <String, String>{
-      'Cookie': globals.sessionID ?? '',
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-  );
+  while (true) {
+    final response = await http.post(
+      Uri.parse('${dotenv.env['BACKEND_URL']}/check_init'),
+      headers: <String, String>{
+        'Cookie': globals.sessionID ?? '',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+          <String, int>{'code': int.parse(globals.globalRobot!.id_connect!)}),
+    );
 
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    if (data['status'] == 'desired_code') {
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      globals.globalJob!.glb_url = data['glb'];
+      globals.globalJob!.top_image = data['top_image'];
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => ConfigureGrassHeightPage(),
         ),
       );
+      break;
+    } else if (response.statusCode > 200) {
+      // Handle server error
+      await Future.delayed(Duration(seconds: 5));
+      continue;
     }
+  }
+
+}
+
+
+Future<void> request_new_job(context) async {
+  final response = await http.post(
+    Uri.parse('${dotenv.env['BACKEND_URL']}/request_new_job'),
+    headers: <String, String>{
+      'Cookie': globals.sessionID ?? '',
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, int>{'code': int.parse(globals.globalRobot!.id_connect!)}),
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    print(data['status']);
+    // Keep loading untill you change the page
+    checkServerResponse(context);
   }
 }

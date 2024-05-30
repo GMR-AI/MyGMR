@@ -25,4 +25,3 @@ class CloudBucket:
         return blob.public_url
     
 image_folder = CloudBucket(os.environ.get("CLOUD_IMAGE_FOLDER"), os.environ.get('GOOGLE_APPLICATION_CREDENTIALS'))
-model_folder = CloudBucket(os.environ.get("CLOUD_3D_MODELS_FOLDER"), os.environ.get('GOOGLE_APPLICATION_CREDENTIALS'))

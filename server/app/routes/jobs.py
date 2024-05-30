@@ -1,19 +1,18 @@
 from app.routes import bp
 from app.services import cloud_sql as db
+from app.services.cloud_bucket import image_folder
+import os
 from app.utils import rb
 from app.utils.active_robots_manager import active_rm, j_status
 
-from flask import request, jsonify, session
-from flask_socketio import emit, join_room, leave_room
-
-from firebase_admin import auth
+from flask import request, jsonify
 
 from datetime import datetime
 
 @bp.route('/add_new_job', methods=['POST'])
 def add_new_job():
     data = request.json
-    code = data.get('code')
+    code = int(data.get('code'))
     cutting_height = data.get('cutting_height')
     area = data.get('area')
     model = data.get('model')
@@ -37,7 +36,7 @@ def add_new_job():
         return jsonify({"message": "Job was not requested"}), 404
 
     queue.remove((cutting_height, area, model, state, start_time, end_time, id_robot))
-
+    print(area)
     job_id = db.add_new_job(cutting_height, area, model, state, start_time, end_time, id_robot)
     
     if job_id:
@@ -82,7 +81,7 @@ def get_all_jobs():
 
 @bp.route('/get_active_job', methods=['POST'])
 def get_active_job():
-    data = request.json()
+    data = request.json
     robot_id = data.get('robot_id')
     if robot_id is None:
         return jsonify({"message": "robot_id is required"}), 400
@@ -98,11 +97,15 @@ def get_active_job():
 
 @bp.route('/finish_active_job', methods=['POST'])
 def finish_active_job():
-    data = request.json()
+    data = request.json
     robot_id = data.get('robot_id')
+    code = int(data.get('code'))
     if robot_id is None:
         return jsonify({"message": "robot_id is required"}), 400
     
+    if not code:
+        return jsonify({"message": "code is required"}), 400
+
     # Obtener el ID del trabajo activo del robot
     row = db.get_id_active_job_from_robot(robot_id)
     
@@ -111,10 +114,36 @@ def finish_active_job():
     
     # Limpiar el campo id_actual_job del robot
     db.delete_active_job_from_robot(robot_id)
-    
+    active_rm.update_job(code, j_status.CANCEL_JOB)
+
     return jsonify({"message": "Active job finished successfully"}), 200
 
 
-@bp.route('/check_status', methods=['POST'])
-def check_status():
-    pass
+@bp.route('/check_init', methods=['POST'])
+def check_init():
+    data = request.json
+    code = int(data.get('code'))
+
+    if not active_rm.exists_in_queue(code):
+        return jsonify({'status':'Robot has not online'}), 404
+
+
+    if active_rm.get_queue()[code]['job_status'] == j_status.NEW_JOB:
+        return jsonify({'status':'Robot has not finished'}), 404
+    
+    
+    CLOUD_BUCKET_BASE_URL = os.getenv('CLOUD_BUCKET_BASE_URL')
+    glb_file = f"{CLOUD_BUCKET_BASE_URL}/{image_folder.bucket_name}/{code}_gmr.glb"
+    top_image = f"{CLOUD_BUCKET_BASE_URL}/{image_folder.bucket_name}/{code}_gmr.jpg"
+    return ({'glb': f'{glb_file}', 'top_image': f'{top_image}'}), 200
+
+@bp.route('/request_new_job', methods=['POST'])
+def request_new_job():
+    data = request.json
+    code = int(data.get('code'))
+    if not code:
+        print("Client did not send code")
+        return ({'status': 'failed'}), 400
+    
+    active_rm.update_job(code, j_status.NEW_JOB)
+    return ({'status': 'done'}), 200

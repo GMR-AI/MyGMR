@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'resume.dart';
 import 'job_class.dart';
-import '../globals.dart';
+import '../globals.dart' as globals;
 
 class DefineAreaPage extends StatefulWidget {
   const DefineAreaPage({Key? key}) : super(key: key);
@@ -12,7 +12,7 @@ class DefineAreaPage extends StatefulWidget {
 
 class _DefineAreaPageState extends State<DefineAreaPage> {
   List<Offset> _points = [];
-  Job? job = globalJob;
+  Job? job = globals.globalJob;
 
   void _addPoint(Offset point) {
     setState(() {
@@ -53,8 +53,8 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.asset(
-                        'assets/area.png',
+                      Image.network(
+                        job!.top_image!,
                         fit: BoxFit.contain,
                       ),
                       CustomPaint(

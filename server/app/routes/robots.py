@@ -64,7 +64,7 @@ def get_robot_info():
 
 @bp.route('/delete_robot', methods=['POST'])
 def delete_robot():
-    data = request.json()
+    data = request.json
     robot_id = data.get('robot_id')
 
     if robot_id is None:
@@ -131,21 +131,30 @@ def active_job():
     code = int(data.get('code'))
     # Check if robot is online
     if not active_rm.exists_in_queue(code):
-        return jsonify({'job_status': j_status.NONE}), 404
+        return jsonify({'job_status': j_status.NONE.name}), 404
     
     status = active_rm.get_queue()[code]['job_status']
-    active_rm.update_job(code, j_status.NONE)
+    #active_rm.update_job(code, j_status.NONE)
 
     job_data=[]
     if status == j_status.START_JOB:
         # Check if the job has been setted up
         job_data=db.get_active_job_code(code)        
         if not job_data:
-            return jsonify({'job_status': j_status.NONE, 'job_data': job_data}), 404
+            return jsonify({'job_status': j_status.NONE.name, 'job_data': job_data}), 404
         
-    return jsonify({'job_status': status, 'job_data': job_data}), 200
+    return jsonify({'job_status': status.name, 'job_data': job_data}), 200
 
-
+@bp.route('/job_finished', methods=['POST'])
+def job_finished():
+    data = request.json
+    code = int(data.get('code'))
+    # Check if robot is online
+    if not active_rm.exists_in_queue(code):
+        return jsonify({'job_status': j_status.NONE.name}), 404
+    active_rm.update_job(code, j_status.NONE)
+        
+    return jsonify({'status': 'done'}), 200
 
 @bp.route('/upload_file', methods=['POST'])
 def upload_file():
