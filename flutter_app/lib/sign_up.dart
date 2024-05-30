@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_gmr/functions/user_requests.dart';
 import 'robots/no_robots.dart';
 
@@ -14,108 +13,131 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpScreen extends State<SignUp> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(
-        backgroundColor: backgroundColor,
-        title: Text('Sign Up'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
       body: Stack(
         children: [
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 100.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'GMR account',
+                      style: TextStyle(
+                        fontSize: 32.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Acces to your profile',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
           Positioned.fill(
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Container(
                 width: MediaQuery.of(context).size.width * 1,
-                height: MediaQuery.of(context).size.height * 0.6,
+                height: MediaQuery.of(context).size.height * 0.5,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(100.0),
-                    topRight: Radius.circular(100.0),
+                    topLeft: Radius.circular(50.0),
+                    topRight: Radius.circular(50.0),
                   ),
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withOpacity(0.2),
                       spreadRadius: 5,
                       blurRadius: 7,
-                      offset: Offset(0, -3), // Cambia el signo para mover la sombra hacia arriba
+                      offset: Offset(0, -3),
                     ),
                   ],
                 ),
-                child: Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      User? user = await signInWithGoogle(context);
-                      if (user != null) {
-                        print('Successfully signed in with Google: ${user.displayName}');
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white, // Background color
-                      foregroundColor: Colors.black, // Text color
-                      minimumSize: Size(double.infinity, 50), // Button size
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(color: Colors.grey),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          User? user = await signInWithGoogle(context);
+                          if (user != null) {
+                            print('Successfully signed in with Google: ${user.displayName}');
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white, // Background color
+                          foregroundColor: Colors.black, // Text color
+                          minimumSize: Size(double.infinity, 50), // Button size
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            side: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/google_logo.png',
+                              height: 24,
+                              width: 24,
+                            ),
+                            SizedBox(width: 12),
+                            Text(
+                              'Sign Up with Google',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/google_logo.png',
-                          height: 24,
-                          width: 24,
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => NoRobots()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          minimumSize: Size(double.infinity, 50), // Button size
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
                         ),
-                        SizedBox(width: 12),
-                        Text(
-                          'Sign In with Google',
-                          style: TextStyle(fontSize: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Continue',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Icon(Icons.arrow_forward, color: Colors.white),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 50.0,
-            left: 20.0,
-            right: 20.0,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NoRobots()),
-                );
-              },
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Continue',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 25.0,
-                        fontFamily: 'Normal',
-                      ),
-                    ),
-                    Icon(Icons.arrow_forward, color: Colors.black),
-                  ],
                 ),
               ),
             ),
