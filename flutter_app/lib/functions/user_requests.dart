@@ -23,7 +23,7 @@ final storage = new FlutterSecureStorage();
 // "Automatic Login"
 Future<void> checkAuthentication(context) async {
 
-  String? token = await storage.read(key: 'userToken');
+  String? token; //= await storage.read(key: 'userToken');
   if (token != null) {
       authenticate(context, token);
   }

@@ -79,7 +79,7 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
             child: Row(
               children: [
                 CachedNetworkImage(
-                  imageUrl: _robots[index].img ?? '',
+                  imageUrl: _robots[index].img ?? '' ,
                   height: 50.0,
                   width: 50.0,
                   fit: BoxFit.cover,
@@ -93,7 +93,7 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
                 SizedBox(width: 20.0),
                 Expanded(
                   child: Text(
-                    _robots[index].name ?? 'No name',
+                    '${_robots[index].name ?? 'No name'} ${_robots[index].status ? "(online)" : "(offline)"}',
                     style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.normal,

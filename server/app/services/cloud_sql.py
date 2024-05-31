@@ -84,6 +84,22 @@ def add_new_job(cutting_height, area, model, state, start_time, end_time, id_rob
         return row[0]['id']
     else:
         return None
+
+#TODO: ELIMINAR ESTO DESPUES DEL VIDEO
+def add_new_job_video(cutting_height, model, state, start_time, end_time, id_robot):
+    query = "INSERT INTO jobs (cutting_height, model, state, start_time, end_time, id_robot) VALUES (:cutting_height, :model, :state, :start_time, :end_time, :id_robot) RETURNING id"
+    row = execute_query(query, response=True, param_values = {
+                                                            'cutting_height': cutting_height,
+                                                            'model': model,
+                                                            'state': state,
+                                                            'start_time': start_time,
+                                                            'end_time': end_time,
+                                                            'id_robot': id_robot
+                                                        })
+    if row:
+        return row[0]['id']
+    else:
+        return None
     
 def delete_jobs(rid):
     query = "DELETE FROM jobs WHERE id_robot = :rid"
@@ -95,24 +111,24 @@ def get_all_jobs(rid):
     return [dict(row) for row in rows]
 
 def add_active_job(job_id, id_robot):
-    query = "UPDATE robots SET id_actual_job = :job_id WHERE id = :id_robot"
+    query = "UPDATE robots SET id_active_job = :job_id WHERE id = :id_robot"
     execute_query(query, response=False, param_values={'job_id': job_id, 'id_robot': id_robot})
 
 def get_active_job(robot_id):
-    query = "SELECT * FROM jobs WHERE id = (SELECT id_actual_job FROM robots WHERE id = :robot_id)"
+    query = "SELECT * FROM jobs WHERE id = (SELECT id_active_job FROM robots WHERE id = :robot_id)"
     row = execute_query(query, response=True, param_values={'robot_id': robot_id})
     return dict(row[0])
 
 def get_active_job_code(code):
-    query = "SELECT * FROM jobs WHERE id = (SELECT id_actual_job FROM robots WHERE id_connect = :code)"
+    query = "SELECT * FROM jobs WHERE id = (SELECT id_active_job FROM robots WHERE id_connect = :code)"
     row = execute_query(query, response=True, param_values={'code': code})
     return dict(row[0])
 
 def get_id_active_job_from_robot(robot_id):
-    query = "SELECT id_actual_job FROM robots WHERE id = :robot_id"
+    query = "SELECT id_active_job FROM robots WHERE id = :robot_id"
     row = execute_query(query, response=True, param_values={'robot_id': robot_id})
     return row
 
 def delete_active_job_from_robot(robot_id):
-    query_clear_robot = "UPDATE robots SET id_actual_job = NULL WHERE id = :robot_id"
+    query_clear_robot = "UPDATE robots SET id_active_job = NULL WHERE id = :robot_id"
     execute_query(query_clear_robot, response=False, param_values={'robot_id': robot_id})

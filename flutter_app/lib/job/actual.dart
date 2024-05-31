@@ -5,6 +5,7 @@ import '../main_robot.dart';
 import '../globals.dart';
 import '../functions/job_requests.dart';
 import '../robots/robot_class.dart';
+import './job_model_viewer.dart';
 
 class ActualJobPage extends StatefulWidget {
   const ActualJobPage({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
     super.initState();
     Job? job = globalJob;
     if (job != null) {
-      _startTime = job.start_time;
+      _startTime;// = job.start_time!;
       _tickerStream = _ticker();
       _tickerSubscription = _tickerStream.listen((_) {
         setState(() {
@@ -56,50 +57,62 @@ class _ActualJobPageState extends State<ActualJobPage> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Actual Job'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _formatDuration(_elapsedTime),
-              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: _togglePause,
-                  icon: Icon(_isPaused ? Icons.play_arrow : Icons.pause),
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Actual Job'),
+    ),
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            _formatDuration(_elapsedTime),
+            style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: _togglePause,
+                icon: Icon(_isPaused ? Icons.play_arrow : Icons.pause),
+              ),
+              SizedBox(width: 20),
+              IconButton(
+                onPressed: () => _stopJob(context),
+                icon: Icon(Icons.stop),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MainRobot(),
                 ),
-                SizedBox(width: 20),
-                IconButton(
-                  onPressed: () => _stopJob(context),
-                  icon: Icon(Icons.stop),
+              );
+            },
+            child: Text('Go home'),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ModelView(),
                 ),
-              ],
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MainRobot(),
-                  ),
-                );
-              },
-              child: Text('Go home'),
-            ),
-          ],
-        ),
+              );
+            },
+            child: Text('Go to Main Viewer'),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   void _togglePause() {
     setState(() {
@@ -116,7 +129,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
     _tickerSubscription.cancel();
     Job? job = globalJob;
     if (job != null) {
-      job.end_time = DateTime.now();
+      job.end_time;// = DateTime.now();
       globalJob = job;
     }
     showDialog(

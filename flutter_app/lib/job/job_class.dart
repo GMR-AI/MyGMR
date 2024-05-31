@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Job {
   int? id;
@@ -7,8 +8,8 @@ class Job {
   List<Offset>? area;
   String? model;
   String? state;
-  final DateTime start_time;
-  DateTime? end_time;
+  String? start_time;
+  String? end_time;
   String? glb_url;
   String? top_image;
 
@@ -19,23 +20,28 @@ class Job {
     this.area,
     this.model,
     this.state,
-    required this.start_time,
+    this.start_time,
     this.end_time,
   });
 
   // Factory constructor to create a Job instance from a JSON map
   factory Job.fromJson(Map<String, dynamic> data) {
+    final DateFormat format = DateFormat('EEE, dd MMM yyyy HH:mm:ss \'GMT\'', 'en_US');
+    if (data['start_time'] is String){
+      print("Es un string");
+    }
+    print(data['start_time']);
     return Job(
       id: data['id'],
       id_robot: data['id_robot'],
       cutting_height: (data['cutting_height'] as num?)?.toDouble(),
-      area: (data['area'] as List<dynamic>?)
-          ?.map((e) => Offset(e['x'], e['y']))
-          .toList(),
+      //area: (data['area'] as List<dynamic>?)
+      //    ?.map((e) => Offset(e['x'], e['y']))
+      //    .toList(),
       model: data['model'],
       state: data['state'],
-      start_time: DateTime.parse(data['start_time']),
-      end_time: data['end_time'] != null ? DateTime.parse(data['end_time']) : null,
+      start_time: data['start_time'] != null ? data['start_time'] : null,
+      end_time: data['end_time'] != null ? data['end_time'] : null,
     );
   }
 
@@ -48,8 +54,8 @@ class Job {
       'area': area?.map((e) => {'x': e.dx, 'y': e.dy}).toList(),
       'model': model,
       'state': state,
-      'start_time': start_time.toIso8601String(),
-      'end_time': end_time?.toIso8601String(),
+      'start_time': start_time,//?.toIso8601String(),
+      'end_time': end_time,//?.toIso8601String(),
     };
   }
 }

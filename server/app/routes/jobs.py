@@ -14,14 +14,14 @@ def add_new_job():
     data = request.json
     code = int(data.get('code'))
     cutting_height = data.get('cutting_height')
-    area = data.get('area')
+    #area = data.get('area')
     model = data.get('model')
     state = data.get('state')
     start_time = data.get('start_time')
     end_time = data.get('end_time')
     id_robot = data.get('id_robot')
 
-    if not all([cutting_height, area, model, state, start_time, end_time, id_robot]):
+    if not all([cutting_height, model, state, start_time, end_time, id_robot]):
         return jsonify({"message": "Missing data"}), 400
 
     try:
@@ -30,19 +30,12 @@ def add_new_job():
     except ValueError:
         return jsonify({"message": "Invalid date format"}), 400
 
-    queue = rb.get_queue()
-
-    if (cutting_height, area, model, state, start_time, end_time, id_robot) not in queue:
-        return jsonify({"message": "Job was not requested"}), 404
-
-    queue.remove((cutting_height, area, model, state, start_time, end_time, id_robot))
-    print(area)
-    job_id = db.add_new_job(cutting_height, area, model, state, start_time, end_time, id_robot)
+    job_id = db.add_new_job_video(int(cutting_height), model, state, start_time, end_time, int(id_robot))
     
     if job_id:
         active_rm.update_job(code, j_status.START_JOB)
         # Actualizar el campo id_actual_job en la tabla robots
-        db.add_active_job(job_id, id_robot)
+        db.add_active_job(int(job_id), int(id_robot))
         return jsonify({"message": "Job added successfully", "job_id": job_id}), 200
     else:
         return jsonify({"message": "Failed to add job"}), 500
@@ -66,12 +59,7 @@ def delete_jobs():
 @bp.route('/get_all_jobs', methods=['POST'])
 def get_all_jobs():
     data = request.json
-    rid = data.get('rid')
-    queue = rb.get_queue()
-    if rid not in queue:
-        return jsonify({"message": "Robot was not requested"}), 404
-    
-    queue.remove(rid)
+    rid = data.get('rid')    
     jobs = db.get_all_jobs(rid)
     if jobs:
         return jsonify({"message": "All jobs getted", "jobs": jobs}), 200
@@ -131,7 +119,7 @@ def check_init():
     if active_rm.get_queue()[code]['job_status'] == j_status.NEW_JOB:
         return jsonify({'status':'Robot has not finished'}), 404
     
-    
+
     CLOUD_BUCKET_BASE_URL = os.getenv('CLOUD_BUCKET_BASE_URL')
     glb_file = f"{CLOUD_BUCKET_BASE_URL}/{image_folder.bucket_name}/{code}_gmr.glb"
     top_image = f"{CLOUD_BUCKET_BASE_URL}/{image_folder.bucket_name}/{code}_gmr.jpg"

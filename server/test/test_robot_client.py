@@ -158,6 +158,7 @@ class RobotClient:
             self.send_finished()
         elif job_status == j_status.START_JOB:
             job_data = data.get('job_data')
+            print('Starting job')
             if not job_data:
                 print("Error: Job data was not given, cancelling...")
                 return

@@ -24,7 +24,7 @@ class ListOfJobs extends StatelessWidget {
               itemBuilder: (context, index) {
                 final job = jobs[index];
                 return ListTile(
-                  title: Text(job.start_time.day.toString()),
+                  title: Text(job.start_time!),
                   subtitle: Text(job.state.toString()),
                   onTap: () {
                     Navigator.push(

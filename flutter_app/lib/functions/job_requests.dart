@@ -158,9 +158,21 @@ Future<void> checkServerResponse(context) async {
   }
 
 }
+Future<void> request_new_job(BuildContext context) async {
+  // Wait for 10 seconds
+  await Future.delayed(Duration(seconds: 2));
+
+  // Push the new context
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ConfigureGrassHeightPage(),
+    ),
+  );
+}
 
 
-Future<void> request_new_job(context) async {
+Future<void> request_new_job_old(context) async {
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/request_new_job'),
     headers: <String, String>{

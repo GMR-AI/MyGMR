@@ -36,7 +36,7 @@ def robot_request():
 @bp.route('/get_robots', methods=['POST'])
 def get_robots():
     if not session.get('db_id'):
-        return jsonify({"message": "Session error restart the app"}), 401
+       return jsonify({"message": "Session error restart the app"}), 401
     
     robots = db.get_user_robots(session.get('db_id'))
     if not robots:
@@ -44,7 +44,8 @@ def get_robots():
     
     # Update their status
     for robot in robots:
-        robot['status'] = active_rm.exists_in_queue(robot['id_connect'])
+        print(int(robot['id_connect']))
+        robot['status'] = active_rm.exists_in_queue(int(robot['id_connect']))
 
     return jsonify(robots), 200
 

@@ -54,7 +54,7 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
                     fit: StackFit.expand,
                     children: [
                       Image.network(
-                        job!.top_image!,
+                        'https://storage.googleapis.com/gmr-ai-images/12345678_gmr.jpg',//job!.top_image!,
                         fit: BoxFit.contain,
                       ),
                       CustomPaint(

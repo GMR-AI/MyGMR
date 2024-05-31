@@ -72,20 +72,20 @@ class ResumePage extends StatelessWidget {
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () async {
-                int? id_job = await add_job(job);
+                //int? id_job = await add_job(job);
 
-                if (id_job != null) {
-                  job.id = id_job;
-                  globalJob = job;
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ActualJobPage(),
-                    ),
-                  );
-                }
-                else print("Error: job not added at BD");
+                //if (id_job != null) {
+                //  job.id = id_job;
+                //  globalJob = job;
+                globalJob!.start_time;// = DateTime.now();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ActualJobPage(),
+                  ),
+                );
+                //}
+                //else print("Error: job not added at BD");
               },
               child: Text('Start job'),
             )
