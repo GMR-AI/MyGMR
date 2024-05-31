@@ -1,16 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:my_gmr/job/actual.dart';
-import 'robot_class.dart';
-import '../job/configure_grass_height.dart';
 import '../job/job_class.dart';
 import 'weather.dart';
-import 'dart:async';
 import '../globals.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../functions/robots_requests.dart';
 import '../functions/job_requests.dart';
-import '../job/list_of_jobs.dart';
-import 'info_model.dart';
 
 
 class Home extends StatefulWidget {
@@ -160,12 +158,15 @@ class _Home extends State<Home>  {
                                     if (actualJob != null) {
                                       globalRobot!.id_active_job = actualJob.id;
                                       globalJob = actualJob;
-                                      Navigator.push(
+                                      if (context.mounted) {
+                                        context.goNamed("actual");
+                                      }
+                                      /*Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => const ActualJobPage(),
                                         ),
-                                      );
+                                      );*/
                                     } else {
                                       globalJob = null;
                                       globalRobot!.id_active_job = null;
@@ -198,12 +199,17 @@ class _Home extends State<Home>  {
                                   onPressed: () async {
                                     int rid = globalRobot!.id;
                                     List<Job>? jobs = await get_list_of_jobs(rid);
-                                    Navigator.push(
+                                    if (context.mounted) {
+                                      context.goNamed("list_previous", pathParameters: {
+                                        "jobs": jsonEncode(jobs),
+                                      });
+                                    }
+                                    /*Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => ListOfJobs(jobs: jobs ?? []),
                                       ),
-                                    );
+                                    );*/
                                   },
                                   child: Text(
                                     'Previous',
@@ -232,11 +238,11 @@ class _Home extends State<Home>  {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     // Navigate to the new page
-                                    getModel();
-                                    Navigator.push(
+                                    context.goNamed("model_info");
+                                    /*Navigator.push(
                                       context,
                                       MaterialPageRoute(builder: (context) => ModelInfoScreen()),
-                                    );
+                                    );*/
                                   },
                                   child: Text(
                                     'Info',

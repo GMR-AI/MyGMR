@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_gmr/job/actual.dart';
+import 'package:my_gmr/router.dart';
 import 'package:my_gmr/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-// SCENE TREE
 
 Color backgroundColor = const Color(0xFFEFEFEF);
 
@@ -34,13 +34,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'MyGMR',
       theme: myTheme,
       debugShowCheckedModeBanner: false,
-      home: const Scaffold(
-            body: Welcome(title: 'MyGMR'),
-      ),
+      routerConfig: router,
     );
   }
 }

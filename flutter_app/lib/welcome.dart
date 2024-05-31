@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'sign_up.dart';
 import 'functions/user_requests.dart';
 
 Color backgroundColor = const Color(0xFFEFEFEF);
-
-
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key, required this.title});
@@ -36,7 +35,8 @@ class _WelcomeScreen extends State<Welcome> {
             _scrollPosition += details.primaryDelta!;
           });
           if (_scrollPosition < -20) {
-              Navigator.push(
+            context.goNamed("signup");
+              /*Navigator.push(
                 context,
                 PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) => const SignUp(),
@@ -47,7 +47,7 @@ class _WelcomeScreen extends State<Welcome> {
                     );
                   },
                 ),
-              );
+              );*/
             }
         }, // onVerticalDragUpdate
         child: Stack(

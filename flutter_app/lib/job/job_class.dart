@@ -32,8 +32,8 @@ class Job {
       area: data['area'],
       model: data['model'],
       state: data['state'],
-      start_time: data['start_time'],
-      end_time: data['end_time'],
+      start_time: DateTime.parse(data['start_time']),
+      end_time: DateTime.parse(data['end_time']),
     );
   }
 

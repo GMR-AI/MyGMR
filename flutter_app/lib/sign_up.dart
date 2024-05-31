@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:go_router/go_router.dart';
 import 'package:my_gmr/functions/user_requests.dart';
 import 'robots/no_robots.dart';
 
@@ -23,7 +24,7 @@ class _SignUpScreen extends State<SignUp> {
             child: Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: const EdgeInsets.only(top: 100.0),
+                padding: EdgeInsets.only(top: 100.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -108,12 +109,13 @@ class _SignUpScreen extends State<SignUp> {
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () => context.goNamed("no_robots"),
+                        /*{
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const NoRobots()),
                           );
-                        },
+                        },*/
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           foregroundColor: Colors.white,

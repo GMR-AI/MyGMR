@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'resume.dart';
 import 'job_class.dart';
 import '../globals.dart';
@@ -90,11 +91,11 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
                                double.parse((_points[i].dy).toStringAsFixed(2))];
     }
     globalJob!.area = areaMap;
-
-    Navigator.push(
+    context.goNamed("resume");
+    /*Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ResumePage()),
-    );
+    );*/
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../globals.dart';
 import '../main_robot.dart';
 import 'robot_class.dart';
@@ -55,10 +56,11 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
     }
     if (_robots.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacement(
+        context.goNamed("no_robots");
+        /*Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const NoRobots()),
-        );
+        );*/
       });
     }
     List<Widget> robotWidgets = List.generate(_robots.length, (index) {
@@ -68,12 +70,13 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
           onPressed: () {
             _showConfirmationDialog = false;
             globalRobot = _robots[index];
-            Navigator.push(
+            context.goNamed("main_robot");
+            /*Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => MainRobot(),
               ),
-            );
+            );*/
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -136,7 +139,6 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
         ),
       ),
     );
-    print(globalRobot);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

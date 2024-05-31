@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'define_area.dart';
 import 'job_class.dart';
 import '../globals.dart';
@@ -203,10 +204,11 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
             ElevatedButton(
               onPressed: () {
                 globalJob!.cutting_height = _heightValues[_grassHeightIndex];
-                Navigator.push(
+                context.goNamed("define_area");
+                /*Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const DefineAreaPage()),
-                );
+                );*/
               },
               child: const Text('Next'),
             ),

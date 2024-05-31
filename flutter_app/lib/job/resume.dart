@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'job_class.dart';
 import '../robots/robot_class.dart';
 import 'actual.dart';
@@ -87,12 +88,15 @@ class ResumePage extends StatelessWidget {
                   globalJob!.id = id_job;
                   globalRobot!.id_active_job = id_job;
 
-                  Navigator.push(
+                  if (context.mounted) {
+                    context.goNamed("actual");
+                  }
+                  /*Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const ActualJobPage(),
                     ),
-                  );
+                  );*/
                 }
                 else print("Error: job not added at DB");
               },

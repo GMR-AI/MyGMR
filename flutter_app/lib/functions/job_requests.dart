@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../globals.dart' as globals;
 import '../job/job_class.dart';
 import 'package:flutter/material.dart';
-import '../job/configure_grass_height.dart';
+import 'package:go_router/go_router.dart';
 
 Future<List<Job>?> get_list_of_jobs(int rid) async {
   final response = await http.post(
@@ -129,7 +129,7 @@ Future<void> finish_active_job(int robotId) async {
   }
 }
 
-Future<void> checkServerResponse(context) async {
+Future<void> checkServerResponse(BuildContext context) async {
   while (true) {
     final response = await http.post(
       Uri.parse('${dotenv.env['BACKEND_URL']}/check_init'),
@@ -145,12 +145,15 @@ Future<void> checkServerResponse(context) async {
       final data = jsonDecode(response.body);
       globals.globalJob!.glb_url = data['glb'];
       globals.globalJob!.top_image = data['top_image'];
-      Navigator.pushReplacement(
+      if (context.mounted) {
+        context.goNamed("config_grass");
+      }
+      /*Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => ConfigureGrassHeightPage(),
         ),
-      );
+      );*/
       break;
     } else if (response.statusCode > 200) {
       // Handle server error
@@ -160,7 +163,7 @@ Future<void> checkServerResponse(context) async {
   }
 }
 
-Future<void> request_new_job(context) async {
+Future<void> request_new_job(BuildContext context) async {
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/request_new_job'),
     headers: <String, String>{
