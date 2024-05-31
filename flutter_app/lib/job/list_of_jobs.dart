@@ -14,7 +14,7 @@ class ListOfJobs extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('List of Jobs'),
+        title: const Text('List of Jobs'),
       ),
       body: Column(
         children: [
@@ -24,7 +24,7 @@ class ListOfJobs extends StatelessWidget {
               itemBuilder: (context, index) {
                 final job = jobs[index];
                 return ListTile(
-                  title: Text(job.start_time.day.toString()),
+                  title: Text(job.start_time!.day.toString()),
                   subtitle: Text(job.state.toString()),
                   onTap: () {
                     Navigator.push(
@@ -42,8 +42,8 @@ class ListOfJobs extends StatelessWidget {
             onPressed: () {
               _showDeleteConfirmationDialog(context);
             },
-            icon: Icon(Icons.delete),
-            label: Text('Delete All Jobs'),
+            icon: const Icon(Icons.delete),
+            label: const Text('Delete All Jobs'),
           ),
         ],
       ),
@@ -55,14 +55,14 @@ class ListOfJobs extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Delete All Jobs"),
-          content: Text("Are you sure you want to delete all jobs?"),
+          title: const Text("Delete All Jobs"),
+          content: const Text("Are you sure you want to delete all jobs?"),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("CANCEL"),
+              child: const Text("CANCEL"),
             ),
             TextButton(
               onPressed: () async {
@@ -74,7 +74,7 @@ class ListOfJobs extends StatelessWidget {
                 }
                 else print("Error: no robot detected");
               },
-              child: Text("DELETE"),
+              child: const Text("DELETE"),
             ),
           ],
         );

@@ -26,11 +26,11 @@ class _ModelInfoScreenState extends State<ModelInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Model Info'),
+        title: const Text('Model Info'),
       ),
       body: _modelInfo != null
           ? ListView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         children: [
           _buildInfoItem('Model Name', _modelInfo!['name']),
           _buildInfoItem('Manufacturer', _modelInfo!['manufacturer']),
@@ -44,7 +44,7 @@ class _ModelInfoScreenState extends State<ModelInfoScreen> {
           _buildInfoItem('Status', _modelInfo!['status']),
         ],
       )
-          : Center(
+          : const Center(
         child: CircularProgressIndicator(),
       ),
     );
@@ -56,19 +56,19 @@ class _ModelInfoScreenState extends State<ModelInfoScreen> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18.0,
           ),
         ),
-        SizedBox(height: 8.0),
+        const SizedBox(height: 8.0),
         Text(
           value.toString(),
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16.0,
           ),
         ),
-        Divider(),
+        const Divider(),
       ],
     );
   }

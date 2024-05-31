@@ -43,28 +43,28 @@ class WeatherCard extends StatelessWidget {
         children: <Widget>[
           Text(
             city,
-            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 10.0),
+          const SizedBox(height: 10.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               BoxedIcon(weatherIcon, size: 48.0),
-              SizedBox(width: 10.0),
+              const SizedBox(width: 10.0),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
                     'Temperature: $temperature°C',
-                    style: TextStyle(fontSize: 16.0),
+                    style: const TextStyle(fontSize: 16.0),
                   ),
                   Text(
                     'Humidity: $humidity%',
-                    style: TextStyle(fontSize: 16.0),
+                    style: const TextStyle(fontSize: 16.0),
                   ),
                   Text(
                     'Wind: $windDirection, $windSpeed km/h',
-                    style: TextStyle(fontSize: 16.0),
+                    style: const TextStyle(fontSize: 16.0),
                   ),
                 ],
               ),
@@ -176,10 +176,10 @@ class _WeatherPageState extends State<WeatherPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Información del clima'),
+        title: const Text('Información del clima'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             onPressed: getWeather,
           ),
         ],

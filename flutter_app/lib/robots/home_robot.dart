@@ -24,15 +24,20 @@ class _Home extends State<Home>  {
 
   @override
   Widget build(BuildContext context) {
-    Robot? robot = globalRobot; // Get the robot from the global variable
-
-    if (robot == null) {
+    if (globalRobot == null) {
       return Scaffold(
         appBar: AppBar(
+          title: const Text('Home'),
           backgroundColor: Theme.of(context).primaryColor,
-          title: Text('Home'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              globalRobot = null;
+              Navigator.pop(context);
+            },
+          ),
         ),
-        body: Center(
+        body: const Center(
           child: Text('No robot available'),
         ),
       );
@@ -41,14 +46,21 @@ class _Home extends State<Home>  {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text('Home'),
+        title: const Text('Home'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            globalRobot = null;
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Column(
         children: [
           Stack(
             children: [
               CachedNetworkImage(
-                imageUrl: robot.img ?? '',
+                imageUrl: globalRobot!.img ?? '',
                 fit: BoxFit.cover,
                 height: 300.0,
                 errorWidget: (context, error, stackTrace) =>
@@ -62,8 +74,8 @@ class _Home extends State<Home>  {
                 bottom: 8.0,
                 left: 8.0,
                 child: Text(
-                  '${robot.name}',
-                  style: TextStyle(
+                  '${globalRobot!.name}',
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 30.0,
                     fontFamily: 'Logo',
@@ -78,7 +90,7 @@ class _Home extends State<Home>  {
               child: Column(
                 children: [
                   TabBar(
-                    tabs: [
+                    tabs: const [
                       Tab(text: 'Weather'),
                       Tab(text: 'Jobs'),
                       Tab(text: 'Settings'),
@@ -117,8 +129,7 @@ class _Home extends State<Home>  {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     globalJob = Job(
-                                      start_time: DateTime.now(),
-                                      id_robot: robot.id,
+                                      id_robot: globalRobot!.id,
                                     );
                                     setState(() {
                                       _isLoading = true;
@@ -145,37 +156,35 @@ class _Home extends State<Home>  {
                                 height: 50.0,
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    Job? actualJob = await get_active_job(robot.id);
+                                    Job? actualJob = await get_active_job(globalRobot!.id);
                                     if (actualJob != null) {
-                                      robot.id_active_job = actualJob.id;
-                                      globalRobot = robot;
+                                      globalRobot!.id_active_job = actualJob.id;
                                       globalJob = actualJob;
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => ActualJobPage(),
+                                          builder: (context) => const ActualJobPage(),
                                         ),
                                       );
                                     } else {
                                       globalJob = null;
-                                      robot.id_active_job = null;
-                                      globalRobot = robot;
+                                      globalRobot!.id_active_job = null;
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => ActualJobPage(),
+                                          builder: (context) => const ActualJobPage(),
                                         ),
                                       );
                                     }
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     'Actual',
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(8.0),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8.0),
                                     ),
@@ -187,7 +196,7 @@ class _Home extends State<Home>  {
                                 height: 50.0,
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    int rid = robot.id;
+                                    int rid = globalRobot!.id;
                                     List<Job>? jobs = await get_list_of_jobs(rid);
                                     Navigator.push(
                                       context,
@@ -203,7 +212,7 @@ class _Home extends State<Home>  {
                                     ),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(8.0),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8.0),
                                     ),
@@ -236,7 +245,7 @@ class _Home extends State<Home>  {
                                     ),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(8.0),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8.0),
                                     ),

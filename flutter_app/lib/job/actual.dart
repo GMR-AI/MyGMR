@@ -25,7 +25,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
     super.initState();
     Job? job = globalJob;
     if (job != null) {
-      _startTime = job.start_time;
+      _startTime = job.start_time!;
       _tickerStream = _ticker();
       _tickerSubscription = _tickerStream.listen((_) {
         setState(() {
@@ -48,9 +48,9 @@ class _ActualJobPageState extends State<ActualJobPage> {
     if (job == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Actual Job'),
+          title: const Text('Actual Job'),
         ),
-        body: Center(
+        body: const Center(
           child: Text('No job available'),
         ),
       );
@@ -58,7 +58,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Actual Job'),
+        title: const Text('Actual Job'),
       ),
       body: Center(
         child: Column(
@@ -66,9 +66,9 @@ class _ActualJobPageState extends State<ActualJobPage> {
           children: [
             Text(
               _formatDuration(_elapsedTime),
-              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -76,14 +76,14 @@ class _ActualJobPageState extends State<ActualJobPage> {
                   onPressed: _togglePause,
                   icon: Icon(_isPaused ? Icons.play_arrow : Icons.pause),
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 IconButton(
                   onPressed: () => _stopJob(context),
-                  icon: Icon(Icons.stop),
+                  icon: const Icon(Icons.stop),
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -93,7 +93,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
                   ),
                 );
               },
-              child: Text('Go home'),
+              child: const Text('Go home'),
             ),
           ],
         ),
@@ -123,8 +123,8 @@ class _ActualJobPageState extends State<ActualJobPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Job Finished"),
-          content: Text("The job has been finished."),
+          title: const Text("Job Finished"),
+          content: const Text("The job has been finished."),
           actions: <Widget>[
             ElevatedButton(
               onPressed: () async {
@@ -153,7 +153,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
   }
 
   Stream<int> _ticker() {
-    return Stream.periodic(Duration(seconds: 1), (x) => x);
+    return Stream.periodic(const Duration(seconds: 1), (x) => x);
   }
 
   Duration _calculateDuration(DateTime startTime) {

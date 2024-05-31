@@ -10,14 +10,12 @@ class ResumePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Job? job = globalJob; // Obtener la instancia de Job global
-
-    if (job == null) {
+    if (globalJob == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Resume'),
+          title: const Text('Resume'),
         ),
-        body: Center(
+        body: const Center(
           child: Text('No job available'),
         ),
       );
@@ -25,7 +23,14 @@ class ResumePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Resume'),
+        title: const Text('Resume'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            globalJob!.area = null;
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Container(
         color: Colors.green.shade100, // Fondo de la pantalla verde
@@ -34,7 +39,7 @@ class ResumePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: Colors.white, // Rectángulo blanco
                 borderRadius: BorderRadius.circular(20.0), // Esquinas redondeadas
@@ -42,24 +47,23 @@ class ResumePage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Job Information',
                     style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10.0),
-                  Text('Date: ${job.start_time}'),
-                  Text('Cutting Height: ${job.cutting_height}'),
-                  Text('Area: ${job.area}'),
+                  const SizedBox(height: 10.0),
+                  Text('Cutting Height: ${globalJob!.cutting_height}'),
+                  Text('Area: ${globalJob!.area}'),
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 for (int i = 1; i <= 3; i++)
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5.0),
+                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
                     width: 10.0,
                     height: 10.0,
                     decoration: BoxDecoration(
@@ -69,25 +73,30 @@ class ResumePage extends StatelessWidget {
                   ),
               ],
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () async {
-                int? id_job = await add_job(job);
+                globalJob!.start_time = DateTime.now();
+                globalJob!.state = "active";
+                globalJob!.model = "¡¡¡DELETE THIS INITIALIZATION!!!"; // TO UPLOAD THIS DOESN'T MAKE SENSE!
+                globalJob!.end_time = DateTime.now(); // TO UPLOAD THIS AT INITIALIZATION DOESN'T MAKE SENSE!
+                print("Global Job area: ${globalJob!.area}");
+                int? id_job = await add_job(globalJob!);
 
                 if (id_job != null) {
-                  job.id = id_job;
-                  globalJob = job;
+                  globalJob!.id = id_job;
+                  globalRobot!.id_active_job = id_job;
 
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ActualJobPage(),
+                      builder: (context) => const ActualJobPage(),
                     ),
                   );
                 }
-                else print("Error: job not added at BD");
+                else print("Error: job not added at DB");
               },
-              child: Text('Start job'),
+              child: const Text('Start job'),
             )
           ],
         ),

@@ -47,7 +47,7 @@ Future<void> authenticate(context, idToken) async {
     globals.globalUser = MyUser.fromJson(jsonDecode(response.body));
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ListOfRobots()),
+      MaterialPageRoute(builder: (context) => const ListOfRobots()),
     );
 
   } else {

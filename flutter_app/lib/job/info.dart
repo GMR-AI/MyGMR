@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_gmr/globals.dart';
+
 class JobInfo extends StatelessWidget {
   final dynamic job;
 
@@ -12,7 +13,7 @@ class JobInfo extends StatelessWidget {
         title: Text(job['name']),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

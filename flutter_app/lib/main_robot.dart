@@ -4,7 +4,7 @@ import 'robots/home_robot.dart';
 import 'users/user_profile.dart';
 import 'globals.dart';
 
-Color backgroundColor = Color(0xFFEFEFEF);
+Color backgroundColor = const Color(0xFFEFEFEF);
 
 class MainRobot extends StatefulWidget {
   MainRobot({Key? key}) : super(key: key);

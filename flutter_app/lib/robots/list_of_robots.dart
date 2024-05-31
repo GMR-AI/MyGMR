@@ -7,7 +7,7 @@ import 'no_robots.dart';
 import '../functions/robots_requests.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-Color backgroundColor = Color(0xFFEFEFEF);
+Color backgroundColor = const Color(0xFFEFEFEF);
 
 class ListOfRobots extends StatefulWidget {
   const ListOfRobots({super.key});
@@ -36,7 +36,7 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
     List<Robot>? robots = await get_robots();
 
     setState(() {
-    _robots = robots!=null ? robots : [];
+    _robots = robots ?? [];
     _isLoading = false;
     });
   }
@@ -46,9 +46,9 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('My Robots'),
+          title: const Text('My Robots'),
         ),
-        body: Center(
+        body: const Center(
           child: CircularProgressIndicator(),
         ),
       );
@@ -57,15 +57,16 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => NoRobots()),
+          MaterialPageRoute(builder: (context) => const NoRobots()),
         );
       });
     }
     List<Widget> robotWidgets = List.generate(_robots.length, (index) {
       return Container(
-        margin: EdgeInsets.symmetric(vertical: 8.0),
+        margin: const EdgeInsets.symmetric(vertical: 8.0),
         child: ElevatedButton(
           onPressed: () {
+            _showConfirmationDialog = false;
             globalRobot = _robots[index];
             Navigator.push(
               context,
@@ -90,19 +91,19 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
                         width: 50.0,
                       ),
                 ),
-                SizedBox(width: 20.0),
+                const SizedBox(width: 20.0),
                 Expanded(
                   child: Text(
                     _robots[index].name ?? 'No name',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
                 ),
-                SizedBox(width: 20.0),
+                const SizedBox(width: 20.0),
                 IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: () {
                     setState(() {
                       _selectedRobotId = _robots[index].id;
@@ -118,15 +119,15 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
 
     robotWidgets.add(
       Container(
-        margin: EdgeInsets.symmetric(vertical: 8.0),
+        margin: const EdgeInsets.symmetric(vertical: 8.0),
         child: ElevatedButton(
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AddRobot()),
+              MaterialPageRoute(builder: (context) => const AddRobot()),
             );
           },
-          child: Row(
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.add),
@@ -135,14 +136,14 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
         ),
       ),
     );
-
+    print(globalRobot);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('My Robots'),
+        title: const Text('My Robots'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -162,7 +163,7 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
 
   Widget _buildConfirmationDialog(BuildContext context) {
     return AlertDialog(
-      title: Text('Delete this robot?'),
+      title: const Text('Delete this robot?'),
       actions: [
         TextButton(
           onPressed: () async {
@@ -175,7 +176,7 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
               });
             }
           },
-          child: Text('Yes'),
+          child: const Text('Yes'),
         ),
         TextButton(
           onPressed: () {
@@ -183,7 +184,7 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
               _showConfirmationDialog = false;
             });
           },
-          child: Text('No'),
+          child: const Text('No'),
         ),
       ],
     );

@@ -98,7 +98,7 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
   int _grassHeightIndex = 0; // Índice inicial de la altura del césped
 
   // Lista de alturas correspondientes a cada posición de la barra deslizante
-  final List<double> _heightValues = [2, 4, 8, 10];
+  final List<int> _heightValues = [2, 4, 8, 10];
 
   // Lista de rutas de imágenes correspondientes a cada altura de la barra deslizante
   final List<String> _imagePaths = [
@@ -112,14 +112,12 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
 
   @override
   Widget build(BuildContext context) {
-    Job? job = globalJob;
-
-    if (job == null) {
+    if (globalJob == null) {
       return Scaffold(
         appBar: AppBar(
           title: Text('Step 1'),
         ),
-        body: Center(
+        body: const Center(
           child: Text('No job available'),
         ),
       );
@@ -127,7 +125,14 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Step 1'),
+        title: const Text('Step 1'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            globalJob = null;
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Container(
         color: Colors.green.shade100, // Fondo de la pantalla verde
@@ -136,7 +141,7 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: Colors.white, // Rectángulo blanco
                 borderRadius: BorderRadius.circular(20.0), // Esquinas redondeadas
@@ -144,11 +149,11 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
+                  const Text(
                     'Configure Grass Height (cm)',
                     style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   Row(
                     children: [
                       Expanded(
@@ -178,13 +183,13 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 for (int i = 1; i <= 3; i++)
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5.0),
+                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
                     width: 10.0,
                     height: 10.0,
                     decoration: BoxDecoration(
@@ -194,16 +199,16 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
                   ),
               ],
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                job.cutting_height = _heightValues[_grassHeightIndex];
+                globalJob!.cutting_height = _heightValues[_grassHeightIndex];
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => DefineAreaPage()),
+                  MaterialPageRoute(builder: (context) => const DefineAreaPage()),
                 );
               },
-              child: Text('Next'),
+              child: const Text('Next'),
             ),
           ],
         ),

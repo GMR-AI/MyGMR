@@ -2,7 +2,7 @@ import 'package:my_gmr/functions/robots_requests.dart';
 
 class Robot {
   final int id;
-  String? id_connect;
+  int? id_connect;
   String? name;
   final String? img;
   int? id_active_job;

@@ -33,17 +33,18 @@ Future<List<Job>?> get_list_of_jobs(int rid) async {
 }
 
 Future<int?> add_job(Job job) async {
+  final message = job.toJson();
+  message['code'] = globals.globalRobot!.id_connect!;
+
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/add_new_job'),
     headers: <String, String>{
       'Cookie': globals.sessionID ?? '',
       'Content-Type': 'application/json; charset=UTF-8',
     },
-    body: jsonEncode(jsonEncode({
-      ...job.toJson(),
-      'code': globals.globalRobot!.id_connect!,
-    }),),
+    body: jsonEncode(message, toEncodable: (item) => (item is DateTime) ? item.toIso8601String() : item),
   );
+
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     final jobID = data['job_id'] as int?;
@@ -93,6 +94,7 @@ Future<Job?> get_active_job(int robotId) async {
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     final jobData = data['job'];
     if (jobData != null) {
+      print("This is the job data: $jobData");
       final job = Job.fromJson(jobData);
       print('Active job found: $job');
       return job;
@@ -115,7 +117,7 @@ Future<void> finish_active_job(int robotId) async {
       'Content-Type': 'application/json; charset=UTF-8',
       'Cookie': globals.sessionID ?? '',
     },
-    body: jsonEncode(<String, int>{'robot_id': robotId, 'code': int.parse(globals.globalRobot!.id_connect!)}),
+    body: jsonEncode(<String, int>{'robot_id': robotId, 'code': globals.globalRobot!.id_connect!}),
   );
 
   if (response.statusCode == 200) {
@@ -136,7 +138,7 @@ Future<void> checkServerResponse(context) async {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(
-          <String, int>{'code': int.parse(globals.globalRobot!.id_connect!)}),
+          <String, int>{'code': globals.globalRobot!.id_connect!}),
     );
 
     if (response.statusCode == 200) {
@@ -152,13 +154,11 @@ Future<void> checkServerResponse(context) async {
       break;
     } else if (response.statusCode > 200) {
       // Handle server error
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 5));
       continue;
     }
   }
-
 }
-
 
 Future<void> request_new_job(context) async {
   final response = await http.post(
@@ -167,7 +167,7 @@ Future<void> request_new_job(context) async {
       'Cookie': globals.sessionID ?? '',
       'Content-Type': 'application/json; charset=UTF-8',
     },
-    body: jsonEncode(<String, int>{'code': int.parse(globals.globalRobot!.id_connect!)}),
+    body: jsonEncode(<String, int>{'code': globals.globalRobot!.id_connect!}),
   );
 
   if (response.statusCode == 200) {
