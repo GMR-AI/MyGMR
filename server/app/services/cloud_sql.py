@@ -58,10 +58,9 @@ def get_robot_by_code(code):
     robs = [dict(row) for row in rows]
     return robs[0] if robs else None
 
-def add_new_robot(code, name, img, usid, mid):
-    query = "INSERT INTO robots (id_connect, name, img, id_user, id_model) VALUES (:idc, :n, :im, :idu, :idm)"
-    execute_query(query, response=False, param_values={'idc': code, 'n':name, 'im': img, 'idu': usid, 'idm': mid})
-
+def add_new_robot(code, name, img, usid, mid, model):
+    query = "INSERT INTO robots (id_connect, name, img, id_user, id_model, reconstruction_path) VALUES (:idc, :n, :im, :idu, :idm, :m)"
+    execute_query(query, response=False, param_values={'idc': code, 'n':name, 'im': img, 'idu': usid, 'idm': mid, 'm': model})
 
 def delete_robot(robot_id):
     query_delete_robot = "DELETE FROM robots WHERE id = :robot_id"
@@ -69,15 +68,12 @@ def delete_robot(robot_id):
 
 ## JOBS
 
-def add_new_job(cutting_height, area, model, state, start_time, end_time, id_robot):
-    query = "INSERT INTO jobs (cutting_height, area, model, state, start_time, end_time, id_robot) VALUES (:cutting_height, :area, :model, :state, :start_time, :end_time, :id_robot) RETURNING id"
+def add_new_job(cutting_height, area, start_time, id_robot):
+    query = "INSERT INTO jobs (cutting_height, area, start_time, id_robot) VALUES (:cutting_height, :area, :start_time, :id_robot) RETURNING id"
     row = execute_query(query, response=True, param_values = {
                                                             'cutting_height': cutting_height,
                                                             'area': area,
-                                                            'model': model,
-                                                            'state': state,
                                                             'start_time': start_time,
-                                                            'end_time': end_time,
                                                             'id_robot': id_robot
                                                         })
     if row:
@@ -86,11 +82,11 @@ def add_new_job(cutting_height, area, model, state, start_time, end_time, id_rob
         return None
     
 def delete_jobs(rid):
-    query = "DELETE FROM jobs WHERE id_robot = :rid"
+    query = "DELETE FROM jobs WHERE id_robot = :rid AND end_time IS NOT NULL"
     execute_query(query, response=False, param_values={'rid': rid})
 
 def get_all_jobs(rid):
-    query = "SELECT * FROM jobs WHERE id_robot = :rid"
+    query = "SELECT * FROM jobs WHERE id_robot = :rid AND end_time IS NOT NULL"
     rows = execute_query(query, response=True, param_values={'rid': rid})
     return [dict(row) for row in rows]
 
@@ -99,9 +95,9 @@ def add_active_job(job_id, id_robot):
     execute_query(query, response=False, param_values={'job_id': job_id, 'id_robot': id_robot})
 
 def get_active_job(robot_id):
-    query = "SELECT * FROM jobs WHERE id = (SELECT id_active_job FROM robots WHERE id = :robot_id)"
+    query = "SELECT id, cutting_height, TO_CHAR(start_time, 'YYYY-MM-DD HH24:MI:SS') AS start_time, TO_CHAR(end_time, 'YYYY-MM-DD HH24:MI:SS') AS end_time, id_robot, area FROM jobs WHERE id = (SELECT id_active_job FROM robots WHERE id = :robot_id)"
     row = execute_query(query, response=True, param_values={'robot_id': robot_id})
-    return dict(row[0])
+    return dict(row[0]) if row else None
 
 def get_active_job_code(code):
     query = "SELECT * FROM jobs WHERE id = (SELECT id_active_job FROM robots WHERE id_connect = :code)"

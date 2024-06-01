@@ -12,8 +12,8 @@ runtime_config:
 manual_scaling:
   instances: 1
 resources:
-  cpu: 1
-  memory_gb: 0.5
+  cpu: 2
+  memory_gb: 2
   disk_size_gb: 10
 beta_settings:
   cloud_sql_instances: gmr-ai:europe-southwest1:gmr-ai-test=tcp:8081

@@ -2,6 +2,7 @@ from app.routes import bp
 from app.services import cloud_sql as db
 from app.services.cloud_bucket import image_folder
 from app.utils import rb
+import os
 from app.utils.active_robots_manager import active_rm, j_status
 from flask import request, jsonify, session, make_response
 
@@ -28,7 +29,10 @@ def robot_request():
     if not mod:
         return jsonify({"message": "Robot model not found, contact our team"}), 404
     
-    db.add_new_robot(code, mod['name'], mod['image_path'], session['db_id'], req['model'])
+    CLOUD_BUCKET_BASE_URL = os.getenv('CLOUD_BUCKET_BASE_URL')
+    model = f"{CLOUD_BUCKET_BASE_URL}/{image_folder.bucket_name}/{code}_gmr.glb"
+    image = f"{CLOUD_BUCKET_BASE_URL}/{image_folder.bucket_name}/{mod['image_path']}"
+    db.add_new_robot(code, mod['name'], image, session['db_id'], req['model'], model)
 
     # Once added, get robots
     return jsonify({}), 200
@@ -46,7 +50,7 @@ def get_robots():
     for robot in robots:
         robot['status'] = active_rm.exists_in_queue(robot['id_connect'])
 
-    return jsonify(robots), 200
+    return jsonify({'message': 'Robot request was successful', 'robots': robots}), 200
 
 @bp.route('/get_robot_info', methods=['POST'])
 def get_robot_info():
@@ -138,7 +142,7 @@ def active_job():
 
     job_data=[]
     if status == j_status.START_JOB:
-        # Check if the job has been setted up
+        # Check if the job has been set up
         job_data=db.get_active_job_code(code)        
         if not job_data:
             return jsonify({'job_status': j_status.NONE.name, 'job_data': job_data}), 404
@@ -152,8 +156,9 @@ def job_finished():
     # Check if robot is online
     if not active_rm.exists_in_queue(code):
         return jsonify({'job_status': j_status.NONE.name}), 404
+    # TODO: Actualizar el end_time
     active_rm.update_job(code, j_status.NONE)
-        
+
     return jsonify({'status': 'done'}), 200
 
 @bp.route('/upload_file', methods=['POST'])
