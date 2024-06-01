@@ -30,13 +30,6 @@ def add_new_job():
     except ValueError:
         return jsonify({"message": "Invalid date format"}), 400
 
-    queue = rb.get_queue()
-
-    if (cutting_height, area, model, state, start_time, end_time, id_robot) not in queue:
-        return jsonify({"message": "Job was not requested"}), 404
-
-    queue.remove((cutting_height, area, model, state, start_time, end_time, id_robot))
-    print(area)
     job_id = db.add_new_job(cutting_height, area, model, state, start_time, end_time, id_robot)
     
     if job_id:
@@ -52,11 +45,7 @@ def add_new_job():
 def delete_jobs():
     data = request.json
     rid = data.get('rid')
-    queue = rb.get_queue()
-    if rid not in queue:
-        return jsonify({"message": "Robot was not requested"}), 404
     
-    queue.remove(rid)
     if db.delete_jobs(rid):
         return jsonify({"message": "All jobs already deleted"}), 200
     else:
@@ -67,11 +56,7 @@ def delete_jobs():
 def get_all_jobs():
     data = request.json
     rid = data.get('rid')
-    queue = rb.get_queue()
-    if rid not in queue:
-        return jsonify({"message": "Robot was not requested"}), 404
     
-    queue.remove(rid)
     jobs = db.get_all_jobs(rid)
     if jobs:
         return jsonify({"message": "All jobs getted", "jobs": jobs}), 200
