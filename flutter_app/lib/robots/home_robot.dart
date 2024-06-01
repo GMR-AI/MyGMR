@@ -298,9 +298,6 @@ class _Home extends State<Home>  {
                 if (globalRobot != null) {
                   await finish_active_job(globalRobot!.id);
                   globalRobot!.id_active_job = null;
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
                   globalJob = Job(
                     id_robot: globalRobot!.id,
                   );
@@ -310,7 +307,9 @@ class _Home extends State<Home>  {
                   // Update the robot status
                   print("Requesting new job...");
                   await request_new_job();
+                  print(globalJob!.top_image);
                   if (context.mounted && globalJob!.top_image != null) {
+                    Navigator.pop(context);
                     context.goNamed("config_grass");
                   }
                   setState(() {

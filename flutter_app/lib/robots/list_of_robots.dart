@@ -30,16 +30,17 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
 
   @override
   void initState() {
-  super.initState();
-  _fetchRobots();
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchRobots();
+    });
   }
 
   Future<void> _fetchRobots() async {
     List<Robot>? robots = await get_robots();
-
     setState(() {
-    _robots = robots ?? [];
-    _isLoading = false;
+      _isLoading = false;
+      _robots = robots ?? [];
     });
   }
 
@@ -57,11 +58,9 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
     }
     if (_robots.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.goNamed("no_robots");
-        /*Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const NoRobots()),
-        );*/
+        if (context.mounted) {
+          context.goNamed("no_robots");
+        }
       });
     }
     List<Widget> robotWidgets = List.generate(_robots.length, (index) {
@@ -173,12 +172,15 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
           onPressed: () async {
             if (_selectedRobotId != null) {
               await delete_this_robot(_selectedRobotId!, _selectedRobotCode!);
-              setState(() {
-                _robots.removeWhere((robot) => robot.id == _selectedRobotId);
-                _showConfirmationDialog = false;
-                _selectedRobotId = null;
-                _selectedRobotCode = null;
-              });
+              if (context.mounted) {
+                Navigator.pop(context);
+                setState(() {
+                  _robots.removeWhere((robot) => robot.id == _selectedRobotId);
+                  _showConfirmationDialog = false;
+                  _selectedRobotId = null;
+                  _selectedRobotCode = null;
+                });
+              }
             }
           },
           child: const Text('Yes'),

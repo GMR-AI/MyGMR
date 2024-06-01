@@ -98,7 +98,8 @@ final GoRouter router = GoRouter(routes: <GoRoute>[
                       name: "job_info",
                       path: "jobinfo/:job",
                       builder: (BuildContext context, GoRouterState state) {
-                        return JobInfo(job: jsonDecode(state.pathParameters["job"]!));
+                        Job? job = state.extra as Job;
+                        return JobInfo(job: job);
                       }
                   ) // Job Info
                 ]

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:my_gmr/globals.dart';
 import 'info.dart';
 import 'job_class.dart';
@@ -35,7 +36,7 @@ class ListOfJobs extends StatelessWidget {
               itemBuilder: (context, index) {
                 final job = jobs![index];
                 return ListTile(
-                  title: Text(job.start_time!.day.toString()),
+                  title: Text("Job: ${job.start_time}"),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -79,6 +80,7 @@ class ListOfJobs extends StatelessWidget {
                 if (globalRobot != null) {
                   await delete_jobs(globalRobot!.id);
                   if (context.mounted) {
+                    Navigator.pop(context);
                     Navigator.pop(context);
                   }
                 }

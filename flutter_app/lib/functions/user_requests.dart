@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
 import 'package:mime/mime.dart';
@@ -30,7 +31,7 @@ Future<void> checkAuthentication(context) async {
 }
 
 // General auth function
-Future<void> authenticate(context, idToken) async {
+Future<void> authenticate(BuildContext context, idToken) async {
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/g_auth'),
     headers: <String, String>{
@@ -45,16 +46,14 @@ Future<void> authenticate(context, idToken) async {
     // Assume `response` is the response object received from the server
     setSessionID(response.headers['set-cookie']);
     globals.globalUser = MyUser.fromJson(jsonDecode(response.body));
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ListOfRobots()),
-    );
+    if (context.mounted) {
 
+      context.goNamed("list_robots");
+    }
   } else {
     print('Failed to authenticate with Flask backend');
     await storage.delete(key: 'userToken');
   }
-
 }
 
 Future<User?> signInWithGoogle(context) async {
