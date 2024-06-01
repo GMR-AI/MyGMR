@@ -144,18 +144,11 @@ class RobotClient:
         if job_status == j_status.NONE:
             return
         elif job_status == j_status.NEW_JOB:
-            print('Making a reconstruction...')
-            # Funcion de reconstruccion
+           if job_status == State.WORKING and self.active_job != None:
+                print("Cancelling current job...")
+                self.cancel_task()
 
-            #convert_obj_to_glb('obj_dataset/gmr.obj')
-
-            print('Making the top image...')
-            #run_convertion('ply_dataset', 'image_dataset')
-
-            print('Sending data')
-            self.upload_file('obj_dataset/gmr.glb')
-            self.upload_file('image_dataset/gmr.jpg')
-            self.send_finished()
+           self.new_job()
         elif job_status == j_status.START_JOB:
             job_data = data.get('job_data')
             if not job_data:
@@ -184,11 +177,31 @@ class RobotClient:
 ################# JOBS #################
 
     def do_task(self):
+        print("Planning the task...")
+        # Funcion del path planner
+        time.sleep(5)
+        print("Plan was sent to ROS2")
+        # Enviar tasca al nodo de ROS 2
         return
 
     def cancel_task(self):
+        time.sleep(10)
         return
     
+    def new_job(self):
+        print('Making a reconstruction...')
+        # Funcion de reconstruccion
+
+        #convert_obj_to_glb('obj_dataset/gmr.obj')
+
+        print('Making the top image...')
+        #run_convertion('ply_dataset', 'image_dataset')
+
+        print('Sending data')
+        self.upload_file('obj_dataset/gmr.glb')
+        self.upload_file('image_dataset/gmr.jpg')
+        self.send_finished()
+                
     def upload_file(self, file_path):
         try:
             with open(file_path, 'rb') as file:
