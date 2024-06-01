@@ -37,7 +37,7 @@ Future<List<Job>?> get_list_of_jobs(int rid) async {
 Future<int?> add_job(Job job) async {
   final message = job.toJson();
   message['code'] = globals.globalRobot!.id_connect!;
-  print(message);
+  print(jsonEncode(message, toEncodable: (item) => (item is DateTime) ? item.toIso8601String() : item));
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/add_new_job'),
     headers: <String, String>{
@@ -125,7 +125,8 @@ Future<void> finish_active_job(int robotId) async {
     "code": globals.globalRobot!.id_connect,
     "end_time": DateTime.now(),
   };
-  print(message);
+
+  print(jsonEncode(message, toEncodable: (item) => (item is DateTime) ? item.toIso8601String() : item));
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/finish_active_job'),
     headers: <String, String>{

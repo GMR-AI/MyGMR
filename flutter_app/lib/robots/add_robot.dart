@@ -88,7 +88,7 @@ class _AddRobotScreen extends State<AddRobot> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      _success ? 'Robot saved successfully!' : 'There was an error adding you robot!',
+                      _success ? 'Robot saved successfully!' : 'There was an error adding your robot!',
                       style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: _success ? Colors.green : Colors.red),
                       textAlign: TextAlign.center,
                     ),

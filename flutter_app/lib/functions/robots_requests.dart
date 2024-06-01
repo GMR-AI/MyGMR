@@ -59,14 +59,14 @@ Future<Map<String, dynamic>?> getModel() async {
   return jsonDecode(response.body);
 }
 
-Future<void> delete_this_robot(int robotId) async {
+Future<void> delete_this_robot(int robotId, int robotCode) async {
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/delete_robot'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Cookie': globals.sessionID ?? '',
     },
-    body: jsonEncode(<String, int>{'robot_id': robotId}),
+    body: jsonEncode(<String, int>{'robot_id': robotId, 'code': robotCode}),
   );
 
   if (response.statusCode == 200) {

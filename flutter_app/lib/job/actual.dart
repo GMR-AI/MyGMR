@@ -240,7 +240,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
         return AlertDialog(
           title: const Text("Job Finished"),
           content: const Text("The job has been finished."),
-          actions: <Widget>[
+          actions: <Widget> [
             ElevatedButton(
               onPressed: () async {
                 if (globalRobot != null) {

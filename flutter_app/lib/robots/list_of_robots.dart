@@ -26,6 +26,7 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
   bool _isLoading = true;
   bool _showConfirmationDialog = false;
   int? _selectedRobotId;
+  int? _selectedRobotCode;
 
   @override
   void initState() {
@@ -110,6 +111,7 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
                   onPressed: () {
                     setState(() {
                       _selectedRobotId = _robots[index].id;
+                      _selectedRobotCode = _robots[index].id_connect;
                       _showConfirmationDialog = true;
                     });
                   },
@@ -170,11 +172,12 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
         TextButton(
           onPressed: () async {
             if (_selectedRobotId != null) {
-              await delete_this_robot(_selectedRobotId!);
+              await delete_this_robot(_selectedRobotId!, _selectedRobotCode!);
               setState(() {
                 _robots.removeWhere((robot) => robot.id == _selectedRobotId);
                 _showConfirmationDialog = false;
                 _selectedRobotId = null;
+                _selectedRobotCode = null;
               });
             }
           },

@@ -16,6 +16,8 @@ import 'package:my_gmr/main_robot.dart';
 import 'package:my_gmr/sign_up.dart';
 import 'package:my_gmr/welcome.dart';
 
+import 'job/job_class.dart';
+
 final GoRouter router = GoRouter(routes: <GoRoute>[
   GoRoute(
     name: "welcome",
@@ -86,9 +88,10 @@ final GoRouter router = GoRouter(routes: <GoRoute>[
               ), // Actual Job
               GoRoute(
                 name: "list_previous",
-                path: "listprevious/:jobs",
+                path: "listprevious",
                 builder: (BuildContext context, GoRouterState state) {
-                  return ListOfJobs(jobs: jsonDecode(state.pathParameters["jobs"]!));
+                  List<Job>? jobs = state.extra as List<Job>?;
+                  return ListOfJobs(jobs: jobs);
                 },
                 routes: [
                   GoRoute(
