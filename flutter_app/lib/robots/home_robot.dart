@@ -126,16 +126,23 @@ class _Home extends State<Home>  {
                                 height: 50.0,
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    globalJob = Job(
-                                      id_robot: globalRobot!.id,
-                                    );
-                                    setState(() {
-                                      _isLoading = true;
-                                    });
-                                    // Update the robot status
-                                    await request_new_job(context);
-                                    if (context.mounted) {
-                                      context.goNamed("config_grass");
+                                    Job? active_job = await get_active_job(globalRobot!.id);
+                                    if (active_job != null) {
+                                      _stopJob(context);
+                                    }
+                                    else {
+                                      globalJob = Job(
+                                        id_robot: globalRobot!.id,
+                                      );
+                                      setState(() {
+                                        _isLoading = true;
+                                      });
+                                      // Update the robot status
+                                      print("Requesting new job...");
+                                      await request_new_job();
+                                      if (context.mounted && globalJob!.top_image != null) {
+                                        context.goNamed("config_grass");
+                                      }
                                       setState(() {
                                         _isLoading = false;
                                       });
@@ -206,13 +213,11 @@ class _Home extends State<Home>  {
                                   onPressed: () async {
                                     int rid = globalRobot!.id;
                                     List<Job>? jobs = await get_list_of_jobs(rid);
-                                    if (jobs != null) {
                                       if (context.mounted) {
                                         context.goNamed("list_previous", pathParameters: {
                                           "jobs": jsonEncode(jobs),
                                         });
                                       }
-                                    }
                                     /*Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -279,6 +284,53 @@ class _Home extends State<Home>  {
           ),
         ],
       ),
+    );
+  }
+
+  void _stopJob(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Current active job"),
+          content: const Text("There is an ongoing job. Do you want to delete it first?"),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () async {
+                if (globalRobot != null) {
+                  await finish_active_job(globalRobot!.id);
+                  globalRobot!.id_active_job = null;
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                  globalJob = Job(
+                    id_robot: globalRobot!.id,
+                  );
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  // Update the robot status
+                  print("Requesting new job...");
+                  await request_new_job();
+                  if (context.mounted && globalJob!.top_image != null) {
+                    context.goNamed("config_grass");
+                  }
+                  setState(() {
+                    _isLoading = false;
+                  });
+                }
+              },
+              child: const Text('Yes'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('No'),
+            )
+          ],
+        );
+      },
     );
   }
 }

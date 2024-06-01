@@ -47,7 +47,7 @@ class _ModelInfoScreenState extends State<ModelInfoScreen> {
           _buildInfoItem('Release Date', _modelInfo!['release_date']),
           _buildInfoItem('Dimensions (m)', _formatJson(_modelInfo!['dimensions'])),
           _buildInfoItem('Weight (kg)', _modelInfo!['weight']),
-          _buildInfoItem('Battery Life (🤔)', _modelInfo!['battery_life']),
+          _buildInfoItem('Battery Life (Ah)', _modelInfo!['battery_life']),
           _buildInfoItem('Charging Time (min)', _modelInfo!['charging_time']),
           _buildInfoItem('Features', _formatJson(_modelInfo!['features'])),
           _buildInfoItem('Price', _modelInfo!['price']),

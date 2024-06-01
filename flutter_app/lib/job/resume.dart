@@ -53,7 +53,7 @@ class ResumePage extends StatelessWidget {
                     style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10.0),
-                  Text('Cutting Height: ${globalJob!.cutting_height}'),
+                  Text('Cutting Height: ${globalJob!.cutting_height} cm'),
                   Text('Area: ${globalJob!.area}'),
                 ],
               ),

@@ -6,12 +6,23 @@ import '../functions/job_requests.dart';
 import '../robots/robot_class.dart';
 
 class ListOfJobs extends StatelessWidget {
-  final List<Job> jobs;
+  List<Job>? jobs;
 
-  ListOfJobs({required this.jobs});
+  ListOfJobs({this.jobs});
 
   @override
   Widget build(BuildContext context) {
+    if (jobs == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('List of Jobs'),
+        ),
+        body: const Center(
+          child: Text('No previous jobs yet'),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('List of Jobs'),
@@ -20,9 +31,9 @@ class ListOfJobs extends StatelessWidget {
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: jobs.length,
+              itemCount: jobs!.length,
               itemBuilder: (context, index) {
-                final job = jobs[index];
+                final job = jobs![index];
                 return ListTile(
                   title: Text(job.start_time!.day.toString()),
                   onTap: () {

@@ -48,7 +48,10 @@ class _ActualJobPageState extends State<ActualJobPage> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    if (globalJob != null) {
+      _timer.cancel();
+      globalJob = null;
+    }
     super.dispose();
   }
 
@@ -67,7 +70,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Actual Job"),
+        title: const Text("Actual Job"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -77,7 +80,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Cutting grass',
                   style: TextStyle(fontSize: 24),
                 ),
@@ -86,19 +89,20 @@ class _ActualJobPageState extends State<ActualJobPage> {
             ),
             const SizedBox(height: 20,),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
                   _formatDuration(_elapsedTime),
                   style: const TextStyle(fontSize: 24),
                 ),
+                const SizedBox(width: 50),
                 Column(
                   children: [
                     Image.asset(
                       _imagePaths[globalJob!.cutting_height!]!,
-                      height: 50.0, width: 50.0,
+                      height: 100.0, width: 100.0,
                     ),
-                    Text(globalJob!.cutting_height!.toString()),
+                    Text(globalJob!.cutting_height!.toString() + "cm"),
                   ],
                 )
               ],

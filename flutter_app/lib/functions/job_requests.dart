@@ -37,7 +37,7 @@ Future<List<Job>?> get_list_of_jobs(int rid) async {
 Future<int?> add_job(Job job) async {
   final message = job.toJson();
   message['code'] = globals.globalRobot!.id_connect!;
-
+  print(message);
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/add_new_job'),
     headers: <String, String>{
@@ -120,13 +120,19 @@ Future<Job?> get_active_job(int robotId) async {
 }
 
 Future<void> finish_active_job(int robotId) async {
+  final Map<String, dynamic> message = {
+    "robot_id": robotId,
+    "code": globals.globalRobot!.id_connect,
+    "end_time": DateTime.now(),
+  };
+  print(message);
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/finish_active_job'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Cookie': globals.sessionID ?? '',
     },
-    body: jsonEncode(<String, int>{'robot_id': robotId, 'code': globals.globalRobot!.id_connect!}),
+    body: jsonEncode(message, toEncodable: (item) => (item is DateTime) ? item.toIso8601String() : item),
   );
 
   if (response.statusCode == 200) {
@@ -138,8 +144,9 @@ Future<void> finish_active_job(int robotId) async {
   }
 }
 
-Future<void> checkServerResponse(BuildContext context) async {
+Future<void> checkServerResponse() async {
   while (true) {
+    print("CheckServerResponse");
     final response = await http.post(
       Uri.parse('${dotenv.env['BACKEND_URL']}/check_init'),
       headers: <String, String>{
@@ -152,27 +159,22 @@ Future<void> checkServerResponse(BuildContext context) async {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      print(data);
       globals.globalJob!.glb_url = data['glb'];
       globals.globalJob!.top_image = data['top_image'];
-      /*if (context.mounted) {
-        context.goNamed("config_grass");
-      }*/
-      /*Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ConfigureGrassHeightPage(),
-        ),
-      );*/
       break;
-    } else if (response.statusCode > 200) {
+    } else {
       // Handle server error
+      print(response.statusCode);
       await Future.delayed(const Duration(seconds: 5));
       continue;
     }
   }
 }
 
-Future<void> request_new_job(BuildContext context) async {
+Future<void> request_new_job() async {
+  print("Asking for top image...");
+  print(globals.globalRobot!.id_connect);
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/request_new_job'),
     headers: <String, String>{
@@ -186,6 +188,10 @@ Future<void> request_new_job(BuildContext context) async {
     final data = jsonDecode(response.body);
     print(data['status']);
     // Keep loading untill you change the page
-    await checkServerResponse(context);
+    await checkServerResponse();
+  }
+  else {
+    print(response.statusCode);
+    print(response.body);
   }
 }
