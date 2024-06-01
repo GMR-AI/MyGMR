@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 class Job {
   int? id;
   final int id_robot;
@@ -21,13 +21,14 @@ class Job {
 
   // Factory constructor to create a Job instance from a JSON map
   factory Job.fromJson(Map<String, dynamic> data) {
+    final dateFormat = DateFormat('EEE, dd MMM yyyy HH:mm:ss zzz');
     return Job(
       id: data['id'],
       id_robot: data['id_robot'],
       cutting_height: data['cutting_height'],
       area: data['area'],
-      start_time: DateTime.parse(data['start_time']),
-      end_time: (data['end_time'] == null) ? null : DateTime.parse(data['end_time']),
+      start_time: dateFormat.parse(data['start_time']),
+      end_time: data['end_time'] == null ? null : dateFormat.parse(data['end_time']),
     );
   }
 

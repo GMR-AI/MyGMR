@@ -6,6 +6,8 @@ import '../main_robot.dart';
 import '../globals.dart';
 import '../functions/job_requests.dart';
 import '../robots/robot_class.dart';
+import 'package:o3d/o3d.dart';
+
 
 class ActualJobPage extends StatefulWidget {
   const ActualJobPage({Key? key}) : super(key: key);
@@ -18,6 +20,8 @@ class _ActualJobPageState extends State<ActualJobPage> {
   late Timer _timer;
   late DateTime _initialTime;
   Duration _elapsedTime = Duration.zero;
+  O3DController controller = O3DController();
+
 
   final Map<int, String> _imagePaths = {
     2: 'assets/grass/g_2.png',
@@ -106,20 +110,37 @@ class _ActualJobPageState extends State<ActualJobPage> {
                   ],
                 )
               ],
+            ), //const Spacer(),
+            const SizedBox(height: 20),
+            // 3D Model Viewer
+            Expanded(
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.green, Colors.white],
+                      ),
+                    ),
+                  ),
+                  O3D.asset(
+                    src: globalRobot!.reconstruction_path!,
+                    controller: controller,
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 20),
-            const ElevatedButton(
-              onPressed: null,
-              child: Text("3D View")
-            ),
-            const Spacer(),
+
             ElevatedButton(
               onPressed: () => _stopJob(context),
               child: const Text("Cancel Job"),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
-            )
+            ),
           ],
         ),
       ),

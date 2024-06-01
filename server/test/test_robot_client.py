@@ -87,6 +87,8 @@ class RobotClient:
                 if self.connection == CON_STATUS.OFFLINE:
                     print("Robot is online.")
                     self.connection = CON_STATUS.ONLINE
+                    # Reanudate status
+                    self.reanudate_status()
                                 
             elif response.status_code == 201:
                 if self.robot_state != State.REQUESTING:
@@ -101,6 +103,16 @@ class RobotClient:
             print("Error in connection, maybe server is offline")
             if self.debug:
                 print("Error:", e)
+
+    def reanudate_status(self):
+        try:
+            response = requests.post(f"{self.server_url}/active_job", json={'code': self.code})
+            data = response.json()
+            if data:
+                self.parse_job_status(data)
+        except requests.RequestException as e:
+            print("Error:", e)
+        return None
 
 ################# REQUESTING #################
 
@@ -168,7 +180,9 @@ class RobotClient:
             # Llamada a la funcion ROS legendaria 1
             return
         elif job_status == j_status.CANCEL_JOB:
-            # Llamada a la funcion ROS legendaria 1
+            print("Canceling...")
+            self.cancel_task()
+            self.robot_state=State.IDLE
             return
         elif job_status == j_status.UPDATE_JOB:
             # Enviar datos del job
@@ -198,16 +212,18 @@ class RobotClient:
         #run_convertion('ply_dataset', 'image_dataset')
 
         print('Sending data')
-        self.upload_file('obj_dataset/gmr.glb')
+        self.upload_file('obj_dataset/gmr.obj')
         self.upload_file('image_dataset/gmr.jpg')
         self.send_finished()
                 
     def upload_file(self, file_path):
         try:
             with open(file_path, 'rb') as file:
+                print("File opened")
                 files = {'file': file}
                 data = {'code': self.code}
-                response = requests.post(f"{self.server_url}/upload_file", files=files, data=data)
+                response = requests.post(f"{self.server_url}/upload_file", data=file)
+                print("File was sent")
                 if response.status_code == 200:
                     print("File uploaded successfully.")
                 else:

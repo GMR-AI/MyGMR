@@ -214,6 +214,7 @@ class _Home extends State<Home>  {
                                     int rid = globalRobot!.id;
                                     List<Job>? jobs = await get_list_of_jobs(rid);
                                       if (context.mounted) {
+                                        context.go(Uri(path: '//list_previous', queryParameters: {'jobs': jobs}).toString());
                                         context.goNamed("list_previous", pathParameters: {
                                           "jobs": jsonEncode(jobs),
                                         });

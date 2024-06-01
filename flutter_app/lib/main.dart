@@ -5,11 +5,12 @@ import 'package:my_gmr/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
+import 'package:intl/date_symbol_data_local.dart';
 
 Color backgroundColor = const Color(0xFFEFEFEF);
 
 void main() async {
+  await initializeDateFormatting();
   await dotenv.load(fileName: ".env"); // Load .env file
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

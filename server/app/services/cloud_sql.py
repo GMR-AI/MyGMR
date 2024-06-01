@@ -95,20 +95,24 @@ def add_active_job(job_id, id_robot):
     execute_query(query, response=False, param_values={'job_id': job_id, 'id_robot': id_robot})
 
 def get_active_job(robot_id):
-    query = "SELECT id, cutting_height, TO_CHAR(start_time, 'YYYY-MM-DD HH24:MI:SS') AS start_time, TO_CHAR(end_time, 'YYYY-MM-DD HH24:MI:SS') AS end_time, id_robot, area FROM jobs WHERE id = (SELECT id_active_job FROM robots WHERE id = :robot_id)"
+    query = "SELECT * FROM jobs WHERE id = (SELECT id_active_job FROM robots WHERE id = :robot_id)"
     row = execute_query(query, response=True, param_values={'robot_id': robot_id})
     return dict(row[0]) if row else None
 
 def get_active_job_code(code):
     query = "SELECT * FROM jobs WHERE id = (SELECT id_active_job FROM robots WHERE id_connect = :code)"
     row = execute_query(query, response=True, param_values={'code': code})
-    return dict(row[0])
+    return dict(row[0]) if row else None
 
 def get_id_active_job_from_robot(robot_id):
     query = "SELECT id_active_job FROM robots WHERE id = :robot_id"
     row = execute_query(query, response=True, param_values={'robot_id': robot_id})
-    return row
+    return row[0]['id_active_job'] if row else None
 
 def delete_active_job_from_robot(robot_id):
-    query_clear_robot = "UPDATE robots SET id_active_job = NULL WHERE id = :robot_id"
-    execute_query(query_clear_robot, response=False, param_values={'robot_id': robot_id})
+    query = "UPDATE robots SET id_active_job = NULL WHERE id = :robot_id"
+    execute_query(query, response=False, param_values={'robot_id': robot_id})
+
+def add_end_time(job_id, end_time):
+    query = "UPDATE jobs SET end_time = :end_time WHERE id = :jid"
+    execute_query(query, response=False, param_values={'end_time': end_time, 'jid': job_id})

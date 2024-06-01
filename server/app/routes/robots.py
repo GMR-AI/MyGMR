@@ -70,9 +70,12 @@ def get_robot_info():
 def delete_robot():
     data = request.json
     robot_id = data.get('robot_id')
+    code = data.get('code')
 
     if robot_id is None:
         return jsonify({"message": "robot_id is required"}), 400
+    
+    active_rm.remove_from_queue(code)
 
     # Eliminar el robot de la base de datos
     db.delete_robot(robot_id)

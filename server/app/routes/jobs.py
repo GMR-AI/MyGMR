@@ -86,26 +86,31 @@ def get_active_job():
 @bp.route('/finish_active_job', methods=['POST'])
 def finish_active_job():
     data = request.json
-    robot_id = data.get('robot_id')
+    robot_id = int(data.get('robot_id'))
     code = int(data.get('code'))
+    end_time = data.get('end_time')
     if robot_id is None:
         return jsonify({"message": "robot_id is required"}), 400
     
     if not code:
         return jsonify({"message": "code is required"}), 400
 
-    # TODO: notificar al robot i poner el end_time
-    # TODO: Poner en el cliente que si se ha cancelado y estava en estado NEW_JOB, no se ponga en none
-
-
     # Obtener el ID del trabajo activo del robot
     row = db.get_id_active_job_from_robot(robot_id)
-    
+    print(row)
     if not row:
         return jsonify({"message": "No active job found for the specified robot"}), 404
-    
+
     # Limpiar el campo id_actual_job del robot
     db.delete_active_job_from_robot(robot_id)
+    try:
+        end_time = datetime.fromisoformat(end_time)
+    except ValueError:
+        return jsonify({"message": "Invalid date format"}), 400
+
+    # TODO: Poner en el cliente que si se ha cancelado y estava en estado NEW_JOB, no se ponga en none
+
+    db.add_end_time(row, end_time)
     active_rm.update_job(code, j_status.CANCEL_JOB)
 
     return jsonify({"message": "Active job finished successfully"}), 200
@@ -123,7 +128,6 @@ def check_init():
     if active_rm.get_queue()[code]['job_status'] == j_status.NEW_JOB:
         return jsonify({'status':'Robot has not finished'}), 404
     
-    
     CLOUD_BUCKET_BASE_URL = os.getenv('CLOUD_BUCKET_BASE_URL')
     glb_file = f"{CLOUD_BUCKET_BASE_URL}/{image_folder.bucket_name}/{code}_gmr.glb"
     top_image = f"{CLOUD_BUCKET_BASE_URL}/{image_folder.bucket_name}/{code}_gmr.jpg"
@@ -132,12 +136,13 @@ def check_init():
 @bp.route('/request_new_job', methods=['POST'])
 def request_new_job():
     data = request.json
-    code = int(data.get('code'))
+    code = int(data.get('code'))    
+    
     if not code:
         print("Client did not send code")
         return ({'status': 'failed'}), 400
     
-    if active_rm.exists_in_queue(code):
+    if not active_rm.exists_in_queue(code):
         return ({'status': 'Robot is offline'}), 404
 
     active_rm.update_job(code, j_status.NEW_JOB)
