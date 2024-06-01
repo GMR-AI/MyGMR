@@ -20,7 +20,7 @@ class robot_manager:
             cls._instance = super(robot_manager, cls).__new__(cls, *args, **kwargs)
         return cls._instance
 
-    def add_to_queue(self,code, expiration_minutes=_update_time):
+    def add_to_queue(self, code, expiration_minutes=_update_time):
         self._cleanup_expired()
         if code in self._queue.keys():
             return False

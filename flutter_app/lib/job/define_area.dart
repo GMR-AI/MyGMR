@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'resume.dart';
 import 'job_class.dart';
-import '../globals.dart' as globals;
+import '../globals.dart';
 
 class DefineAreaPage extends StatefulWidget {
   const DefineAreaPage({Key? key}) : super(key: key);
@@ -12,7 +13,6 @@ class DefineAreaPage extends StatefulWidget {
 
 class _DefineAreaPageState extends State<DefineAreaPage> {
   List<Offset> _points = [];
-  Job? job = globals.globalJob;
 
   void _addPoint(Offset point) {
     setState(() {
@@ -29,7 +29,14 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Step 2'),
+        title: const Text('Step 2'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            globalJob!.cutting_height = null;
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Center(
         child: Container(
@@ -39,7 +46,7 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
+              const Text(
                 'Select the area',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
@@ -54,7 +61,7 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
                     fit: StackFit.expand,
                     children: [
                       Image.network(
-                        job!.top_image!,
+                        globalJob!.top_image!,
                         fit: BoxFit.contain,
                       ),
                       CustomPaint(
@@ -64,10 +71,10 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: _points.length == 4 ? _navigateToResume : null,
-                child: Text('Next'),
+                child: const Text('Next'),
               ),
             ],
           ),
@@ -77,12 +84,18 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
   }
 
   void _navigateToResume() {
-    job!.area = _points;
+    Map<String, dynamic> areaMap = {};
 
-    Navigator.push(
+    for (int i = 0; i < _points.length; i++) {
+      areaMap[i.toString()] = [double.parse((_points[i].dx).toStringAsFixed(2)),
+                               double.parse((_points[i].dy).toStringAsFixed(2))];
+    }
+    globalJob!.area = areaMap;
+    context.goNamed("resume");
+    /*Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ResumePage()),
-    );
+    );*/
   }
 }
 

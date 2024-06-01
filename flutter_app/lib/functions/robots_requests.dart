@@ -33,39 +33,15 @@ Future<List<Robot>?> get_robots() async {
     }
   );
   if (response.statusCode == 200) {
-    final data = jsonDecode(response.body) as List;
-    print(response.body);
-    // Generate list of robots here
-    List<Robot> robots = [];
-    for (var robotData in data) {
-      String imageUrl = await fetchRobotImage(robotData['img']);
-      robots.add(Robot.fromJson(robotData, imageUrl));
-      print(imageUrl);
-    }
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    print(data["message"]);
+    final List<dynamic> robotsData = data["robots"];
+    List<Robot> robots = robotsData.map((robotData) => Robot.fromJson(robotData)).toList();
     return robots;
   } else {
     print('Failed to get robots');
     return [];
   }
-}
-
-Future<String> fetchRobotImage(String imageName) async {
-  final response = await http.post(
-    Uri.parse('${dotenv.env['BACKEND_URL']}/get_image'),
-    headers: <String, String>{
-      'Cookie': globals.sessionID ?? '',
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'image_name': imageName,
-    }),
-  );
-
-  final url = jsonDecode(response.body)['image_url'];
-  if (url.isEmpty) {
-    throw Exception('Real URL not found in response headers');
-  }
-  return url;
 }
 
 Future<Map<String, dynamic>?> getModel() async {

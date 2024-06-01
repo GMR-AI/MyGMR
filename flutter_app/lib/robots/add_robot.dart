@@ -22,41 +22,41 @@ class _AddRobotScreen extends State<AddRobot> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add a new robot'),
+        title: const Text('Add a new robot'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Enter your robot ID:',
               style: TextStyle(fontSize: 18.0),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             TextFormField(
               controller: _controller,
               maxLength: 8,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: 'Type here',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 counterText: '',
                 errorText: _errorText,
               ),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             Row(
               children: [
-                Text(
+                const Text(
                   'Where can I find my robot ID?',
                   style: TextStyle(fontSize: 16.0),
                 ),
-                SizedBox(width: 10.0),
+                const SizedBox(width: 10.0),
                 Tooltip(
                   message: 'More Info',
                   child: IconButton(
-                    icon: Icon(Icons.info_outline),
+                    icon: const Icon(Icons.info_outline),
                     onPressed: () {
                       // Lógica para mostrar la ventana emergente con la imagen
                       showDialog(
@@ -69,7 +69,7 @@ class _AddRobotScreen extends State<AddRobot> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text('Got it!'),
+                                child: const Text('Got it!'),
                               ),
                             ],
                           );
@@ -80,7 +80,7 @@ class _AddRobotScreen extends State<AddRobot> {
                 ),
               ],
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             Center(
               child: Visibility(
                 visible: !_showSaveButton, // Mostrar solo si el botón "Save" está oculto
@@ -92,12 +92,12 @@ class _AddRobotScreen extends State<AddRobot> {
                       style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: _success ? Colors.green : Colors.red),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ListOfRobots()),
+                          MaterialPageRoute(builder: (context) => const ListOfRobots()),
                         );
                       },
                       child: Text(_success ? 'Connect with my robot' : 'Go Back'),
@@ -129,7 +129,7 @@ class _AddRobotScreen extends State<AddRobot> {
                     });
                   }
                 },
-                child: Text('Save'),
+                child: const Text('Save'),
               ),
           ],
         ),

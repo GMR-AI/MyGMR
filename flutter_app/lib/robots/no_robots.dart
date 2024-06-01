@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'add_robot.dart';
 
-Color backgroundColor = Color(0xFFEFEFEF);
+Color backgroundColor = const Color(0xFFEFEFEF);
 
 class NoRobots extends StatefulWidget {
   const NoRobots({super.key});
@@ -17,9 +17,9 @@ class _none extends State<NoRobots> {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: backgroundColor,
-        title: Text('My Robots'),
+        title: const Text('My Robots'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -29,22 +29,22 @@ class _none extends State<NoRobots> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'Add a new robot to start',
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.normal,
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddRobot()),
+                  MaterialPageRoute(builder: (context) => const AddRobot()),
                 );
               },
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
             ),
           ],
         ),

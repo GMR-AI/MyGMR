@@ -14,7 +14,7 @@ class ListOfJobs extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('List of Jobs'),
+        title: const Text('List of Jobs'),
       ),
       body: Column(
         children: [
@@ -24,8 +24,7 @@ class ListOfJobs extends StatelessWidget {
               itemBuilder: (context, index) {
                 final job = jobs[index];
                 return ListTile(
-                  title: Text(job.start_time.day.toString()),
-                  subtitle: Text(job.state.toString()),
+                  title: Text(job.start_time!.day.toString()),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -42,8 +41,8 @@ class ListOfJobs extends StatelessWidget {
             onPressed: () {
               _showDeleteConfirmationDialog(context);
             },
-            icon: Icon(Icons.delete),
-            label: Text('Delete All Jobs'),
+            icon: const Icon(Icons.delete),
+            label: const Text('Delete All Jobs'),
           ),
         ],
       ),
@@ -55,26 +54,26 @@ class ListOfJobs extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Delete All Jobs"),
-          content: Text("Are you sure you want to delete all jobs?"),
+          title: const Text("Delete All Jobs"),
+          content: const Text("Are you sure you want to delete all jobs?"),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               },
-              child: Text("CANCEL"),
+              child: const Text("CANCEL"),
             ),
             TextButton(
               onPressed: () async {
-                Robot? robot = globalRobot;
-                if (robot != null) {
-                  int rid = robot.id;
-                  await delete_jobs(rid);
-                  Navigator.of(context).pop();
+                if (globalRobot != null) {
+                  await delete_jobs(globalRobot!.id);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
                 }
                 else print("Error: no robot detected");
               },
-              child: Text("DELETE"),
+              child: const Text("DELETE"),
             ),
           ],
         );

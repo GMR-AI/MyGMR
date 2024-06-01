@@ -22,29 +22,39 @@ class _ModelInfoScreenState extends State<ModelInfoScreen> {
     });
   }
 
+  String _formatJson(Map<String, dynamic> dimensions) {
+    final List<String> k = dimensions.keys.toList();
+    String result = "";
+    for (int i = 0; i < k.length; i++) {
+      result += "${k[i]}: ${dimensions[k[i]]}\n";
+    }
+    result = result.substring(0, result.length - 1);
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Model Info'),
+        title: const Text('Model Info'),
       ),
       body: _modelInfo != null
           ? ListView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         children: [
           _buildInfoItem('Model Name', _modelInfo!['name']),
           _buildInfoItem('Manufacturer', _modelInfo!['manufacturer']),
           _buildInfoItem('Release Date', _modelInfo!['release_date']),
-          _buildInfoItem('Dimensions', _modelInfo!['dimensions']),
-          _buildInfoItem('Weight', _modelInfo!['weight']),
-          _buildInfoItem('Battery Life', _modelInfo!['battery_life']),
-          _buildInfoItem('Charging Time', _modelInfo!['charging_time']),
-          _buildInfoItem('Features', _modelInfo!['features']),
+          _buildInfoItem('Dimensions (m)', _formatJson(_modelInfo!['dimensions'])),
+          _buildInfoItem('Weight (kg)', _modelInfo!['weight']),
+          _buildInfoItem('Battery Life (🤔)', _modelInfo!['battery_life']),
+          _buildInfoItem('Charging Time (min)', _modelInfo!['charging_time']),
+          _buildInfoItem('Features', _formatJson(_modelInfo!['features'])),
           _buildInfoItem('Price', _modelInfo!['price']),
           _buildInfoItem('Status', _modelInfo!['status']),
         ],
       )
-          : Center(
+          : const Center(
         child: CircularProgressIndicator(),
       ),
     );
@@ -56,19 +66,19 @@ class _ModelInfoScreenState extends State<ModelInfoScreen> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18.0,
           ),
         ),
-        SizedBox(height: 8.0),
+        const SizedBox(height: 8.0),
         Text(
           value.toString(),
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16.0,
           ),
         ),
-        Divider(),
+        const Divider(),
       ],
     );
   }

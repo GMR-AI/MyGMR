@@ -251,8 +251,8 @@ if __name__ == "__main__":
     with open("robot_data.json", 'r') as file:
         data = json.load(file)
     # gcloud test
-    #server_url = os.environ.get("SERVER_URL")
+    server_url = os.environ.get("SERVER_URL")
     # local test
-    server_url = "http://localhost:8080"
+    #server_url = "http://localhost:8080"
     client = RobotClient(server_url, data, args.debug)
     client.run()

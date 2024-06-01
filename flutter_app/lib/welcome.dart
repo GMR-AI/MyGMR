@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'sign_up.dart';
 import 'functions/user_requests.dart';
 
-Color backgroundColor = Color(0xFFEFEFEF);
-
-
+Color backgroundColor = const Color(0xFFEFEFEF);
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key, required this.title});
@@ -36,10 +35,11 @@ class _WelcomeScreen extends State<Welcome> {
             _scrollPosition += details.primaryDelta!;
           });
           if (_scrollPosition < -20) {
-              Navigator.push(
+            context.goNamed("signup");
+              /*Navigator.push(
                 context,
                 PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) => SignUp(),
+                  pageBuilder: (context, animation, secondaryAnimation) => const SignUp(),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     return FadeTransition(
                       opacity: animation,
@@ -47,15 +47,15 @@ class _WelcomeScreen extends State<Welcome> {
                     );
                   },
                 ),
-              );
+              );*/
             }
-        },
+        }, // onVerticalDragUpdate
         child: Stack(
           children: [
             Container(
               width: screenWidth,
               height: screenHeight,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/robot_design.png'),
                   fit: BoxFit.cover,
@@ -67,7 +67,7 @@ class _WelcomeScreen extends State<Welcome> {
               left: 0,
               right: 0,
               child: AnimatedContainer(
-                duration: Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 200),
                 height: _scrollPosition < -20 ? 100.0 : 0.0,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -94,7 +94,7 @@ class _WelcomeScreen extends State<Welcome> {
                       width: 60.0,
                       height: 60.0,
                     ),
-                    Text(
+                    const Text(
                       'MyGMR',
                       style: TextStyle(
                         fontFamily: 'Logo',
@@ -106,7 +106,7 @@ class _WelcomeScreen extends State<Welcome> {
                 ),
               ),
             ),
-            Padding(
+            const Padding(
               padding: const EdgeInsets.only(top: 300.0),
               child: Align(
                 alignment: Alignment.topCenter,
@@ -125,7 +125,7 @@ class _WelcomeScreen extends State<Welcome> {
                 ),
               ),
             ),
-            Positioned(
+            const Positioned(
               bottom: 40.0,
               left: 0,
               right: 0,

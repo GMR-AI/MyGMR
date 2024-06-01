@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:go_router/go_router.dart';
 import 'package:my_gmr/functions/user_requests.dart';
 import 'robots/no_robots.dart';
 
-Color backgroundColor = Color(0xFFEFEFEF);
+Color backgroundColor = const Color(0xFFEFEFEF);
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -19,11 +20,11 @@ class _SignUpScreen extends State<SignUp> {
       backgroundColor: backgroundColor,
       body: Stack(
         children: [
-          Positioned.fill(
+          const Positioned.fill(
             child: Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: const EdgeInsets.only(top: 100.0),
+                padding: EdgeInsets.only(top: 100.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -55,7 +56,7 @@ class _SignUpScreen extends State<SignUp> {
                 width: MediaQuery.of(context).size.width * 1,
                 height: MediaQuery.of(context).size.height * 0.5,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(50.0),
                     topRight: Radius.circular(50.0),
                   ),
@@ -65,7 +66,7 @@ class _SignUpScreen extends State<SignUp> {
                       color: Colors.black.withOpacity(0.2),
                       spreadRadius: 5,
                       blurRadius: 7,
-                      offset: Offset(0, -3),
+                      offset: const Offset(0, -3),
                     ),
                   ],
                 ),
@@ -84,10 +85,10 @@ class _SignUpScreen extends State<SignUp> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white, // Background color
                           foregroundColor: Colors.black, // Text color
-                          minimumSize: Size(double.infinity, 50), // Button size
+                          minimumSize: const Size(double.infinity, 50), // Button size
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
-                            side: BorderSide(color: Colors.grey),
+                            side: const BorderSide(color: Colors.grey),
                           ),
                         ),
                         child: Row(
@@ -98,31 +99,32 @@ class _SignUpScreen extends State<SignUp> {
                               height: 24,
                               width: 24,
                             ),
-                            SizedBox(width: 12),
-                            Text(
+                            const SizedBox(width: 12),
+                            const Text(
                               'Sign Up with Google',
                               style: TextStyle(fontSize: 16),
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () => context.goNamed("no_robots"),
+                        /*{
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => NoRobots()),
+                            MaterialPageRoute(builder: (context) => const NoRobots()),
                           );
-                        },
+                        },*/
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           foregroundColor: Colors.white,
-                          minimumSize: Size(double.infinity, 50), // Button size
+                          minimumSize: const Size(double.infinity, 50), // Button size
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        child: Row(
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(

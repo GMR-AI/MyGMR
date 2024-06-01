@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_gmr/globals.dart';
 import 'user_class.dart';
 import '../functions/user_requests.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -15,9 +17,9 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  final String pageTitle = 'Profile';
   late TextEditingController _nameController;
   late TextEditingController _mailController;
-  bool _isEditing = false;
 
   @override
   void initState() {
@@ -37,8 +39,15 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: const Text('Profile'),
         backgroundColor: Theme.of(context).primaryColor,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            globalRobot = null;
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -52,8 +61,8 @@ class _UserProfileState extends State<UserProfile> {
                 child: ClipOval(
                   child: CachedNetworkImage(
                     imageUrl: widget.user.imagePath ?? '',
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
+                    placeholder: (context, url) => const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
                     fit: BoxFit.cover,
                     width: 100.0,
                     height: 100.0,
@@ -61,38 +70,28 @@ class _UserProfileState extends State<UserProfile> {
                 ),
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Center(
-              child: _isEditing
-                  ? TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
-              )
-                  : Text(
+              child: Text(
                 widget.user.name ?? 'No Name',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            SizedBox(height: 20.0),
-            Divider(),
-            _isEditing
-                ? TextFormField(
-              controller: _mailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            )
-                : ListTile(
+            const SizedBox(height: 20.0),
+            const Divider(),
+            ListTile(
               leading: Icon(Icons.email, color: Colors.grey),
               title: Text(
                 widget.user.mail ?? 'No Email',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18.0,
                 ),
               ),
             ),
-            Spacer(),
+            const Spacer(),
           ],
         ),
       ),

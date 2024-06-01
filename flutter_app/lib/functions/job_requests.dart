@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../globals.dart' as globals;
 import '../job/job_class.dart';
 import 'package:flutter/material.dart';
-import '../job/configure_grass_height.dart';
+import 'package:go_router/go_router.dart';
 
 Future<List<Job>?> get_list_of_jobs(int rid) async {
   final response = await http.post(
@@ -18,32 +18,35 @@ Future<List<Job>?> get_list_of_jobs(int rid) async {
 
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body) as Map<String, dynamic>;
-    if (data.containsKey('message') && data['message'] == "All jobs getted") {
-      final List<dynamic> jobsData = data['jobs'];
+    print(data["message"]);
+    if (data.containsKey("jobs")) {
+      final List<dynamic> jobsData = data["jobs"];
       List<Job> jobs = jobsData.map((jobData) => Job.fromJson(jobData)).toList();
       return jobs;
-    } else {
-      print('No jobs available');
+    }
+    else {
       return null;
     }
   } else {
+    print(response.body);
     print('Failed to get jobs');
     return null;
   }
 }
 
 Future<int?> add_job(Job job) async {
+  final message = job.toJson();
+  message['code'] = globals.globalRobot!.id_connect!;
+
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/add_new_job'),
     headers: <String, String>{
       'Cookie': globals.sessionID ?? '',
       'Content-Type': 'application/json; charset=UTF-8',
     },
-    body: jsonEncode(jsonEncode({
-      ...job.toJson(),
-      'code': globals.globalRobot!.id_connect!,
-    }),),
+    body: jsonEncode(message, toEncodable: (item) => (item is DateTime) ? item.toIso8601String() : item),
   );
+
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     final jobID = data['job_id'] as int?;
@@ -80,6 +83,7 @@ Future<void> delete_jobs(int rid) async {
 }
 
 Future<Job?> get_active_job(int robotId) async {
+  print(robotId);
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/get_active_job'),
     headers: <String, String>{
@@ -88,11 +92,11 @@ Future<Job?> get_active_job(int robotId) async {
     },
     body: jsonEncode(<String, int>{'robot_id': robotId}),
   );
-
+  final data = jsonDecode(response.body) as Map<String, dynamic>;
   if (response.statusCode == 200) {
-    final data = jsonDecode(response.body) as Map<String, dynamic>;
     final jobData = data['job'];
     if (jobData != null) {
+      print("This is the job data: $jobData");
       final job = Job.fromJson(jobData);
       print('Active job found: $job');
       return job;
@@ -101,9 +105,16 @@ Future<Job?> get_active_job(int robotId) async {
       return null;
     }
   } else {
-    print('Failed to get active job');
-    print('Status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
+
+    if (data.containsKey("error")) {
+      print(data["message"]);
+      print(data["error"]);
+    }
+    else {
+      print('Failed to get active job');
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
     return null;
   }
 }
@@ -115,7 +126,7 @@ Future<void> finish_active_job(int robotId) async {
       'Content-Type': 'application/json; charset=UTF-8',
       'Cookie': globals.sessionID ?? '',
     },
-    body: jsonEncode(<String, int>{'robot_id': robotId, 'code': int.parse(globals.globalRobot!.id_connect!)}),
+    body: jsonEncode(<String, int>{'robot_id': robotId, 'code': globals.globalRobot!.id_connect!}),
   );
 
   if (response.statusCode == 200) {
@@ -127,7 +138,7 @@ Future<void> finish_active_job(int robotId) async {
   }
 }
 
-Future<void> checkServerResponse(context) async {
+Future<void> checkServerResponse(BuildContext context) async {
   while (true) {
     final response = await http.post(
       Uri.parse('${dotenv.env['BACKEND_URL']}/check_init'),
@@ -136,44 +147,45 @@ Future<void> checkServerResponse(context) async {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(
-          <String, int>{'code': int.parse(globals.globalRobot!.id_connect!)}),
+          <String, int>{'code': globals.globalRobot!.id_connect!}),
     );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       globals.globalJob!.glb_url = data['glb'];
       globals.globalJob!.top_image = data['top_image'];
-      Navigator.pushReplacement(
+      /*if (context.mounted) {
+        context.goNamed("config_grass");
+      }*/
+      /*Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => ConfigureGrassHeightPage(),
         ),
-      );
+      );*/
       break;
     } else if (response.statusCode > 200) {
       // Handle server error
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 5));
       continue;
     }
   }
-
 }
 
-
-Future<void> request_new_job(context) async {
+Future<void> request_new_job(BuildContext context) async {
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/request_new_job'),
     headers: <String, String>{
       'Cookie': globals.sessionID ?? '',
       'Content-Type': 'application/json; charset=UTF-8',
     },
-    body: jsonEncode(<String, int>{'code': int.parse(globals.globalRobot!.id_connect!)}),
+    body: jsonEncode(<String, int>{'code': globals.globalRobot!.id_connect!}),
   );
 
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
     print(data['status']);
     // Keep loading untill you change the page
-    checkServerResponse(context);
+    await checkServerResponse(context);
   }
 }
