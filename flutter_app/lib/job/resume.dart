@@ -78,9 +78,6 @@ class ResumePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 globalJob!.start_time = DateTime.now();
-                globalJob!.state = "active";
-                globalJob!.model = "¡¡¡DELETE THIS INITIALIZATION!!!"; // TO UPLOAD THIS DOESN'T MAKE SENSE!
-                globalJob!.end_time = DateTime.now(); // TO UPLOAD THIS AT INITIALIZATION DOESN'T MAKE SENSE!
                 print("Global Job area: ${globalJob!.area}");
                 int? id_job = await add_job(globalJob!);
 

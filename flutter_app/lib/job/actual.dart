@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'job_class.dart';
 import '../main_robot.dart';
 import '../globals.dart';
@@ -14,38 +15,116 @@ class ActualJobPage extends StatefulWidget {
 }
 
 class _ActualJobPageState extends State<ActualJobPage> {
-  late DateTime _startTime;
-  late Stream<int> _tickerStream;
-  late StreamSubscription<int> _tickerSubscription;
+  late Timer _timer;
+  late DateTime _initialTime;
   Duration _elapsedTime = Duration.zero;
-  bool _isPaused = false;
+
+  final Map<int, String> _imagePaths = {
+    2: 'assets/grass/g_2.png',
+    4: 'assets/grass/g_4.png',
+    8: 'assets/grass/g_8.png',
+    10: 'assets/grass/g_10.png',
+  };
 
   @override
   void initState() {
     super.initState();
-    Job? job = globalJob;
-    if (job != null) {
-      _startTime = job.start_time!;
+    if (globalJob != null) {
+      _initialTime = globalJob!.start_time!;
+      _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+        setState(() {
+          _elapsedTime = _calculateDuration();
+        });
+      });
+      /*_startTime = globalJob!.start_time!;
       _tickerStream = _ticker();
       _tickerSubscription = _tickerStream.listen((_) {
         setState(() {
           _elapsedTime = _calculateDuration(_startTime);
         });
-      });
+      });*/
     }
   }
 
   @override
   void dispose() {
-    _tickerSubscription.cancel();
+    _timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Job? job = globalJob;
+    if (globalJob == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Actual Job'),
+        ),
+        body: const Center(
+          child: Text('No job available'),
+        ),
+      );
+    }
 
-    if (job == null) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Actual Job"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Cutting grass',
+                  style: TextStyle(fontSize: 24),
+                ),
+                AnimatedDotDotDot(),
+              ]
+            ),
+            const SizedBox(height: 20,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  _formatDuration(_elapsedTime),
+                  style: const TextStyle(fontSize: 24),
+                ),
+                Column(
+                  children: [
+                    Image.asset(
+                      _imagePaths[globalJob!.cutting_height!]!,
+                      height: 50.0, width: 50.0,
+                    ),
+                    Text(globalJob!.cutting_height!.toString()),
+                  ],
+                )
+              ],
+            ),
+            const SizedBox(height: 20),
+            const ElevatedButton(
+              onPressed: null,
+              child: Text("3D View")
+            ),
+            const Spacer(),
+            ElevatedButton(
+              onPressed: () => _stopJob(context),
+              child: const Text("Cancel Job"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  /*@override
+  Widget build(BuildContext context) {
+    if (globalJob == null) {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Actual Job'),
@@ -59,8 +138,34 @@ class _ActualJobPageState extends State<ActualJobPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Actual Job'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            globalJob = null;
+            Navigator.pop(context);
+          },
+        ),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildInfoItem("Cutting Height", globalJob!.cutting_height),
+            _buildInfoItem("Area", globalJob!.area),
+            _buildInfoItem("Initial time", globalJob!.start_time),
+            _buildInfoItem("Elapsed Time", _formatDuration(_elapsedTime)),
+            _buildInfoItem("Robot ID", globalJob!.id_robot),
+            Center(
+              child: ElevatedButton(
+                  onPressed: () => _stopJob(context),
+                  child: const Text("Cancel Job")
+              ),
+            )
+          ],
+        ),
+      )
+      *//*body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -86,38 +191,44 @@ class _ActualJobPageState extends State<ActualJobPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MainRobot(),
-                  ),
-                );
+                globalJob = null;
+                context.goNamed("main_robot");
               },
               child: const Text('Go home'),
             ),
           ],
         ),
-      ),
+      ),*//*
+    );
+  }*/
+
+  Widget _buildInfoItem(String label, dynamic value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18.0,
+          ),
+        ),
+        const SizedBox(height: 8.0),
+        Text(
+          value.toString(),
+          style: const TextStyle(
+            fontSize: 16.0,
+          ),
+        ),
+        const Divider(),
+      ],
     );
   }
 
-  void _togglePause() {
-    setState(() {
-      _isPaused = !_isPaused;
-      if (_isPaused) {
-        _tickerSubscription.pause();
-      } else {
-        _tickerSubscription.resume();
-      }
-    });
-  }
-
   void _stopJob(BuildContext context) {
-    _tickerSubscription.cancel();
-    Job? job = globalJob;
-    if (job != null) {
-      job.end_time = DateTime.now();
-      globalJob = job;
+    _timer.cancel();
+    if (globalJob != null) {
+      globalJob!.end_time = DateTime.now();
     }
     showDialog(
       context: context,
@@ -128,23 +239,15 @@ class _ActualJobPageState extends State<ActualJobPage> {
           actions: <Widget>[
             ElevatedButton(
               onPressed: () async {
-                Robot? robot = globalRobot;
-                if (robot != null) {
-                  int id_robot = robot.id;
-                  await finish_active_job(id_robot);
-                  globalJob = null;
-                  robot.id_active_job = null;
-                  globalRobot = robot;
+                if (globalRobot != null) {
+                  await finish_active_job(globalRobot!.id);
+                  globalRobot!.id_active_job = null;
                 }
-                Navigator.pop(context); // Cierra el diálogo
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MainRobot(),
-                  ),
-                ); // Navega a la pantalla principal
+                if (context.mounted) {
+                  context.goNamed("main_robot");
+                } // Navega a la pantalla principal
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -152,13 +255,8 @@ class _ActualJobPageState extends State<ActualJobPage> {
     );
   }
 
-  Stream<int> _ticker() {
-    return Stream.periodic(const Duration(seconds: 1), (x) => x);
-  }
-
-  Duration _calculateDuration(DateTime startTime) {
-    final currentTime = DateTime.now();
-    return currentTime.difference(startTime);
+  Duration _calculateDuration() {
+    return DateTime.now().difference(_initialTime);
   }
 
   String _formatDuration(Duration duration) {
@@ -166,5 +264,46 @@ class _ActualJobPageState extends State<ActualJobPage> {
     final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
     final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
     return '$hours:$minutes:$seconds';
+  }
+}
+
+class AnimatedDotDotDot extends StatefulWidget {
+  @override
+  _AnimatedDotDotDotState createState() => _AnimatedDotDotDotState();
+}
+
+class _AnimatedDotDotDotState extends State <AnimatedDotDotDot> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _animation,
+      child: const Text(
+        "...",
+        style: TextStyle(fontSize: 24),
+      ),
+    );
   }
 }

@@ -25,7 +25,6 @@ class ListOfJobs extends StatelessWidget {
                 final job = jobs[index];
                 return ListTile(
                   title: Text(job.start_time!.day.toString()),
-                  subtitle: Text(job.state.toString()),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -60,17 +59,17 @@ class ListOfJobs extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               },
               child: const Text("CANCEL"),
             ),
             TextButton(
               onPressed: () async {
-                Robot? robot = globalRobot;
-                if (robot != null) {
-                  int rid = robot.id;
-                  await delete_jobs(rid);
-                  Navigator.of(context).pop();
+                if (globalRobot != null) {
+                  await delete_jobs(globalRobot!.id);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
                 }
                 else print("Error: no robot detected");
               },

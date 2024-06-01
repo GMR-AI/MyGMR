@@ -5,8 +5,6 @@ class Job {
   final int id_robot;
   int? cutting_height;
   Map<String, dynamic>? area;
-  String? model;
-  String? state;
   DateTime? start_time;
   DateTime? end_time;
   String? glb_url;
@@ -17,8 +15,6 @@ class Job {
     required this.id_robot,
     this.cutting_height,
     this.area,
-    this.model,
-    this.state,
     this.start_time,
     this.end_time,
   });
@@ -30,10 +26,8 @@ class Job {
       id_robot: data['id_robot'],
       cutting_height: data['cutting_height'],
       area: data['area'],
-      model: data['model'],
-      state: data['state'],
       start_time: DateTime.parse(data['start_time']),
-      end_time: DateTime.parse(data['end_time']),
+      end_time: (data['end_time'] == null) ? null : DateTime.parse(data['end_time']),
     );
   }
 
@@ -44,8 +38,6 @@ class Job {
       'id_robot': id_robot,
       'cutting_height': cutting_height,
       'area': area,
-      'model': model, // Never filled
-      'state': state, // Never filled
       'start_time': start_time,
       'end_time': end_time,
     };

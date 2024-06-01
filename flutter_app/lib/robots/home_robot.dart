@@ -125,7 +125,7 @@ class _Home extends State<Home>  {
                                 width: double.infinity,
                                 height: 50.0,
                                 child: ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     globalJob = Job(
                                       id_robot: globalRobot!.id,
                                     );
@@ -133,7 +133,13 @@ class _Home extends State<Home>  {
                                       _isLoading = true;
                                     });
                                     // Update the robot status
-                                    request_new_job(context);
+                                    await request_new_job(context);
+                                    if (context.mounted) {
+                                      context.goNamed("config_grass");
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                    }
                                   },
                                   child: Text(
                                     'New',
@@ -154,6 +160,7 @@ class _Home extends State<Home>  {
                                 height: 50.0,
                                 child: ElevatedButton(
                                   onPressed: () async {
+                                    print(globalRobot!.id);
                                     Job? actualJob = await get_active_job(globalRobot!.id);
                                     if (actualJob != null) {
                                       globalRobot!.id_active_job = actualJob.id;
@@ -199,10 +206,12 @@ class _Home extends State<Home>  {
                                   onPressed: () async {
                                     int rid = globalRobot!.id;
                                     List<Job>? jobs = await get_list_of_jobs(rid);
-                                    if (context.mounted) {
-                                      context.goNamed("list_previous", pathParameters: {
-                                        "jobs": jsonEncode(jobs),
-                                      });
+                                    if (jobs != null) {
+                                      if (context.mounted) {
+                                        context.goNamed("list_previous", pathParameters: {
+                                          "jobs": jsonEncode(jobs),
+                                        });
+                                      }
                                     }
                                     /*Navigator.push(
                                       context,

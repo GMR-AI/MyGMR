@@ -18,15 +18,17 @@ Future<List<Job>?> get_list_of_jobs(int rid) async {
 
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body) as Map<String, dynamic>;
-    if (data.containsKey('message') && data['message'] == "All jobs getted") {
-      final List<dynamic> jobsData = data['jobs'];
+    print(data["message"]);
+    if (data.containsKey("jobs")) {
+      final List<dynamic> jobsData = data["jobs"];
       List<Job> jobs = jobsData.map((jobData) => Job.fromJson(jobData)).toList();
       return jobs;
-    } else {
-      print('No jobs available');
+    }
+    else {
       return null;
     }
   } else {
+    print(response.body);
     print('Failed to get jobs');
     return null;
   }
@@ -81,6 +83,7 @@ Future<void> delete_jobs(int rid) async {
 }
 
 Future<Job?> get_active_job(int robotId) async {
+  print(robotId);
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/get_active_job'),
     headers: <String, String>{
@@ -89,9 +92,8 @@ Future<Job?> get_active_job(int robotId) async {
     },
     body: jsonEncode(<String, int>{'robot_id': robotId}),
   );
-
+  final data = jsonDecode(response.body) as Map<String, dynamic>;
   if (response.statusCode == 200) {
-    final data = jsonDecode(response.body) as Map<String, dynamic>;
     final jobData = data['job'];
     if (jobData != null) {
       print("This is the job data: $jobData");
@@ -103,9 +105,16 @@ Future<Job?> get_active_job(int robotId) async {
       return null;
     }
   } else {
-    print('Failed to get active job');
-    print('Status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
+
+    if (data.containsKey("error")) {
+      print(data["message"]);
+      print(data["error"]);
+    }
+    else {
+      print('Failed to get active job');
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
     return null;
   }
 }
@@ -145,9 +154,9 @@ Future<void> checkServerResponse(BuildContext context) async {
       final data = jsonDecode(response.body);
       globals.globalJob!.glb_url = data['glb'];
       globals.globalJob!.top_image = data['top_image'];
-      if (context.mounted) {
+      /*if (context.mounted) {
         context.goNamed("config_grass");
-      }
+      }*/
       /*Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -177,6 +186,6 @@ Future<void> request_new_job(BuildContext context) async {
     final data = jsonDecode(response.body);
     print(data['status']);
     // Keep loading untill you change the page
-    checkServerResponse(context);
+    await checkServerResponse(context);
   }
 }
