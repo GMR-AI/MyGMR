@@ -220,7 +220,7 @@ class RobotClient:
         print('Making a reconstruction...')
         # Funcion de reconstruccion
 
-        #convert_obj_to_glb('obj_dataset/gmr.obj')
+        convert_obj_to_glb('obj_dataset/gmr.obj')
 
         print('Making the top image...')
         #run_convertion('ply_dataset', 'image_dataset')
