@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'sign_up.dart';
 import 'functions/user_requests.dart';
 
 Color backgroundColor = const Color(0xFFEFEFEF);

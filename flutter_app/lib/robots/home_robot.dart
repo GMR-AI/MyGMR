@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_gmr/job/actual.dart';
@@ -7,7 +5,6 @@ import '../job/job_class.dart';
 import 'weather.dart';
 import '../globals.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../functions/robots_requests.dart';
 import '../functions/job_requests.dart';
 
 
@@ -138,7 +135,6 @@ class _Home extends State<Home>  {
                                         _isLoading = true;
                                       });
                                       // Update the robot status
-                                      print("Requesting new job...");
                                       await request_new_job();
                                       if (context.mounted && globalJob!.top_image != null) {
                                         context.goNamed("config_grass");
@@ -167,7 +163,6 @@ class _Home extends State<Home>  {
                                 height: 50.0,
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    print(globalRobot!.id);
                                     Job? actualJob = await get_active_job(globalRobot!.id);
                                     if (actualJob != null) {
                                       globalRobot!.id_active_job = actualJob.id;
@@ -298,9 +293,6 @@ class _Home extends State<Home>  {
                 if (globalRobot != null) {
                   await finish_active_job(globalRobot!.id);
                   globalRobot!.id_active_job = null;
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
                   globalJob = Job(
                     id_robot: globalRobot!.id,
                   );
@@ -308,9 +300,9 @@ class _Home extends State<Home>  {
                     _isLoading = true;
                   });
                   // Update the robot status
-                  print("Requesting new job...");
                   await request_new_job();
                   if (context.mounted && globalJob!.top_image != null) {
+                    Navigator.pop(context);
                     context.goNamed("config_grass");
                   }
                   setState(() {

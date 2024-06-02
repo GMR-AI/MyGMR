@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:go_router/go_router.dart';
 import 'package:my_gmr/functions/user_requests.dart';
-import 'robots/no_robots.dart';
 
 Color backgroundColor = const Color(0xFFEFEFEF);
 
@@ -78,9 +76,6 @@ class _SignUpScreen extends State<SignUp> {
                       ElevatedButton(
                         onPressed: () async {
                           User? user = await signInWithGoogle(context);
-                          if (user != null) {
-                            print('Successfully signed in with Google: ${user.displayName}');
-                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white, // Background color
@@ -104,37 +99,6 @@ class _SignUpScreen extends State<SignUp> {
                               'Sign Up with Google',
                               style: TextStyle(fontSize: 16),
                             ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () => context.goNamed("no_robots"),
-                        /*{
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const NoRobots()),
-                          );
-                        },*/
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50), // Button size
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Continue',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Icon(Icons.arrow_forward, color: Colors.white),
                           ],
                         ),
                       ),

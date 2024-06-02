@@ -1,10 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'job_class.dart';
-import '../robots/robot_class.dart';
-import 'actual.dart';
 import '../globals.dart';
 import '../functions/job_requests.dart';
+
+class Point {
+  final double dx;
+  final double dy;
+
+  Point(this.dx, this.dy);
+
+  factory Point.fromMap(Map<String, dynamic> map) {
+    return Point(map['dx'], map['dy']);
+  }
+}
+
+extension JobExtensions on Job {
+  List<Point> get points {
+    if (area != null && area!['points'] != null) {
+      return (area!['points'] as List<dynamic>)
+          .map((pointMap) => Point.fromMap(pointMap as Map<String, dynamic>))
+          .toList();
+    }
+    return [];
+  }
+}
 
 class ResumePage extends StatelessWidget {
   ResumePage();
@@ -22,6 +42,12 @@ class ResumePage extends StatelessWidget {
       );
     }
 
+    List<String> formattedPoints = globalJob!.area!.entries.map((entry) {
+      String index = entry.key;
+      List<double> point = entry.value;
+      return 'Point ${int.parse(index) + 1}: (${point[0]}, ${point[1]})';
+    }).toList();
+    String formattedText = formattedPoints.join('\n');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Resume'),
@@ -34,28 +60,32 @@ class ResumePage extends StatelessWidget {
         ),
       ),
       body: Container(
-        color: Colors.green.shade100, // Fondo de la pantalla verde
+        color: Colors.green.shade100,
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: Colors.white, // Rectángulo blanco
-                borderRadius: BorderRadius.circular(20.0), // Esquinas redondeadas
+            Card(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Job Information',
-                    style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10.0),
-                  Text('Cutting Height: ${globalJob!.cutting_height} cm'),
-                  Text('Area: ${globalJob!.area}'),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Center(
+                      child: Text(
+                        'Job Information',
+                        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const SizedBox(height: 10.0),
+                    _buildInfoRow('Cutting Height', '${globalJob!.cutting_height} cm'),
+                    _buildInfoRow('Area', formattedText),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20.0),
@@ -69,16 +99,21 @@ class ResumePage extends StatelessWidget {
                     height: 10.0,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: i == 3 ? Colors.white : Colors.green.shade600, // El punto al final estará resaltado
+                      color: i == 3 ? Colors.white : Colors.green.shade600,
                     ),
                   ),
               ],
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green.shade600,
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                textStyle: const TextStyle(fontSize: 16),
+              ),
               onPressed: () async {
                 globalJob!.start_time = DateTime.now();
-                print("Global Job area: ${globalJob!.area}");
                 int? id_job = await add_job(globalJob!);
 
                 if (id_job != null) {
@@ -88,19 +123,35 @@ class ResumePage extends StatelessWidget {
                   if (context.mounted) {
                     context.goNamed("actual");
                   }
-                  /*Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ActualJobPage(),
-                    ),
-                  );*/
                 }
-                else print("Error: job not added at DB");
               },
-              child: const Text('Start job'),
+              child: const Text('Start Job'),
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String title, String content) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4.0),
+          Text(
+            content,
+            style: const TextStyle(fontSize: 16),
+          ),
+        ],
       ),
     );
   }

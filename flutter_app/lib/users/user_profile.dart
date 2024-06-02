@@ -1,10 +1,7 @@
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:my_gmr/globals.dart';
 import 'user_class.dart';
-import '../functions/user_requests.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class UserProfile extends StatefulWidget {

@@ -1,10 +1,7 @@
-import 'package:path/path.dart' as path;
-import 'dart:io';
-import 'package:mime/mime.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import '../robots/list_of_robots.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,7 +27,7 @@ Future<void> checkAuthentication(context) async {
 }
 
 // General auth function
-Future<void> authenticate(context, idToken) async {
+Future<void> authenticate(BuildContext context, idToken) async {
   final response = await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/g_auth'),
     headers: <String, String>{
@@ -45,16 +42,13 @@ Future<void> authenticate(context, idToken) async {
     // Assume `response` is the response object received from the server
     setSessionID(response.headers['set-cookie']);
     globals.globalUser = MyUser.fromJson(jsonDecode(response.body));
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ListOfRobots()),
-    );
+    if (context.mounted) {
 
+      context.goNamed("list_robots");
+    }
   } else {
-    print('Failed to authenticate with Flask backend');
     await storage.delete(key: 'userToken');
   }
-
 }
 
 Future<User?> signInWithGoogle(context) async {
@@ -83,7 +77,6 @@ Future<User?> signInWithGoogle(context) async {
       await storage.write(key: 'userToken', value: idToken);
     }
   } catch (e) {
-    print(e); // Handle error
     return null;
   }
 }

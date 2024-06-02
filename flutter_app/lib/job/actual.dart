@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'job_class.dart';
-import '../main_robot.dart';
 import '../globals.dart';
 import '../functions/job_requests.dart';
-import '../robots/robot_class.dart';
 import 'package:o3d/o3d.dart';
 
 
@@ -139,6 +136,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
               child: const Text("Cancel Job"),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
+                foregroundColor: Colors.black,
               ),
             ),
           ],

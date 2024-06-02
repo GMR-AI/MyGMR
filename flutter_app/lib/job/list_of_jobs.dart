@@ -3,7 +3,6 @@ import 'package:my_gmr/globals.dart';
 import 'info.dart';
 import 'job_class.dart';
 import '../functions/job_requests.dart';
-import '../robots/robot_class.dart';
 
 class ListOfJobs extends StatelessWidget {
   List<Job>? jobs;
@@ -35,7 +34,7 @@ class ListOfJobs extends StatelessWidget {
               itemBuilder: (context, index) {
                 final job = jobs![index];
                 return ListTile(
-                  title: Text(job.start_time!.day.toString()),
+                  title: Text("Job: ${job.start_time}"),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -80,9 +79,9 @@ class ListOfJobs extends StatelessWidget {
                   await delete_jobs(globalRobot!.id);
                   if (context.mounted) {
                     Navigator.pop(context);
+                    Navigator.pop(context);
                   }
                 }
-                else print("Error: no robot detected");
               },
               child: const Text("DELETE"),
             ),

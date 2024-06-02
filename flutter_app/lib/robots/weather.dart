@@ -107,7 +107,6 @@ class _WeatherWidgetState extends State<WeatherWidget> {
             weatherIcon = WeatherIcons.tornado;
             break;
           default:
-            print('Unrecognized weather condition: ${weatherData['weather'][0]['main']}');
             weatherIcon = WeatherIcons.na;
         }
       });

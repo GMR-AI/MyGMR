@@ -1,5 +1,3 @@
-import 'package:my_gmr/functions/robots_requests.dart';
-
 class Robot {
   final int id;
   int? id_connect;
