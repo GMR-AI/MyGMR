@@ -139,6 +139,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
               child: const Text("Cancel Job"),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
+                foregroundColor: Colors.black,
               ),
             ),
           ],

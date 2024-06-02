@@ -44,14 +44,14 @@ class ResumePage extends StatelessWidget {
       );
     }
 
-    List<String> formattedPoints = globalJob!.points.asMap().entries.map((entry) {
-      int index = entry.key;
-      Point point = entry.value;
-      return 'Point ${index + 1}: (${point.dx}, ${point.dy})';
+    List<String> formattedPoints = globalJob!.area!.entries.map((entry) {
+      String index = entry.key;
+      List<double> point = entry.value;
+      return 'Point ${int.parse(index) + 1}: (${point[0]}, ${point[1]})';
     }).toList();
-
+    print(formattedPoints);
     String formattedText = formattedPoints.join('\n');
-
+    print(formattedText);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Resume'),
@@ -112,6 +112,7 @@ class ResumePage extends StatelessWidget {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green.shade600,
+                foregroundColor: Colors.black,
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
                 textStyle: const TextStyle(fontSize: 16),
               ),

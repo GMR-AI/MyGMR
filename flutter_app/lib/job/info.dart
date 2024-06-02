@@ -31,10 +31,11 @@ class JobInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> formattedPoints = job.points.asMap().entries.map((entry) {
-      int index = entry.key;
-      Point point = entry.value;
-      return 'Point ${index + 1}: (${point.dx}, ${point.dy})';
+    print(job.area);
+    List<String> formattedPoints = job.area!.entries.map((entry) {
+      String index = entry.key;
+      List<dynamic> point = entry.value;
+      return 'Point ${int.parse(index) + 1}: (${point[0]}, ${point[1]})';
     }).toList();
     String formattedText = formattedPoints.join('\n');
 
