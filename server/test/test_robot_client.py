@@ -2,9 +2,8 @@ from dotenv import load_dotenv
 import json
 import os
 from enum import Enum
-import keyboard
 import argparse
-
+from google.cloud import storage
 from ply2jpg import run_convertion
 
 import trimesh
@@ -21,6 +20,19 @@ def convert_obj_to_glb(file_path):
     mesh.export(glb_file_path, file_type='glb')
 
     print(f"Converted {file_path} to {glb_file_path}")
+
+def upload_to_gcs(file_path, destination_blob_name):
+    # Initialize a storage client
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(os.environ.get("BUCKET_NAME"))
+    blob = bucket.blob(destination_blob_name)
+
+    # Upload the file
+    blob.upload_from_filename(file_path)
+    blob.make_public()
+
+    print(f"File {file_path} uploaded to {destination_blob_name}.")
+
 
 
 # Ordenes que el usuario puede enviar directamente al robot (estas se resetean a NONE una vez el robot reciba la orden)
@@ -212,24 +224,9 @@ class RobotClient:
         #run_convertion('ply_dataset', 'image_dataset')
 
         print('Sending data')
-        self.upload_file('obj_dataset/gmr.obj')
-        self.upload_file('image_dataset/gmr.jpg')
+        upload_to_gcs('obj_dataset/gmr.glb', f'{self.code}_gmr.glb')
+        upload_to_gcs('image_dataset/gmr.jpg', f'{self.code}_gmr.jpg')
         self.send_finished()
-                
-    def upload_file(self, file_path):
-        try:
-            with open(file_path, 'rb') as file:
-                print("File opened")
-                files = {'file': file}
-                data = {'code': self.code}
-                response = requests.post(f"{self.server_url}/upload_file", data=file)
-                print("File was sent")
-                if response.status_code == 200:
-                    print("File uploaded successfully.")
-                else:
-                    print("Failed to upload file:", response.status_code, response.json())
-        except Exception as e:
-            print("Error:", e)
 
     def send_finished(self):
         try:

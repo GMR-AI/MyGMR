@@ -164,28 +164,6 @@ def job_finished():
 
     return jsonify({'status': 'done'}), 200
 
-@bp.route('/upload_file', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file part"}), 400
-    
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
-    
-    if file:
-        try:
-            filename = file.filename
-            # Upload file to GCS
-            if 'code' in request.form:
-                code = request.form['code']
-                filename = f"{code}_{filename}"
-            
-            image_folder.upload_file(file, filename, file.content_type)
-            return jsonify({"message": "File uploaded successfully"}), 200
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
-
 ############## Debugging functions (comment this functions before deploying) ##############
 
 @bp.route('/view_requests')

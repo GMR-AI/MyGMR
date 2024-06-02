@@ -125,8 +125,8 @@ class _ActualJobPageState extends State<ActualJobPage> {
                       ),
                     ),
                   ),
-                  O3D.asset(
-                    src: globalRobot!.reconstruction_path!,
+                  O3D.network(
+                    src: 'https://storage.googleapis.com/gmr-ai-images/gmr.glb',//globalRobot!.reconstruction_path!,
                     controller: controller,
                   ),
                 ],
