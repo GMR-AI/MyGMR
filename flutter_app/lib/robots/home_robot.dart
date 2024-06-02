@@ -144,14 +144,14 @@ class _Home extends State<Home>  {
                                       });
                                     }
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     'New',
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(8.0),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8.0),
                                     ),
@@ -170,12 +170,6 @@ class _Home extends State<Home>  {
                                       if (context.mounted) {
                                         context.goNamed("actual");
                                       }
-                                      /*Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const ActualJobPage(),
-                                        ),
-                                      );*/
                                     } else {
                                       globalJob = null;
                                       globalRobot!.id_active_job = null;
@@ -211,12 +205,6 @@ class _Home extends State<Home>  {
                                       if (context.mounted) {
                                         context.goNamed("list_previous", extra: jobs);
                                       }
-                                    /*Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ListOfJobs(jobs: jobs ?? []),
-                                      ),
-                                    );*/
                                   },
                                   child: Text(
                                     'Previous',
@@ -246,12 +234,8 @@ class _Home extends State<Home>  {
                                   onPressed: () {
                                     // Navigate to the new page
                                     context.goNamed("model_info");
-                                    /*Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => ModelInfoScreen()),
-                                    );*/
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     'Info',
                                     style: TextStyle(
                                       fontSize: 16,

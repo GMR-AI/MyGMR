@@ -16,10 +16,6 @@ class ListOfRobots extends StatefulWidget {
 }
 
 class _ListOfRobotsScreen extends State<ListOfRobots> {
-  //List<Robot> _robots = [
-  //  Robot(id: 0, name: 'Robot 1', img: 'assets/robot_design.png'),
-  //  Robot(id: 1, name: 'Robot 2', img: 'assets/robot_design.png'),
-  //];
   List<Robot> _robots=[];
   bool _isLoading = true;
   bool _showConfirmationDialog = false;
@@ -69,12 +65,6 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
             _showConfirmationDialog = false;
             globalRobot = _robots[index];
             context.goNamed("main_robot");
-            /*Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MainRobot(),
-              ),
-            );*/
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -117,7 +107,8 @@ class _ListOfRobotsScreen extends State<ListOfRobots> {
             ),
           ),
         ),
-      );    });
+      );
+    });
 
     robotWidgets.add(
       Container(

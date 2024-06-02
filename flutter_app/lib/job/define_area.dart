@@ -90,10 +90,6 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
     }
     globalJob!.area = areaMap;
     context.goNamed("resume");
-    /*Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ResumePage()),
-    );*/
   }
 }
 

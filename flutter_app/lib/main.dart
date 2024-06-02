@@ -20,8 +20,6 @@ void main() async {
 ThemeData myTheme = ThemeData(
   primaryColor: Colors.green,
   textTheme: const TextTheme(
-    //bodyText1: TextStyle(fontSize: 16.0, color: Colors.black),
-    //headline1: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
   ),
   colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
   useMaterial3: true,
@@ -29,7 +27,6 @@ ThemeData myTheme = ThemeData(
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
-
 
   @override
   Widget build(BuildContext context) {

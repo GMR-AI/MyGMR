@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_gmr/globals.dart';
 import 'user_class.dart';
@@ -80,7 +79,7 @@ class _UserProfileState extends State<UserProfile> {
             const SizedBox(height: 20.0),
             const Divider(),
             ListTile(
-              leading: Icon(Icons.email, color: Colors.grey),
+              leading: const Icon(Icons.email, color: Colors.grey),
               title: Text(
                 widget.user.mail ?? 'No Email',
                 style: const TextStyle(

@@ -35,18 +35,6 @@ class _WelcomeScreen extends State<Welcome> {
           });
           if (_scrollPosition < -20) {
             context.goNamed("signup");
-              /*Navigator.push(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) => const SignUp(),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    );
-                  },
-                ),
-              );*/
             }
         }, // onVerticalDragUpdate
         child: Stack(
@@ -136,9 +124,7 @@ class _WelcomeScreen extends State<Welcome> {
         ),
       ),
     );
-
   }
-
 }
 
 

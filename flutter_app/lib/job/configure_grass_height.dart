@@ -203,10 +203,6 @@ class _ConfigureGrassHeightPageState extends State<ConfigureGrassHeightPage> {
               onPressed: () {
                 globalJob!.cutting_height = _heightValues[_grassHeightIndex];
                 context.goNamed("define_area");
-                /*Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const DefineAreaPage()),
-                );*/
               },
               child: const Text('Next'),
             ),

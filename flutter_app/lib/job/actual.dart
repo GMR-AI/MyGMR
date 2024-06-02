@@ -37,13 +37,6 @@ class _ActualJobPageState extends State<ActualJobPage> {
           _elapsedTime = _calculateDuration();
         });
       });
-      /*_startTime = globalJob!.start_time!;
-      _tickerStream = _ticker();
-      _tickerSubscription = _tickerStream.listen((_) {
-        setState(() {
-          _elapsedTime = _calculateDuration(_startTime);
-        });
-      });*/
     }
   }
 
@@ -107,9 +100,8 @@ class _ActualJobPageState extends State<ActualJobPage> {
                   ],
                 )
               ],
-            ), //const Spacer(),
+            ),
             const SizedBox(height: 20),
-            // 3D Model Viewer
             Expanded(
               child: Stack(
                 children: [
@@ -163,9 +155,10 @@ class _ActualJobPageState extends State<ActualJobPage> {
                   await finish_active_job(globalRobot!.id);
                   globalRobot!.id_active_job = null;
                 }
+                // Navega a la pantalla principal
                 if (context.mounted) {
                   context.goNamed("main_robot");
-                } // Navega a la pantalla principal
+                }
               },
               child: const Text('OK'),
             ),

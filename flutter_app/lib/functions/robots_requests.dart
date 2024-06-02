@@ -56,7 +56,7 @@ Future<Map<String, dynamic>?> getModel() async {
 }
 
 Future<void> delete_this_robot(int robotId, int robotCode) async {
-  final response = await http.post(
+  await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/delete_robot'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',

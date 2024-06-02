@@ -75,7 +75,7 @@ class _SignUpScreen extends State<SignUp> {
                     children: [
                       ElevatedButton(
                         onPressed: () async {
-                          User? user = await signInWithGoogle(context);
+                          await signInWithGoogle(context);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white, // Background color

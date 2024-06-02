@@ -95,7 +95,7 @@ Future<void> finish_active_job(int robotId) async {
     "end_time": DateTime.now(),
   };
 
-  final response = await http.post(
+  await http.post(
     Uri.parse('${dotenv.env['BACKEND_URL']}/finish_active_job'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
@@ -123,7 +123,6 @@ Future<void> checkServerResponse() async {
       globals.globalJob!.top_image = data['top_image'];
       break;
     } else {
-      // Handle server error
       await Future.delayed(const Duration(seconds: 5));
       continue;
     }
@@ -141,7 +140,6 @@ Future<void> request_new_job() async {
   );
 
   if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
     // Keep loading untill you change the page
     await checkServerResponse();
   }
