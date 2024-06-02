@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:go_router/go_router.dart';
 import 'package:my_gmr/functions/user_requests.dart';
-import 'robots/no_robots.dart';
 
 Color backgroundColor = const Color(0xFFEFEFEF);
 
@@ -78,9 +76,6 @@ class _SignUpScreen extends State<SignUp> {
                       ElevatedButton(
                         onPressed: () async {
                           User? user = await signInWithGoogle(context);
-                          if (user != null) {
-                            print('Successfully signed in with Google: ${user.displayName}');
-                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white, // Background color

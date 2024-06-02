@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'define_area.dart';
-import 'job_class.dart';
 import '../globals.dart';
 
 class VerticalSlider extends StatelessWidget {

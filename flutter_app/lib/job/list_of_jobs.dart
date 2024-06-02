@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:my_gmr/globals.dart';
 import 'info.dart';
 import 'job_class.dart';
 import '../functions/job_requests.dart';
-import '../robots/robot_class.dart';
 
 class ListOfJobs extends StatelessWidget {
   List<Job>? jobs;
@@ -84,7 +82,6 @@ class ListOfJobs extends StatelessWidget {
                     Navigator.pop(context);
                   }
                 }
-                else print("Error: no robot detected");
               },
               child: const Text("DELETE"),
             ),

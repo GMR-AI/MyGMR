@@ -18,8 +18,6 @@ Future<bool> push_robot(code) async {
   if (response.statusCode == 200) {
     return true;
   } else {
-    final data = jsonDecode(response.body);
-    print(data['message']);
     return false;
   }
 }
@@ -34,12 +32,10 @@ Future<List<Robot>?> get_robots() async {
   );
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body) as Map<String, dynamic>;
-    print(data["message"]);
     final List<dynamic> robotsData = data["robots"];
     List<Robot> robots = robotsData.map((robotData) => Robot.fromJson(robotData)).toList();
     return robots;
   } else {
-    print('Failed to get robots');
     return [];
   }
 }
@@ -68,14 +64,6 @@ Future<void> delete_this_robot(int robotId, int robotCode) async {
     },
     body: jsonEncode(<String, int>{'robot_id': robotId, 'code': robotCode}),
   );
-
-  if (response.statusCode == 200) {
-    print('Robot deleted successfully');
-  } else {
-    print('Failed to delete robot');
-    print('Status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
-  }
 }
 
 

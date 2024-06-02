@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'job_class.dart';
-import '../robots/robot_class.dart';
-import 'actual.dart';
 import '../globals.dart';
 import '../functions/job_requests.dart';
 
@@ -49,9 +47,7 @@ class ResumePage extends StatelessWidget {
       List<double> point = entry.value;
       return 'Point ${int.parse(index) + 1}: (${point[0]}, ${point[1]})';
     }).toList();
-    print(formattedPoints);
     String formattedText = formattedPoints.join('\n');
-    print(formattedText);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Resume'),
@@ -118,7 +114,6 @@ class ResumePage extends StatelessWidget {
               ),
               onPressed: () async {
                 globalJob!.start_time = DateTime.now();
-                print("Global Job area: ${globalJob!.area}");
                 int? id_job = await add_job(globalJob!);
 
                 if (id_job != null) {
@@ -128,8 +123,6 @@ class ResumePage extends StatelessWidget {
                   if (context.mounted) {
                     context.goNamed("actual");
                   }
-                } else {
-                  print("Error: job not added at DB");
                 }
               },
               child: const Text('Start Job'),

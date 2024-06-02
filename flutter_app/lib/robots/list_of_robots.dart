@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../globals.dart';
-import '../main_robot.dart';
 import 'robot_class.dart';
 import 'add_robot.dart';
-import 'no_robots.dart';
 import '../functions/robots_requests.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 

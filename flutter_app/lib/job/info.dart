@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_gmr/globals.dart';
 import 'job_class.dart';
 
 class Point {
@@ -31,7 +30,6 @@ class JobInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(job.area);
     List<String> formattedPoints = job.area!.entries.map((entry) {
       String index = entry.key;
       List<dynamic> point = entry.value;
