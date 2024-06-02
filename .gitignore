@@ -1,3 +1,5 @@
+venv
+
 *.ply
 *.glb
 *.obj

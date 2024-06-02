@@ -1,16 +1,21 @@
-name: flask
+name: mygmr-env
 channels:
   - defaults
 dependencies:
   - python=3.9
-  - pip
+  - pip=19.3.1
   - pip:
     - flask
+    - flask-session
+    - google-cloud-storage
+    - google-cloud-sql
+    - requests
+    - gunicorn
+    - firebase-admin
+    - python-dotenv
     - sqlalchemy
     - pg8000
-    - cloud-sql-python-connector
-    - python-dotenv
-    - firebase-admin
-    - flask-session
-    - flask-socketio
-    - websocket-client
+    - numpy
+    - trimesh
+    - opencv-python
+    - plyfile
