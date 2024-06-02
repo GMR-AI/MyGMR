@@ -123,7 +123,7 @@ class _ActualJobPageState extends State<ActualJobPage> {
                     ),
                   ),
                   O3D.network(
-                    src: 'https://storage.googleapis.com/gmr-ai-images/gmr.glb',//globalRobot!.reconstruction_path!,
+                    src: globalRobot!.reconstruction_path!,
                     controller: controller,
                   ),
                 ],
@@ -142,109 +142,6 @@ class _ActualJobPageState extends State<ActualJobPage> {
           ],
         ),
       ),
-    );
-  }
-
-  /*@override
-  Widget build(BuildContext context) {
-    if (globalJob == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Actual Job'),
-        ),
-        body: const Center(
-          child: Text('No job available'),
-        ),
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Actual Job'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            globalJob = null;
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildInfoItem("Cutting Height", globalJob!.cutting_height),
-            _buildInfoItem("Area", globalJob!.area),
-            _buildInfoItem("Initial time", globalJob!.start_time),
-            _buildInfoItem("Elapsed Time", _formatDuration(_elapsedTime)),
-            _buildInfoItem("Robot ID", globalJob!.id_robot),
-            Center(
-              child: ElevatedButton(
-                  onPressed: () => _stopJob(context),
-                  child: const Text("Cancel Job")
-              ),
-            )
-          ],
-        ),
-      )
-      *//*body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _formatDuration(_elapsedTime),
-              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: _togglePause,
-                  icon: Icon(_isPaused ? Icons.play_arrow : Icons.pause),
-                ),
-                const SizedBox(width: 20),
-                IconButton(
-                  onPressed: () => _stopJob(context),
-                  icon: const Icon(Icons.stop),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                globalJob = null;
-                context.goNamed("main_robot");
-              },
-              child: const Text('Go home'),
-            ),
-          ],
-        ),
-      ),*//*
-    );
-  }*/
-
-  Widget _buildInfoItem(String label, dynamic value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18.0,
-          ),
-        ),
-        const SizedBox(height: 8.0),
-        Text(
-          value.toString(),
-          style: const TextStyle(
-            fontSize: 16.0,
-          ),
-        ),
-        const Divider(),
-      ],
     );
   }
 

@@ -50,7 +50,7 @@ class ResumePage extends StatelessWidget {
     String formattedText = formattedPoints.join('\n');
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Resume'),
+        title: const Text('Summary'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {

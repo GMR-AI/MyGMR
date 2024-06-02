@@ -178,6 +178,7 @@ class RobotClient:
             if not job_data:
                 print("Error: Job data was not given, cancelling...")
                 return
+            self.robot_state = State.WORKING
 
             if job_status == State.WORKING and self.active_job != None:
                 if self.active_job.id == job_data['id']:
@@ -212,6 +213,7 @@ class RobotClient:
 
     def cancel_task(self):
         time.sleep(10)
+        self.send_finished()
         return
     
     def new_job(self):

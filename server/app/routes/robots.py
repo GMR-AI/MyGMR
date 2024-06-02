@@ -159,7 +159,6 @@ def job_finished():
     # Check if robot is online
     if not active_rm.exists_in_queue(code):
         return jsonify({'job_status': j_status.NONE.name}), 404
-    # TODO: Actualizar el end_time
     active_rm.update_job(code, j_status.NONE)
 
     return jsonify({'status': 'done'}), 200

@@ -25,8 +25,6 @@ def add_new_job():
     except ValueError:
         return jsonify({"message": "Invalid date format"}), 400
     
-    #TODO: Si esta en working, enviar señal de cancelar
-
     job_id = db.add_new_job(cutting_height, area, start_time, id_robot)
     
     if job_id:
@@ -107,8 +105,6 @@ def finish_active_job():
         end_time = datetime.fromisoformat(end_time)
     except ValueError:
         return jsonify({"message": "Invalid date format"}), 400
-
-    # TODO: Poner en el cliente que si se ha cancelado y estava en estado NEW_JOB, no se ponga en none
 
     db.add_end_time(row, end_time)
     active_rm.update_job(code, j_status.CANCEL_JOB)

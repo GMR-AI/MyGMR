@@ -33,7 +33,6 @@ class robot_manager:
     def remove_from_queue(self, code):
         if code in self._queue:
             print("Robot ", self._queue[code], " disconnected")
-            # TODO: Update state in the db if necessary
             del self._queue[code]
             return True
         return False
