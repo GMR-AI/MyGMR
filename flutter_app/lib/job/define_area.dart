@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../globals.dart';
+import 'dart:developer';
+import 'dart:async';
 
 class DefineAreaPage extends StatefulWidget {
   const DefineAreaPage({Key? key}) : super(key: key);
@@ -11,16 +13,42 @@ class DefineAreaPage extends StatefulWidget {
 
 class _DefineAreaPageState extends State<DefineAreaPage> {
   List<Offset> _points = [];
+  List<Offset> _pointsApp = [];
+  final Completer<Size> _imageSizeCompleter = Completer<Size>();
+  final GlobalKey _imageKey = GlobalKey();
 
   void _addPoint(Offset point) {
+    final RenderBox renderBox = _imageKey.currentContext?.findRenderObject() as RenderBox;
+    final Size widgetSize = renderBox.size;
+
+    final Offset scaledPoint = _convertToImageCoordinates(point, widgetSize);
+
     setState(() {
       if (_points.length < 4) {
-        _points.add(point);
+        _points.add(scaledPoint);
+        _pointsApp.add(point);
       } else {
         _points.clear();
-        _points.add(point);
+        _pointsApp.clear();
+        _points.add(scaledPoint);
+        _pointsApp.add(point);
       }
     });
+  }
+
+  Offset _convertToImageCoordinates(Offset point, Size widgetSize) {
+    final double scaleX = 255 / widgetSize.width;
+    final double scaleY = 255 / widgetSize.height;
+
+    final double imageX = point.dx * scaleX;
+    final double imageY = point.dy * scaleY;
+
+    return Offset(imageX, imageY);
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -58,12 +86,24 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.network(
-                        globalJob!.top_image!,
-                        fit: BoxFit.contain,
+                      FutureBuilder<Size>(
+                        future: _imageSizeCompleter.future,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                            return Image.network(
+                              globalJob!.top_image!,
+                              key: _imageKey,
+                              fit: BoxFit.contain,
+                              width: double.infinity,
+                              height: double.infinity,
+                            );
+                          } else {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+                        },
                       ),
                       CustomPaint(
-                        painter: AreaPainter(points: _points),
+                        painter: AreaPainter(points: _pointsApp),
                       ),
                     ],
                   ),
@@ -86,7 +126,7 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
 
     for (int i = 0; i < _points.length; i++) {
       areaMap[i.toString()] = [double.parse((_points[i].dx).toStringAsFixed(2)),
-                               double.parse((_points[i].dy).toStringAsFixed(2))];
+        double.parse((_points[i].dy).toStringAsFixed(2))];
     }
     globalJob!.area = areaMap;
     context.goNamed("resume");
