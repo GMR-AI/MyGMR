@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../globals.dart';
-import 'dart:developer';
 import 'dart:async';
 
 class DefineAreaPage extends StatefulWidget {
@@ -46,9 +45,24 @@ class _DefineAreaPageState extends State<DefineAreaPage> {
     return Offset(imageX, imageY);
   }
 
+  void _ImageDimensions(String imageUrl) {
+    final Image image = Image.network(imageUrl);
+    final ImageStream stream = image.image.resolve(const ImageConfiguration());
+    stream.addListener(
+      ImageStreamListener((ImageInfo info, bool _) {
+        final Size imageSize = Size(
+          info.image.width.toDouble(),
+          info.image.height.toDouble(),
+        );
+        _imageSizeCompleter.complete(imageSize);
+      }),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
+    _ImageDimensions(globalJob!.top_image!);
   }
 
   @override
