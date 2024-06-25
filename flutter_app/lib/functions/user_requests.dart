@@ -74,7 +74,14 @@ Future<void> signInWithGoogle(context) async {
       await storage.write(key: 'userToken', value: idToken);
     }
   } catch (e) {
-    return;
+    // Handle specific exceptions
+    if (e is FirebaseAuthException) {
+      print('Firebase Auth Error: ${e.message}');
+    } else if (e is GoogleSignInAuthentication) {
+      print('Google Sign-In Error: ${e.toString()}');
+    } else {
+      print('Error: $e');
+    }
   }
 }
 
